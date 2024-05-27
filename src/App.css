@@ -1,0 +1,16 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.backButton {
+  all: initial;
+  color: rgba(255, 255, 255, 0.87);
+  padding: 0.6em 1.2em;
+  font-family: inherit;
+  font-size: 1.5em;
+  cursor: pointer;
+  font-weight: bold;
+}

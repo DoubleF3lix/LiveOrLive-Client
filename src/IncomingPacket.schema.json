@@ -1,0 +1,96 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Shotgun Game Incoming Packets",
+    "description": "Describes the structure of packets that go to the Shotgun Game client",
+    "type": "object",
+    "anyOf": [
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "newChatMessage",
+                    "description": "Used when a new chat message is sent"
+                },
+                "sender": {
+                    "type": "string",
+                    "description": "ID of the player who sent the chat message"
+                },
+                "timestamp": {
+                    "type": "number",
+                    "description": "UNIX timestamp for when the message was sent"
+                },
+                "content": {
+                    "type": "string",
+                    "description": "The chat message itself"
+                }
+            },
+            "required": ["action", "sender", "timestamp", "content"],
+            "additionalProperties": false
+        },
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "updateChatMessageList",
+                    "description": "Used when the page is refreshed to show all prior messages"
+                }
+            },
+            "required": ["action"],
+            "additionalProperties": false
+        },
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "updatePlayerData",
+                    "description": "Used when a player makes a move to update all the other players' UIs"
+                },
+                "player": {
+                    "type": "string",
+                    "description": "ID of the player to update the data for"
+                },
+                "items": {
+                    "type": "array",
+                    "description": "Array of strings containing the items the player has",
+                    "items": {
+                        "type": "string",
+                        "enum": ["doubleDamage", "checkBullet", "skipPlayerTurn", "shootAir", "rerollCounts", "addLife"]
+                    },
+                    "maxItems": 8
+                },
+                "lives": {
+                    "type": "integer",
+                    "description": "How many lives the player has now",
+                    "minimum": 0
+                }
+            },
+            "required": ["action"],
+            "minProperties": 2,
+            "additionalProperties": false
+        },
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "usernameCheckResult",
+                    "description": "Sent after a client requests a username check"
+                },
+                "okayToUse": {
+                    "type": "boolean",
+                    "description": "true if we can use it, false if not"
+                }
+            }
+        },
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "startGame",
+                    "description": "Used to signal to all joined clients that the game has started"
+                }
+            },
+            "required": ["action"],
+            "additionalProperties": false
+        }
+    ]
+}

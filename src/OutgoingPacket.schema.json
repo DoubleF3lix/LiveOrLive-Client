@@ -1,0 +1,97 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Shotgun Game Outgoing Packets",
+    "description": "Describes the structure of packets that go to the Shotgun Game server",
+    "type": "object",
+    "anyOf": [
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "fireGun",
+                    "description": "Used when the player chooses to fire the gun"
+                },
+                "target": {
+                    "type": "string",
+                    "description": "ID of the player who was shot at"
+                }
+            },
+            "required": ["action", "target"],
+            "additionalProperties": false
+        },
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "useItem",
+                    "description": "Used when the player uses an item"
+                },
+                "itemID": {
+                    "type": "string",
+                    "enum": ["doubleDamage", "checkBullet", "skipPlayerTurn", "shootAir", "rerollCounts", "addLife"],
+                    "description": "Item that got used"
+                },
+                "target": {
+                    "type": "string",
+                    "description": "ID of the player the item was used on (only applies to skipPlayerTurn)"
+                },
+                "required": ["action", "itemID"],
+                "additionalProperties": false
+            }
+        },
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "newChatMessage",
+                    "description": "Used when a new chat message is sent"
+                },
+                "content": {
+                    "type": "string",
+                    "description": "The chat message itself"
+                }
+            },
+            "required": ["action", "content"],
+            "additionalProperties": false
+        },
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "getChatMessages",
+                    "description": "Used when a player requests chat message list (on refresh)"
+                }
+            },
+            "required": ["action"],
+            "additionalProperties": false
+        },
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "checkUsername",
+                    "description": "Used by a client when setting a username to make sure it is not in use"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "The username to check against"
+                }
+            },
+            "required": ["action", "username"],
+            "additionalProperties": false
+        },
+        {
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "joinGame",
+                    "description": "Used when a player joins a game lobby (after checkUsername) has passed"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "The player's chosen username"
+                }
+            }
+        }
+    ]
+}
