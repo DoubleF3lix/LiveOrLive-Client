@@ -49,12 +49,12 @@ export default function ChatBox({ serverConnection, preexistingChatMessages }: C
     }
 
     return (
-        <div className="flex flex-col w-1/6 float-right border-solid p-4 m-4 min-h-0 inline-block">
+        <div className="flex flex-col w-1/6 border-solid p-4 m-4">
             {/* font-bold h-[2vh] */}
             <p className="font-bold">Chat:</p>
             <hr className="w-full"/>
             <br/>
-            <div className="-space-y-0 overflow-y-auto h-[78vh] break-words">
+            <div className="-space-y-0 overflow-y-auto break-words flex-grow">
                 {messages.map((message, index) => getChatMessageComponent(message, index))}
                 <div ref={(element) => {endOfMessages = element;}}></div>
             </div>

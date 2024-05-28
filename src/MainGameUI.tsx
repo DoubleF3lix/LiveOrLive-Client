@@ -32,14 +32,15 @@ export default function MainGameUI({ serverConnection, gameData }: MainGameUIArg
     }, []);
 
     return (
-        <> 
+        // h-screen is ESSENTIAL to no-scroll. DO NOT REMOVE
+        <div className="flex flex-row h-screen"> 
             {/* TODO doesn't update properly anymore, but it's a state?? */}
             {/* Conditionally render the chatbox when we're ready */}
             {/* {gameData.chat.messages.length == 0 || gameData.chat.messages[0].timestamp !== 0 ? ( */}
             {preexistingChatMessages.length == 0 || preexistingChatMessages[0].timestamp !== 0 ? (
                 // <ChatBox serverConnection={serverConnection} preexistingChatMessages={gameData.chat.messages}/>
-                <ChatBox serverConnection={serverConnection} preexistingChatMessages={preexistingChatMessages}/>
+                <ChatBox serverConnection={serverConnection} preexistingChatMessages={preexistingChatMessages} />
             ) : <></>}  
-        </>
+        </div>
     );
 }
