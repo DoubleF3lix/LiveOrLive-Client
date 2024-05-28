@@ -33,7 +33,7 @@ export default function MainGameUI({ serverConnection, gameData }: MainGameUIArg
 
     return (
         // h-screen is ESSENTIAL to no-scroll. DO NOT REMOVE
-        <div className="flex flex-row h-screen"> 
+        <div className="flex flex-col h-dvh lg:flex-row"> 
             {/* TODO doesn't update properly anymore, but it's a state?? */}
             {/* Conditionally render the chatbox when we're ready */}
             {/* {gameData.chat.messages.length == 0 || gameData.chat.messages[0].timestamp !== 0 ? ( */}

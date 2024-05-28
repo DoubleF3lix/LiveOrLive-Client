@@ -12,7 +12,7 @@ export default function App() {
     const [gameData, _] = useState<GameData>(new GameData()); // eslint-disable-line @typescript-eslint/no-unused-vars
 
     useEffect(() => {
-        const webSocketConn = new WebSocketConnection("http://localhost:8080");
+        const webSocketConn = import.meta.env.DEV ? new WebSocketConnection("http://localhost:8080") : new WebSocketConnection("https://liveorlive-server.fly.dev/");
         webSocketConn.subscribeToEvent("onConnect", (_) => { // eslint-disable-line @typescript-eslint/no-unused-vars
             console.log("New connection!");
         });
