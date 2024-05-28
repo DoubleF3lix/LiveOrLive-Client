@@ -49,22 +49,25 @@ export default function ChatBox({ serverConnection, preexistingChatMessages }: C
     }
 
     return (
-        <div className="border-solid border-1 float-right p-4 m-4 w-1/6">
-            <p className="font-bold h-[2vh]">Chat:</p>
-            <hr/>
+        <div className="flex flex-col w-1/6 float-right border-solid p-4 m-4 min-h-0 inline-block">
+            {/* font-bold h-[2vh] */}
+            <p className="font-bold">Chat:</p>
+            <hr className="w-full"/>
             <br/>
             <div className="-space-y-0 overflow-y-auto h-[78vh] break-words">
                 {messages.map((message, index) => getChatMessageComponent(message, index))}
                 <div ref={(element) => {endOfMessages = element;}}></div>
             </div>
-            <hr/>
+            <hr className="w-full"/>
             <br/>
-            <form onSubmit={sendChatMessage} className="h-[3vh]">
+            {/* h-[3vh] */}
+            <form onSubmit={sendChatMessage} className="flex">
                 <input
                     type="text"
                     value={newChatMessage}
                     onChange={e => setNewChatMessage(e.currentTarget.value)}
-                    className="border-solid border-1 border-black"
+                    // border-solid border-1 border-black
+                    className="flex-auto min-w-0"
                 />
                 <button type="submit">Send</button>
             </form>
