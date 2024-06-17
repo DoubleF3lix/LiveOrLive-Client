@@ -1,3 +1,4 @@
+import { createSlice } from "@reduxjs/toolkit";
 import Item from "./Item";
 import { GetGameInfoResponsePacket } from "./Packet";
 
@@ -14,28 +15,50 @@ export type ChatMessage = {
     timestamp: number
 };
 
-class Chat {
-    // Dummy message to detect initialization 
-    private _messages: ChatMessage[] = [{author: {username: "", items: [], lives: 0}, message: "", timestamp: 0}];
-
-    // No addMessage without timestamp because it's server-authoritative
-    addMessage(message: ChatMessage): void {
-        this._messages.push(message);
-    }
-
-    get messages(): ChatMessage[] {
-        return this._messages;
-    }
-    
-    populateFromPacket(packet: GetGameInfoResponsePacket) {
-        this._messages = packet.chatMessages;
-    }
+// Setup for Redux store
+type GameDataType = {
+    players: Player[];
+    clientUsername: string; 
+    currentHost: string;
+    chatMessages: ChatMessage[];
+    turnCount: number;
 }
 
-export default class GameData {
-    players: Player[] = [];
-    clientUsername: string = ""; // The username that represents this client
-    currentHost: string = ""; // Just storing their username should be fine
-    chat: Chat = new Chat();
-    turnCount: number = -1;
+const initialGameData: GameDataType = {
+    players: [],
+    clientUsername: "",
+    currentHost: "",
+    chatMessages: [{author: {username: "", items: [], lives: 0}, message: "", timestamp: 0}],
+    turnCount: -1
 }
+
+export const gameDataSlice = createSlice({
+    name: "gameData",
+    initialState: initialGameData,
+    reducers: {
+        addPlayer: (state, action: {payload: Player}) => {
+            state.players.push(action.payload);
+        },
+        setClientUsername: (state, action: {payload: string}) => {
+            state.clientUsername = action.payload;
+        },
+        setCurrentHost: (state, action: {payload: string}) => {
+            state.currentHost = action.payload;
+        },
+        addChatMessage: (state, action: {payload: ChatMessage}) => {
+            state.chatMessages.push(action.payload);
+        },
+        incrementTurnCount: (state) => {
+            state.turnCount++;
+        },
+        populateFromPacket: (state, action: {payload: GetGameInfoResponsePacket}) => {
+            state.players = action.payload.players;
+            state.currentHost = action.payload.currentHost?.username;
+            state.chatMessages = action.payload.chatMessages;
+            state.turnCount = action.payload.turnCount;
+        }
+    }
+});
+
+export const {addPlayer, setClientUsername, setCurrentHost, addChatMessage, incrementTurnCount, populateFromPacket} = gameDataSlice.actions;
+export default gameDataSlice.reducer;

@@ -1,46 +1,57 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import ChatBox from "./ChatBox";
 import WebSocketConnection from "./WebSocketConnection";
 import { GetGameInfoPacket, GetGameInfoResponsePacket } from "./Packet";
-import GameData, { ChatMessage } from "./GameData";
+import { populateFromPacket } from "./GameData";
+import { useDispatch, useSelector } from "react-redux";
+import { IRootState } from "./Store";
+import { ServerConnectionContext } from "./ServerConnectionContext";
+import Player from "./Player";
+import { Player as PlayerObj } from "./GameData";
 
 
-type MainGameUIArgs = {
-    serverConnection: WebSocketConnection | null,
-    gameData: GameData
-};
 
-export default function MainGameUI({ serverConnection, gameData }: MainGameUIArgs) {
-    const [preexistingChatMessages, setPreexistingChatMessages] = useState<ChatMessage[]>([{author: {username: "", items: [], lives: 0}, message: "", timestamp: 0}]);
+export default function MainGameUI() {
+    const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
+    const players = useSelector((state: IRootState) => (state.gameDataReducer.players));
+    const chatMessages = useSelector((state: IRootState) => (state.gameDataReducer.chatMessages));
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // Runs on successful connection
         const getGameInfoPacket: GetGameInfoPacket = {packetType: "getGameInfo"};
-        serverConnection?.send(getGameInfoPacket);
-        serverConnection?.waitForServerPacket("getGameInfoResponse").then((packet => {
+        serverConnection.send(getGameInfoPacket);
+        serverConnection.waitForServerPacket("getGameInfoResponse").then((packet => {
             packet = packet as GetGameInfoResponsePacket;
-
-            gameData.chat.populateFromPacket(packet);
-            gameData.players = packet.players;
-            gameData.turnCount = packet.turnCount;
-            // gameData.currentHost = packet.currentHost.username;
+            dispatch(populateFromPacket(packet));
 
             // TODO if turnCount == -1 and gameData.currentHost = gameData.clientUsername, show start game button
-
-            setPreexistingChatMessages(packet.chatMessages);
         }));
     }, []);
 
+    const chunkedPlayers: PlayerObj[][] = [];
+    for (let i = 0; i < players.length; i += 2) {
+        chunkedPlayers.push(players.slice(i, i + 2));
+    }
+
     return (
-        // h-screen is ESSENTIAL to no-scroll. DO NOT REMOVE
-        <div className="flex flex-col h-dvh lg:flex-row"> 
-            {/* TODO doesn't update properly anymore, but it's a state?? */}
-            {/* Conditionally render the chatbox when we're ready */}
-            {/* {gameData.chat.messages.length == 0 || gameData.chat.messages[0].timestamp !== 0 ? ( */}
-            {preexistingChatMessages.length == 0 || preexistingChatMessages[0].timestamp !== 0 ? (
-                // <ChatBox serverConnection={serverConnection} preexistingChatMessages={gameData.chat.messages}/>
-                <ChatBox serverConnection={serverConnection} preexistingChatMessages={preexistingChatMessages} />
-            ) : <></>}  
+        <div className="flex flex-col h-dvh">
+            <p className="text-center font-bold text-base lg:text-lg pt-3">EPIC GAME - CODE - Player 1's Turn</p>
+            <hr></hr>
+            <div className="flex flex-col lg:flex-row overflow-auto"> 
+                <div className="w-full overflow-auto grid auto-rows-min sm:grid-cols-2 xl:grid-cols-3">
+                    {chunkedPlayers.map((playersChunk) => <>
+                        <Player key={playersChunk[0].username} player={playersChunk[0]}/>
+                        {playersChunk.length == 2 ? <Player key={playersChunk[1].username} player={playersChunk[1]}/> : <></>}
+                    </>)}
+                </div>
+
+                <hr></hr>
+
+                {chatMessages.length === 0 || chatMessages[0].timestamp !== 0 ? (
+                    <ChatBox/>
+                ) : <></>}  
+            </div>
         </div>
     );
 }

@@ -1,9 +1,9 @@
 import { ClientPacket, ServerPacket } from "./Packet";
 
-// IDK what this magic is, but it's very fun to use
 type ServerPacketType = ServerPacket["packetType"];
 type ServerPacketCallback = (packet: ServerPacket) => void
 
+// IDK what this magic is, but it's very fun to use
 const EventTypes = ["onConnect", "onDisconnect", "onError"] as const;
 type EventType = typeof EventTypes[number];
 type EventCallback = (event: Event) => void;
@@ -16,7 +16,7 @@ function tupleToObject<TKeys extends readonly PropertyKey[], TValue>(keys: TKeys
 }
 
 
-class WebSocketServerPacketSubscription {
+export class WebSocketServerPacketSubscription {
     readonly type: ServerPacketType;
     readonly callback: ServerPacketCallback;
     active: boolean = true;
@@ -27,7 +27,7 @@ class WebSocketServerPacketSubscription {
     }
 }
 
-class WebSocketEventSubscription {
+export class WebSocketEventSubscription {
     readonly type: EventType;
     readonly callback: EventCallback;
     active: boolean = true;
@@ -55,6 +55,11 @@ export default class WebSocketConnection {
         window.addEventListener("beforeunload", () => {
             this.close();
         });
+
+        // If we're already open and subscriptions weren't set up in time, fire them
+        if (this.connection.OPEN) {
+            this.onConnect(new Event("open"));
+        }
     }
     
     private onConnect(event: Event) {

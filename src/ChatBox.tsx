@@ -1,41 +1,43 @@
-import { FormEvent, useEffect, useState } from "react";
-import WebSocketConnection from "./WebSocketConnection";
+import { FormEvent, useContext, useEffect, useState } from "react";
+import WebSocketConnection, { WebSocketServerPacketSubscription } from "./WebSocketConnection";
 import { NewChatMessageSentPacket, SendNewChatMessagePacket } from "./Packet";
-import { ChatMessage as ChatMessageObj } from "./GameData";
+import { ChatMessage as ChatMessageObj, addChatMessage } from "./GameData";
 import ChatMessage from "./ChatMessage";
+import { useDispatch, useSelector } from "react-redux";
+import { IRootState } from "./Store";
+import { ServerConnectionContext } from "./ServerConnectionContext";
 
 
-type ChatBoxArgs = {
-    serverConnection: WebSocketConnection | null,
-    preexistingChatMessages: ChatMessageObj[]
-};
+export default function ChatBox() {
+    const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
+    const chatMessages = useSelector((state: IRootState) => (state.gameDataReducer.chatMessages));
+    const dispatch = useDispatch();
 
-
-export default function ChatBox({ serverConnection, preexistingChatMessages }: ChatBoxArgs) {
-    const [messages, setMessages] = useState<ChatMessageObj[]>(preexistingChatMessages);
-    const [newChatMessage, setNewChatMessage] = useState<string>("");
+    const [newChatMessageField, setNewChatMessageField] = useState<string>("");
 
     let lastMessageAuthor: string = "";
     let endOfMessages: HTMLDivElement | null;
 
     useEffect(() => {
-        setMessages(messages);
-    
-        serverConnection?.subscribeToServerPacket("newChatMessageSent", (packet) => {
+        const chatMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newChatMessageSent", (packet) => {
             packet = packet as NewChatMessageSentPacket;
-            setMessages([...messages, packet.message]);
+            dispatch(addChatMessage(packet.message));
         });
-        endOfMessages?.scrollIntoView({behavior: "instant"})
-    }, [messages]); // Don't need serverConnection or endOfMessages because they're constant per render
+        endOfMessages?.scrollIntoView({behavior: "instant"});
+
+        return () => {
+            serverConnection.unsubscribeFromServerPacket(chatMessageSubscription);
+        };
+    }, []);
 
     function sendChatMessage(event: FormEvent) {
         event.preventDefault();
 
         // Make sure we're not flooding it with blank messages if we spam enter
-        if (newChatMessage !== "") {
-            // Don't auto update the list, make sure server got it first and update then
-            setNewChatMessage("");
-            const sendNewChatMessagePacket: SendNewChatMessagePacket = {packetType: "sendNewChatMessage", content: newChatMessage};
+        if (newChatMessageField !== "") {
+            // Updating the UI is handled in the subscription since it's server authoritative
+            setNewChatMessageField("");
+            const sendNewChatMessagePacket: SendNewChatMessagePacket = {packetType: "sendNewChatMessage", content: newChatMessageField};
             serverConnection?.send(sendNewChatMessagePacket);
         }
     }
@@ -49,26 +51,22 @@ export default function ChatBox({ serverConnection, preexistingChatMessages }: C
     }
 
     return (
-        // TODO probably not 50vh, just for now though
-        <div className="flex border-solid border-black border-2 p-4 m-4 flex-col h-1/2 lg:w-1/4 lg:h-auto">
-            <p className="font-bold">Chat:</p>
-            <hr className="w-full"/>
-            <br/>
-            <div className="-space-y-0 overflow-y-auto break-words lg:h-screen">
-                {messages.map((message, index) => getChatMessageComponent(message, index))}
+        <div className="flex flex-col border-solid border-black border-2 rounded-lg p-3 m-3 h-[25dvh] w-auto lg:w-[25dvw] lg:h-auto lg:p-4 lg:m-4">
+            <p className="font-bold text-base lg:text-lg">Chat:</p>
+            <br className="mt-1 lg:mt-4"/>
+            <div className="-space-y-0 overflow-y-auto break-words text-sm lg:text-base lg:h-screen ">
+                {chatMessages.map((message, index) => getChatMessageComponent(message, index))}
                 <div ref={(element) => {endOfMessages = element;}}></div>
             </div>
-            <hr className="w-full"/>
-            <br/>
+            <br className="mt-1 lg:mt-4"/>
             <form onSubmit={sendChatMessage} className="flex">
                 <input
                     type="text"
-                    value={newChatMessage}
-                    onChange={e => setNewChatMessage(e.currentTarget.value)}
-                    // border-solid border-1 border-black
-                    className="flex-auto min-w-0"
+                    value={newChatMessageField}
+                    onChange={e => setNewChatMessageField(e.currentTarget.value)}
+                    className="flex-auto min-w-0 border-solid border-2 border-black rounded text-sm pl-1 pr-1 lg:text-base"
                 />
-                <button type="submit">Send</button>
+                <button type="submit" className="ml-2 bg-gray-600 px-2 text-white rounded">Send</button>
             </form>
         </div>
     );
