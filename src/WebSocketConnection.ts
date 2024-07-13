@@ -82,7 +82,7 @@ export default class WebSocketConnection {
 
     private onMessage(event: MessageEvent) {
         const packetData = JSON.parse(event.data) as ServerPacket;
-        console.log("Got packet: ", packetData);
+        console.log("WebSocketConnection.onMessage\nGot packet: ", packetData);
         // Handle if we haven't initialize an array of subscriptions for this type
         for (const subscription of (this.serverPacketSubscriptions[packetData["packetType"]] ?? []).filter(item => item.active === true)) {
             subscription.callback(packetData);

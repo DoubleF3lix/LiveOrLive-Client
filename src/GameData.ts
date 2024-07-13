@@ -37,7 +37,10 @@ export const gameDataSlice = createSlice({
     initialState: initialGameData,
     reducers: {
         addPlayer: (state, action: {payload: Player}) => {
-            state.players.push(action.payload);
+            // Check for duplicates, and don't add if they're already in there (just as a failsafe)
+            if (!state.players.some(player => player.username === action.payload.username)) {
+                state.players.push(action.payload);
+            }
         },
         setClientUsername: (state, action: {payload: string}) => {
             state.clientUsername = action.payload;

@@ -36,7 +36,8 @@ export type PlayerJoinedPacket = {
 };
 
 export type SetHostPacket = {
-    packetType: "setHost"
+    packetType: "setHost",
+    host: Player
 };
 
 export type GetGameInfoResponsePacket = {
