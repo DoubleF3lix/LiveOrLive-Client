@@ -51,7 +51,7 @@ export default function ChatBox() {
     }
 
     return (
-        <div className="flex flex-col border-solid border-black border-2 rounded-lg p-3 m-3 h-[25dvh] w-auto lg:w-[25dvw] lg:h-auto lg:p-4 lg:m-4">
+        <div className="flex flex-col border-solid border-black border-2 rounded-lg p-3 m-3 h-[25dvh] min-h-[25dvh] w-auto lg:w-[25dvw] lg:h-auto lg:p-4 lg:m-4">
             <p className="font-bold text-base lg:text-lg">Chat:</p>
             <br className="mt-1 lg:mt-4"/>
             <div className="-space-y-0 overflow-y-auto break-words text-sm lg:text-base lg:h-screen ">
@@ -59,6 +59,7 @@ export default function ChatBox() {
                 <div ref={(element) => {endOfMessages = element;}}></div>
             </div>
             <br className="mt-1 lg:mt-4"/>
+            <div className="flex-grow"></div>
             <form onSubmit={sendChatMessage} className="flex">
                 <input
                     type="text"

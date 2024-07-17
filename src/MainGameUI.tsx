@@ -46,13 +46,15 @@ export default function MainGameUI() {
                 <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end absolute right-0">Start Game</button>
             </div>
             <hr></hr>
-            <div className="flex flex-col lg:flex-row overflow-auto"> 
+            <div className="flex flex-col flex-grow lg:flex-row overflow-auto"> 
                 <div className="w-full overflow-auto grid auto-rows-min sm:grid-cols-2 xl:grid-cols-3">
                     {players.map((player) => <Player key={player.username} player={player}/>)}
                 </div>
 
+                <div className="flex-grow"></div>
                 <hr></hr>
 
+                {/* Make sure we're fully initialized (after getGameInfo comes in) */}
                 {chatMessages.length === 0 || chatMessages[0].timestamp !== 0 ? (
                     <ChatBox/>
                 ) : <></>}  

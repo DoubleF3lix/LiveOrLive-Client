@@ -13,14 +13,14 @@ type LobbyArgs = {
 export default function Lobby({ setIsLobby }: LobbyArgs) {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
     const dispatch = useDispatch();
-    
+
     const [usernameField, setUsernameField] = useState<string>("");
 
     function joinGame(event: FormEvent) {
         event.preventDefault();
 
         // Send the confirmation packet
-        const joinGamePacket: JoinGamePacket = {packetType: "joinGame", username: usernameField};
+        const joinGamePacket: JoinGamePacket = { packetType: "joinGame", username: usernameField };
         serverConnection.send(joinGamePacket);
 
         serverConnection.waitForServerPacket(["playerJoined", "playerJoinRejected"]).then((packet) => {
@@ -42,12 +42,12 @@ export default function Lobby({ setIsLobby }: LobbyArgs) {
             <form onSubmit={joinGame}>
                 <p>Enter Your Username:</p>
                 <input
-                        type="text"
-                        value={usernameField}
-                        onChange={e => setUsernameField(e.currentTarget.value)}
-                        className="border-solid border-gray-600 border-2 rounded-lg mx-0.5 mb-1"
+                    type="text"
+                    value={usernameField}
+                    onChange={e => setUsernameField(e.currentTarget.value)}
+                    className="border-solid border-gray-600 border-2 rounded-lg mx-0.5 mb-1"
                 />
-                <br/>
+                <br />
                 <button type="submit" className="bg-gray-600 p-1 mx-0.5 text-white rounded h-8">Join Game</button>
             </form>
         </>
