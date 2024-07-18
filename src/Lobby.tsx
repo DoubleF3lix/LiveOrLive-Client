@@ -40,7 +40,7 @@ export default function Lobby({ setIsLobby }: LobbyArgs) {
     return (
         <>
             <form onSubmit={joinGame}>
-                <p>Enter Your Username:</p>
+                <p>Enter Your Username (20 characters max):</p>
                 <input
                     type="text"
                     value={usernameField}
