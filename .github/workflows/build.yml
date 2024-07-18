@@ -4,8 +4,8 @@ on:
     branches:
       - master
 jobs:
-  build:
-    name: Build Client
+  deploy:
+    name: Deploy Client
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,29 +20,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Package
-        run: tar -czvf liveorlive-client-prod.tar --exclude=.git --exclude=.github ./dist
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          name: github-pages
-          path: ./liveorlive-client-prod.tar
-  
-  deploy:
-    name: Deploy Client
-    needs: build
-    
-    permissions:
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-  
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
