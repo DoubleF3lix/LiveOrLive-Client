@@ -14,7 +14,7 @@ export default function Player({ player }: PlayerArgs) {
             <br/>
             <p>Items:</p>
             <ul className="list-disc list-inside">
-                {player.items.map((item, index) => <li key={index}>{item}</li>)}
+                {player.items.map((item, index) => <li key={index + "_playerItem"}>{item}</li>)}
             </ul>
 
             <div className="flex flex-row mt-auto pt-2">

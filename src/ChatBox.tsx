@@ -22,6 +22,7 @@ export default function ChatBox() {
         const chatMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newChatMessageSent", (packet) => {
             packet = packet as NewChatMessageSentPacket;
             dispatch(addChatMessage(packet.message));
+            endOfMessages?.scrollIntoView({behavior: "instant"});
         });
         endOfMessages?.scrollIntoView({behavior: "instant"});
 

@@ -1,5 +1,5 @@
 # Live or Live
-A crummy clone of Buckshot Roulette, but multiplayer
+A crummy clone of Buckshot Roulette, but multiplayer (play it [here](https://doublef3lix.github.io/LiveOrLive-Client))
 
 
 TODO:

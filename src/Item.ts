@@ -1,3 +1,3 @@
-type Item = "doubleDamage" | "checkBullet" | "skipPlayerTurn" | "shootAir" | "rerollCounts" | "addLife";
+type Item = "skipPlayerTurn" | "doubleDamage" | "checkBullet" | "rebalancer" | "shootAir" | "stealItem" | "addLife";
 
 export default Item;
