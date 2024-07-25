@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
 import ChatBox from "./ChatBox";
 import WebSocketConnection from "./WebSocketConnection";
-import { GetGameInfoPacket, GetGameInfoResponsePacket, PlayerJoinedPacket, StartGamePacket } from "./Packet";
-import { addPlayer, populateFromPacket } from "./GameData";
+import { GameDataRequestPacket, GameDataSyncPacket, PlayerJoinedPacket, StartGamePacket } from "./Packet";
+import { addPlayer, populateGameDataFromPacket } from "./GameData";
 import { useDispatch, useSelector } from "react-redux";
 import { IRootState } from "./Store";
 import { ServerConnectionContext } from "./ServerConnectionContext";
@@ -14,7 +14,6 @@ export default function MainGameUI() {
     const players = useSelector((state: IRootState) => state.gameDataReducer.players);
     const clientUsername = useSelector((state: IRootState) => state.gameDataReducer.clientUsername);
     const currentHost = useSelector((state: IRootState) => state.gameDataReducer.currentHost);
-    const chatMessages = useSelector((state: IRootState) => state.gameDataReducer.chatMessages);
     const turnCount = useSelector((state: IRootState) => state.gameDataReducer.turnCount);
     const dispatch = useDispatch();
 
@@ -22,12 +21,10 @@ export default function MainGameUI() {
     useEffect(() => {
         // Populate the redux store with existing game info 
         // (the gameInfoResponse already contains this player, since playerJoined is received in order to make it into this component)
-        const getGameInfoPacket: GetGameInfoPacket = {packetType: "getGameInfo"};
-        serverConnection.waitForServerPacket("getGameInfoResponse").then((packet => {
-            packet = packet as GetGameInfoResponsePacket;
-            dispatch(populateFromPacket(packet));
-            
-            // TODO if turnCount == -1 and gameData.currentHost = gameData.clientUsername, show start game button
+        const getGameInfoPacket: GameDataRequestPacket = {packetType: "gameDataRequest"};
+        serverConnection.waitForServerPacket("gameDataSync").then((packet => {
+            packet = packet as GameDataSyncPacket;
+            dispatch(populateGameDataFromPacket(packet));
         }));
         serverConnection.send(getGameInfoPacket);
 
@@ -65,10 +62,7 @@ export default function MainGameUI() {
                 <div className="flex-grow"></div>
                 <hr></hr>
 
-                {/* Make sure we're fully initialized (after getGameInfo comes in) */}
-                {chatMessages.length === 0 || chatMessages[0].timestamp !== 0 ? (
-                    <ChatBox/>
-                ) : <></>}  
+                <ChatBox/>
             </div>
             <hr></hr>
             {/* TODO make <Footer/> component */}

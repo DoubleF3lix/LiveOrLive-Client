@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Item from "./Item";
-import { GetGameInfoResponsePacket } from "./Packet";
+import { GameDataSyncPacket } from "./Packet";
 
 // Only represents players who are in the game, and only used for UI purposes
 export type Player = {
@@ -20,17 +20,17 @@ type GameDataType = {
     players: Player[];
     clientUsername: string; 
     currentHost: string;
-    chatMessages: ChatMessage[];
     turnCount: number;
-}
+    gameID: string;
+};
 
 const initialGameData: GameDataType = {
     players: [],
     clientUsername: "",
     currentHost: "",
-    chatMessages: [{author: {username: "", items: [], lives: 0}, message: "", timestamp: 0}],
-    turnCount: -1
-}
+    turnCount: -1,
+    gameID: ""
+};
 
 export const gameDataSlice = createSlice({
     name: "gameData",
@@ -48,20 +48,17 @@ export const gameDataSlice = createSlice({
         setCurrentHost: (state, action: {payload: string}) => {
             state.currentHost = action.payload;
         },
-        addChatMessage: (state, action: {payload: ChatMessage}) => {
-            state.chatMessages.push(action.payload);
-        },
-        incrementTurnCount: (state) => {
-            state.turnCount++;
-        },
-        populateFromPacket: (state, action: {payload: GetGameInfoResponsePacket}) => {
-            state.players = action.payload.players;
-            state.currentHost = action.payload.currentHost?.username;
-            state.chatMessages = action.payload.chatMessages;
-            state.turnCount = action.payload.turnCount;
+        // incrementTurnCount: (state) => {
+        //     state.turnCount++;
+        // },
+        populateGameDataFromPacket: (state, action: {payload: GameDataSyncPacket}) => {
+            state.players = action.payload.gameData.players;
+            state.currentHost = action.payload.gameData.host;
+            state.turnCount = action.payload.gameData.turnCount;
+            state.gameID = action.payload.gameData.gameID;
         }
     }
 });
 
-export const {addPlayer, setClientUsername, setCurrentHost, addChatMessage, incrementTurnCount, populateFromPacket} = gameDataSlice.actions;
+export const {addPlayer, setClientUsername, setCurrentHost, populateGameDataFromPacket} = gameDataSlice.actions;
 export default gameDataSlice.reducer;

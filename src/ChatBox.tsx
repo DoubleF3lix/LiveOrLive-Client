@@ -1,16 +1,17 @@
 import { FormEvent, useContext, useEffect, useState } from "react";
 import WebSocketConnection, { WebSocketServerPacketSubscription } from "./WebSocketConnection";
-import { NewChatMessageSentPacket, SendNewChatMessagePacket } from "./Packet";
-import { ChatMessage as ChatMessageObj, addChatMessage } from "./GameData";
+import { ChatMessagesSyncPacket, GetChatMessagesPacket, NewChatMessageSentPacket, SendNewChatMessagePacket } from "./Packet";
+import { ChatMessage as ChatMessageObj } from "./GameData";
 import ChatMessage from "./ChatMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { IRootState } from "./Store";
 import { ServerConnectionContext } from "./ServerConnectionContext";
+import { addChatMessage, populateChatFromPacket } from "./ChatSlice";
 
 
 export default function ChatBox() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
-    const chatMessages = useSelector((state: IRootState) => (state.gameDataReducer.chatMessages));
+    const chatMessages = useSelector((state: IRootState) => (state.chatReducer.chatMessages));
     const dispatch = useDispatch();
 
     const [newChatMessageField, setNewChatMessageField] = useState<string>("");
@@ -19,10 +20,17 @@ export default function ChatBox() {
     let endOfMessages: HTMLDivElement | null;
 
     useEffect(() => {
+        const getChatMessagesPacket: GetChatMessagesPacket = {packetType: "getChatMessages"};
+        serverConnection.waitForServerPacket("chatMessagesSync").then((packet => {
+            packet = packet as ChatMessagesSyncPacket;
+            dispatch(populateChatFromPacket(packet));
+        }));
+        serverConnection.send(getChatMessagesPacket);
+
         const chatMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newChatMessageSent", (packet) => {
             packet = packet as NewChatMessageSentPacket;
             dispatch(addChatMessage(packet.message));
-            endOfMessages?.scrollIntoView({behavior: "instant"});
+            endOfMessages?.scrollIntoView({behavior: "instant"}); // TODO this doesn't work, but it should
         });
         endOfMessages?.scrollIntoView({behavior: "instant"});
 
@@ -35,11 +43,11 @@ export default function ChatBox() {
         event.preventDefault();
 
         // Make sure we're not flooding it with blank messages if we spam enter
-        if (newChatMessageField !== "") {
+        if (newChatMessageField.trim() !== "") {
             // Updating the UI is handled in the subscription since it's server authoritative
             setNewChatMessageField("");
             const sendNewChatMessagePacket: SendNewChatMessagePacket = {packetType: "sendNewChatMessage", content: newChatMessageField};
-            serverConnection?.send(sendNewChatMessagePacket);
+            serverConnection.send(sendNewChatMessagePacket);
         }
     }
 

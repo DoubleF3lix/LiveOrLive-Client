@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import gameDataReducer from "./GameData";
+import chatReducer from "./ChatSlice";
 
 const store = configureStore({
     reducer: {
         gameDataReducer,
+        chatReducer
     }
 });
 

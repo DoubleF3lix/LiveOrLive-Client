@@ -3,7 +3,10 @@ A crummy clone of Buckshot Roulette, but multiplayer (play it [here](https://dou
 
 
 TODO:
-Chat length limits, message deletion/moderation
+Chat length limits
+Message deletion/moderation
+Kicking
+Minimum username length (3)
 
 
 Wishlist:

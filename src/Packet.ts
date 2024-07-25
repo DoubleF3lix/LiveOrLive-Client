@@ -1,127 +1,163 @@
-import Item from "./Item";
-import { Player, ChatMessage } from "./GameData";
+import Item from "./Item"
+import { Player, ChatMessage } from "./GameData"
+import AmmoType from "./AmmoType"
 
 
 // Server packets
-export type ClientReconnectAttemptResponsePacket = {
-    packetType: "clientReconnectAttemptResponse";
-    validReconnect: boolean;
-}
-
-export type UpdatePlayerDataPacket = {
-	packetType: "updatePlayerData", 
-    player: Player, 
-    items: Item[], 
-    lives: number
+export type GameDataSyncPacket = {
+    packetType: "gameDataSync",
+    gameData: {
+        players: Player[],
+        host: string,
+        turnCount: number,
+        gameID: string
+    }
 };
 
-export type ShowAlertPacket = {
-	packetType: "showAlert", 
-    content: string
-};
-
-export type NewChatMessageSentPacket = {
-	packetType: "newChatMessageSent", 
-    message: ChatMessage
+export type PlayerJoinedPacket = {
+    packetType: "playerJoined",
+    player: Player
 };
 
 export type PlayerJoinRejectedPacket = {
     packetType: "playerJoinRejected",
     reason: string
-}
+};
 
-export type PlayerJoinedPacket = {
-	packetType: "playerJoined", 
-    player: Player
+export type HostSetPacket = {
+    packetType: "hostSet",
+    username: string
+};
+
+export type GameStartedPacket = {
+    packetType: "gameStarted",
+};
+
+export type TurnStartedPacket = {
+    packetType: "turnStarted",
+    username: string
+};
+
+export type TurnEndedPacket = {
+    packetType: "turnEnded",
+    username: string
+};
+
+export type ActionFailedPacket = {
+    packetType: "actionFailed",
+    reason: string
+};
+
+export type UseChamberCheckItemResultPacket = {
+    packetType: "useChamberCheckItemResult",
+    ammoType: AmmoType
+};
+
+export type NewChatMessageSentPacket = {
+    packetType: "newChatMessageSent",
+    message: ChatMessage
+};
+
+export type ChatMessagesSyncPacket = {
+    packetType: "chatMessagesSync",
+    messages: ChatMessage[]
+};
+
+export type ShowAlertPacket = {
+    packetType: "showAlert",
+    content: string
+};
+
+// Client packets
+export type JoinGamePacket = {
+    packetType: "joinGame",
+    username: string
 };
 
 export type SetHostPacket = {
     packetType: "setHost",
-    host: Player
-};
-
-export type GetGameInfoResponsePacket = {
-	packetType: "getGameInfoResponse", 
-    currentHost: Player, 
-    players: Player[], 
-    chatMessages: ChatMessage[],
-    turnCount: number
-};
-
-export type GunFiredPacket = {
-	packetType: "gunFired", 
-    target: Player
-};
-
-export type ItemUsedPacket = {
-	packetType: "itemUsed", 
-    itemID: Item, 
-    target?: Player
-};
-
-export type GameStartedPacket = {
-    packetType: "gameStarted"
-};
-
-
-// Client packets
-export type ClientReconnectAttemptPacket = {
-    packetType: "clientReconnectAttempt";
-    username: string;
-    gameID: string;
-}
-
-export type SendNewChatMessagePacket = {
-	packetType: "sendNewChatMessage", 
-    content: string
-};
-
-export type JoinGamePacket = {
-    packetType: "joinGame", 
     username: string
 };
 
-export type GetGameInfoPacket = {
-    packetType: "getGameInfo"
-};
-
-export type FireGunPacket = {
-    packetType: "fireGun", 
-    target: Player 
-};
-
-export type UseItemPacket = {
-    packetType: "useItem", 
-    item: Item, 
-    target?: Player
+export type GameDataRequestPacket = {
+    packetType: "gameDataRequest",
 };
 
 export type StartGamePacket = {
-    packetType: "startGame"
+    packetType: "startGame",
+};
+
+export type ShootPlayerPacket = {
+    packetType: "shootPlayer",
+    target: string
+};
+
+export type UseSkipItemPacket = {
+    packetType: "useSkipItem",
+    target: string
+};
+
+export type UseDoubleDamageItemPacket = {
+    packetType: "useDoubleDamageItem",
+};
+
+export type UseChamberCheckItemPacket = {
+    packetType: "useChamberCheckItem",
+};
+
+export type UseRebalancerItemPacket = {
+    packetType: "useRebalancerItem",
+    ammoType: AmmoType
+};
+
+export type UseQuickshotItemPacket = {
+    packetType: "useQuickshotItem",
+};
+
+export type UseStealItemPacket = {
+    packetType: "useStealItem",
+    target: string
+    item: Item
+};
+
+export type SendNewChatMessagePacket = {
+    packetType: "sendNewChatMessage",
+    content: string
+};
+
+export type GetChatMessagesPacket = {
+    packetType: "getChatMessages"
 };
 
 export type ServerPacket = (
-    | ClientReconnectAttemptResponsePacket
-    | UpdatePlayerDataPacket 
-    | ShowAlertPacket 
-    | NewChatMessageSentPacket 
+    | GameDataSyncPacket
+    | PlayerJoinedPacket
     | PlayerJoinRejectedPacket
-    | PlayerJoinedPacket 
-    | SetHostPacket 
-    | GetGameInfoResponsePacket
-    | GunFiredPacket
-    | ItemUsedPacket
+    | HostSetPacket
     | GameStartedPacket
+    | TurnStartedPacket
+    | TurnEndedPacket
+    | ActionFailedPacket
+    | UseChamberCheckItemResultPacket
+    | NewChatMessageSentPacket
+    | ChatMessagesSyncPacket
+    | ShowAlertPacket
 );
 
 export type ClientPacket = (
-    | ClientReconnectAttemptPacket
-    | SendNewChatMessagePacket
     | JoinGamePacket
-    | GetGameInfoPacket
-    | FireGunPacket
-    | UseItemPacket
+    | SetHostPacket
+    | GameDataRequestPacket
     | StartGamePacket
+    | ShootPlayerPacket
+    | UseSkipItemPacket
+    | UseDoubleDamageItemPacket
+    | UseChamberCheckItemPacket
+    | UseRebalancerItemPacket
+    | UseQuickshotItemPacket
+    | UseStealItemPacket
+    | SendNewChatMessagePacket
+    | GetChatMessagesPacket
 );
 
 export type Packet = ServerPacket | ClientPacket;
