@@ -1,12 +1,12 @@
 import { FormEvent, useContext, useEffect, useState } from "react";
 import WebSocketConnection, { WebSocketServerPacketSubscription } from "./WebSocketConnection";
-import { ChatMessagesSyncPacket, GetChatMessagesPacket, NewChatMessageSentPacket, SendNewChatMessagePacket } from "./Packet";
+import { NewChatMessageSentPacket, SendNewChatMessagePacket } from "./Packet";
 import { ChatMessage as ChatMessageObj } from "./GameData";
 import ChatMessage from "./ChatMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { IRootState } from "./Store";
 import { ServerConnectionContext } from "./ServerConnectionContext";
-import { addChatMessage, populateChatFromPacket } from "./ChatSlice";
+import { addChatMessage, } from "./ChatSlice";
 
 
 export default function ChatBox() {
@@ -20,13 +20,6 @@ export default function ChatBox() {
     let endOfMessages: HTMLDivElement | null;
 
     useEffect(() => {
-        const getChatMessagesPacket: GetChatMessagesPacket = {packetType: "getChatMessages"};
-        serverConnection.waitForServerPacket("chatMessagesSync").then((packet => {
-            packet = packet as ChatMessagesSyncPacket;
-            dispatch(populateChatFromPacket(packet));
-        }));
-        serverConnection.send(getChatMessagesPacket);
-
         const chatMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newChatMessageSent", (packet) => {
             packet = packet as NewChatMessageSentPacket;
             dispatch(addChatMessage(packet.message));

@@ -125,8 +125,8 @@ export type SendNewChatMessagePacket = {
     content: string
 };
 
-export type GetChatMessagesPacket = {
-    packetType: "getChatMessages"
+export type ChatMessagesRequest = {
+    packetType: "chatMessagesRequest"
 };
 
 export type ServerPacket = (
@@ -157,7 +157,7 @@ export type ClientPacket = (
     | UseQuickshotItemPacket
     | UseStealItemPacket
     | SendNewChatMessagePacket
-    | GetChatMessagesPacket
+    | ChatMessagesRequest
 );
 
 export type Packet = ServerPacket | ClientPacket;

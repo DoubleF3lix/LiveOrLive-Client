@@ -6,13 +6,13 @@ type ChatSliceType = {
     chatMessages: ChatMessage[];
 };
 
-const initialChatSliceeState: ChatSliceType = {
+const initialChatSliceState: ChatSliceType = {
     chatMessages: [{author: {username: "", items: [], lives: 0}, message: "", timestamp: 0}]
 };
 
 export const chatSlice = createSlice({
     name: "gameData",
-    initialState: initialChatSliceeState,
+    initialState: initialChatSliceState,
     reducers: {
         addChatMessage: (state, action: {payload: ChatMessage}) => {
             state.chatMessages.push(action.payload);

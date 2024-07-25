@@ -1,12 +1,13 @@
 import { useContext, useEffect } from "react";
 import ChatBox from "./ChatBox";
 import WebSocketConnection from "./WebSocketConnection";
-import { GameDataRequestPacket, GameDataSyncPacket, PlayerJoinedPacket, StartGamePacket } from "./Packet";
+import { ChatMessagesRequest, ChatMessagesSyncPacket, GameDataRequestPacket, GameDataSyncPacket, PlayerJoinedPacket, StartGamePacket } from "./Packet";
 import { addPlayer, populateGameDataFromPacket } from "./GameData";
 import { useDispatch, useSelector } from "react-redux";
 import { IRootState } from "./Store";
 import { ServerConnectionContext } from "./ServerConnectionContext";
 import Player from "./Player";
+import { populateChatFromPacket } from "./ChatSlice";
 
 
 export default function MainGameUI() {
@@ -15,6 +16,7 @@ export default function MainGameUI() {
     const clientUsername = useSelector((state: IRootState) => state.gameDataReducer.clientUsername);
     const currentHost = useSelector((state: IRootState) => state.gameDataReducer.currentHost);
     const turnCount = useSelector((state: IRootState) => state.gameDataReducer.turnCount);
+    const chatMessages = useSelector((state: IRootState) => (state.chatReducer.chatMessages));
     const dispatch = useDispatch();
 
     // Runs on successful connection
@@ -27,6 +29,13 @@ export default function MainGameUI() {
             dispatch(populateGameDataFromPacket(packet));
         }));
         serverConnection.send(getGameInfoPacket);
+
+        const getChatMessagesPacket: ChatMessagesRequest = {packetType: "chatMessagesRequest"};
+        serverConnection.waitForServerPacket("chatMessagesSync").then((packet => {
+            packet = packet as ChatMessagesSyncPacket;
+            dispatch(populateChatFromPacket(packet));
+        }));
+        serverConnection.send(getChatMessagesPacket);
 
         // If any new players connect mid-game (doesn't catch us)
         const playerJoinedSubscription = serverConnection.subscribeToServerPacket("playerJoined", (packet) => {
@@ -62,7 +71,10 @@ export default function MainGameUI() {
                 <div className="flex-grow"></div>
                 <hr></hr>
 
-                <ChatBox/>
+                {/* Make sure we're fully initialized (after getGameInfo comes in) */}
+                {chatMessages.length === 0 || chatMessages[0].timestamp !== 0 ? (
+                    <ChatBox/>
+                ) : <></>}  
             </div>
             <hr></hr>
             {/* TODO make <Footer/> component */}
