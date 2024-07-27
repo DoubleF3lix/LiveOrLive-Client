@@ -8,19 +8,16 @@ import Player from "~/components/Player";
 
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState } from "~/store/Store";
-import { addPlayer, populateGameDataFromPacket } from "~/store/GameData";
+import { addPlayer, populateGameDataFromPacket, setCurrentHost } from "~/store/GameData";
 import { populateChatFromPacket } from "~/store/ChatSlice";
 
-import { ChatMessagesRequest, ChatMessagesSyncPacket, GameDataRequestPacket, GameDataSyncPacket, PlayerJoinedPacket, StartGamePacket } from "~/types/PacketType";
-import { selectCurrentPlayer, selectHost } from "~/store/Selectors";
+import { ChatMessagesRequest, ChatMessagesSyncPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, PlayerJoinedPacket } from "~/types/PacketType";
+import MainGameHeader from "./MainGameHeader";
 
 
 export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
     const players = useSelector((state: IRootState) => state.gameDataReducer.players);
-    const currentPlayer = useSelector(selectCurrentPlayer);
-    const currentHost = useSelector(selectHost);
-    const turnCount = useSelector((state: IRootState) => state.gameDataReducer.turnCount);
     const chatMessages = useSelector((state: IRootState) => (state.chatReducer.chatMessages));
     const dispatch = useDispatch();
 
@@ -48,25 +45,20 @@ export default function MainGameUI() {
             dispatch(addPlayer(packet.player)); // De-duplication is handled in here
         });
 
+        const hostSetSubscription = serverConnection.subscribeToServerPacket("hostSet", (packet) => {
+            packet = packet as HostSetPacket;
+            dispatch(setCurrentHost(packet.username));
+        });
+
         return () => {
             serverConnection.unsubscribeFromServerPacket(playerJoinedSubscription);
+            serverConnection.unsubscribeFromServerPacket(hostSetSubscription);
         };
     }, []);
 
-    function startGame() {
-        const startGamePacket: StartGamePacket = {packetType: "startGame"};
-        serverConnection.send(startGamePacket);
-    }
-
     return (
         <div className="flex flex-col h-dvh">
-            {/* TODO make <Header/> component */}
-            <div className="flex flex-row justify-center m-1 relative">
-                <p className="text-center font-bold text-base lg:text-lg pt-3">EPIC GAME - CODE - Player 1's Turn</p>
-                {turnCount != -1 || currentPlayer !== currentHost ? <></> : 
-                    <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end absolute right-0" onClick={startGame}>Start Game</button>
-                }
-            </div>
+            <MainGameHeader/>
             <hr></hr>
             <div className="flex flex-col flex-grow lg:flex-row overflow-auto"> 
                 <div className="w-full overflow-auto grid auto-rows-min sm:grid-cols-2 xl:grid-cols-3">
