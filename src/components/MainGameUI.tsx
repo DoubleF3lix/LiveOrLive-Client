@@ -13,6 +13,7 @@ import { populateChatFromPacket } from "~/store/ChatSlice";
 
 import { ChatMessagesRequest, ChatMessagesSyncPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, PlayerJoinedPacket } from "~/types/PacketType";
 import MainGameHeader from "./MainGameHeader";
+import MainGameFooter from "./MainGameFooter";
 
 
 export default function MainGameUI() {
@@ -23,22 +24,7 @@ export default function MainGameUI() {
 
     // Runs on successful connection
     useEffect(() => {
-        // Populate the redux store with existing game info 
-        // (the gameInfoResponse already contains this player, since playerJoined is received in order to make it into this component)
-        const getGameInfoPacket: GameDataRequestPacket = {packetType: "gameDataRequest"};
-        serverConnection.waitForServerPacket("gameDataSync").then((packet => {
-            packet = packet as GameDataSyncPacket;
-            dispatch(populateGameDataFromPacket(packet));
-        }));
-        serverConnection.send(getGameInfoPacket);
-
-        const getChatMessagesPacket: ChatMessagesRequest = {packetType: "chatMessagesRequest"};
-        serverConnection.waitForServerPacket("chatMessagesSync").then((packet => {
-            packet = packet as ChatMessagesSyncPacket;
-            dispatch(populateChatFromPacket(packet));
-        }));
-        serverConnection.send(getChatMessagesPacket);
-
+        // These are their own packets for now just to avoid an extra sync
         // If any new players connect mid-game (doesn't catch us)
         const playerJoinedSubscription = serverConnection.subscribeToServerPacket("playerJoined", (packet) => {
             packet = packet as PlayerJoinedPacket;
@@ -50,7 +36,29 @@ export default function MainGameUI() {
             dispatch(setCurrentHost(packet.username));
         });
 
+        // These are subscriptions cause we want to be up to date just in case anything else gets sent, but they're also triggered by the below requests
+        // Responsible for existing info (players, host, etc.)
+        const gameDataSyncSubscription = serverConnection.subscribeToServerPacket("gameDataSync", (packet) => {
+            packet = packet as GameDataSyncPacket;
+            dispatch(populateGameDataFromPacket(packet));
+        });    
+
+        // This should only be called once per client (on page load) in theory, but technically the server can send this whenever it wants 
+        // NewChatMessageSent is handled in the ChatBox component to avoid all message history when a single message is sent
+        const chatMessagesSyncSubscription = serverConnection.subscribeToServerPacket("chatMessagesSync", (packet) => {
+            packet = packet as ChatMessagesSyncPacket;
+            dispatch(populateChatFromPacket(packet));
+        });
+
+        // Populate the UI initially by making requests (handled by the above)
+        const getGameInfoPacket: GameDataRequestPacket = {packetType: "gameDataRequest"};
+        const getChatMessagesPacket: ChatMessagesRequest = {packetType: "chatMessagesRequest"};
+        serverConnection.send(getGameInfoPacket);
+        serverConnection.send(getChatMessagesPacket);
+
         return () => {
+            serverConnection.unsubscribeFromServerPacket(gameDataSyncSubscription);
+            serverConnection.unsubscribeFromServerPacket(chatMessagesSyncSubscription);
             serverConnection.unsubscribeFromServerPacket(playerJoinedSubscription);
             serverConnection.unsubscribeFromServerPacket(hostSetSubscription);
         };
@@ -74,20 +82,7 @@ export default function MainGameUI() {
                 ) : <></>}  
             </div>
             <hr></hr>
-            {/* TODO make <Footer/> component */}
-            <div className="flex flex-row m-1">
-                <label htmlFor="playersList" className="align-middle">Select Player:</label>
-                <select name="playersList" id="playerSelect" className="ml-2">
-                    {players.map((player) => player.lives > 0 ? <option key={player.username + "_playerSelect"} value={player.username}>{player.username}</option> : <></>)}
-                </select>
-                {/* TODO ITEMS fetchCurrentPlayerData function */}
-                <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end">Shoot Player</button>
-                <label htmlFor="itemsList" className="align-middle">Select Item:</label>
-                <select name="itemsList" id="itemSelect" className="ml-2">
-                    {players.map((player) => player.lives > 0 ? <option key={player.username + "_playerSelect"} value={player.username}>{player.username}</option> : <></>)}
-                </select>
-                <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end">Kick Player</button>
-            </div>
+            <MainGameFooter/>
         </div>
     );
 }
