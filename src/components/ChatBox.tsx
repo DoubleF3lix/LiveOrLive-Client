@@ -1,4 +1,4 @@
-import { FormEvent, useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import WebSocketConnection, { WebSocketServerPacketSubscription } from "~/lib/WebSocketConnection";
@@ -7,9 +7,9 @@ import ChatMessage from "~/components/ChatMessage";
 
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState } from "~/store/Store";
-import { ChatMessage as ChatMessageObj } from "~/store/GameData";
 import { addChatMessage } from "~/store/ChatSlice";
 
+import { ChatMessageType } from "~/types/ChatMessageType";
 import { NewChatMessageSentPacket, SendNewChatMessagePacket } from "~/types/PacketType";
 
 
@@ -21,21 +21,23 @@ export default function ChatBox() {
     const [newChatMessageField, setNewChatMessageField] = useState<string>("");
 
     let lastMessageAuthor: string = "";
-    let endOfMessages: HTMLDivElement | null;
+    const endOfMessages = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const chatMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newChatMessageSent", (packet) => {
             packet = packet as NewChatMessageSentPacket;
             dispatch(addChatMessage(packet.message));
-            console.log(endOfMessages)
-            endOfMessages?.scrollIntoView({behavior: "instant"}); // TODO this doesn't work, but it should
         });
-        endOfMessages?.scrollIntoView({behavior: "instant"});
 
         return () => {
             serverConnection.unsubscribeFromServerPacket(chatMessageSubscription);
         };
     }, []);
+
+    // Always move to the bottom
+    useEffect(() => {
+        endOfMessages.current?.scrollIntoView({behavior: "instant"});
+    }, [chatMessages]);
 
     function sendChatMessage(event: FormEvent) {
         event.preventDefault();
@@ -49,7 +51,7 @@ export default function ChatBox() {
         }
     }
 
-    function getChatMessageComponent(message: ChatMessageObj, index: number): JSX.Element {
+    function getChatMessageComponent(message: ChatMessageType, index: number): JSX.Element {
         const component = <ChatMessage key={index} message={message} isNewAuthor={message.author.username !== lastMessageAuthor} includeLineBefore={index !== 0}/>;
         if (message.author.username !== lastMessageAuthor) {
             lastMessageAuthor = message.author.username;
@@ -63,8 +65,8 @@ export default function ChatBox() {
             <br className="mt-1 lg:mt-4"/>
             <div className="-space-y-0 overflow-y-auto break-words text-sm lg:text-base lg:h-screen ">
                 {chatMessages.map((message, index) => getChatMessageComponent(message, index))}
-                <div ref={(element) => {endOfMessages = element;}}></div>
-            </div>
+                <div ref={endOfMessages} id="EOMMarker"></div>
+            </div>  
             <br className="mt-1 lg:mt-4"/>
             <div className="flex-grow"></div>
             <form onSubmit={sendChatMessage} className="flex">
