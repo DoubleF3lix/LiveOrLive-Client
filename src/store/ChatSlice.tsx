@@ -10,7 +10,7 @@ type ChatSliceType = {
 
 
 const initialChatSliceState: ChatSliceType = {
-    chatMessages: [{author: {username: "", items: [], lives: 0}, message: "", timestamp: 0}]
+    chatMessages: [{author: {username: "", inGame: false, isSpectator: false, lives: -1, items: [], isSkipped: false, joinTime: 0}, message: "", timestamp: 0}]
 };
 
 export const chatSlice = createSlice({
