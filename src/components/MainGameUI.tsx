@@ -1,20 +1,25 @@
 import { useContext, useEffect } from "react";
-import ChatBox from "./ChatBox";
-import WebSocketConnection from "./WebSocketConnection";
-import { ChatMessagesRequest, ChatMessagesSyncPacket, GameDataRequestPacket, GameDataSyncPacket, PlayerJoinedPacket, StartGamePacket } from "./Packet";
-import { addPlayer, populateGameDataFromPacket } from "./GameData";
 import { useDispatch, useSelector } from "react-redux";
-import { IRootState } from "./Store";
-import { ServerConnectionContext } from "./ServerConnectionContext";
-import Player from "./Player";
-import { populateChatFromPacket } from "./ChatSlice";
+
+import WebSocketConnection from "~/lib/WebSocketConnection";
+
+import ChatBox from "~/components/ChatBox";
+import Player from "~/components/Player";
+
+import { ServerConnectionContext } from "~/store/ServerConnectionContext";
+import { IRootState } from "~/store/Store";
+import { addPlayer, populateGameDataFromPacket } from "~/store/GameData";
+import { populateChatFromPacket } from "~/store/ChatSlice";
+
+import { ChatMessagesRequest, ChatMessagesSyncPacket, GameDataRequestPacket, GameDataSyncPacket, PlayerJoinedPacket, StartGamePacket } from "~/types/PacketType";
+import { selectCurrentPlayer, selectHost } from "~/store/Selectors";
 
 
 export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
     const players = useSelector((state: IRootState) => state.gameDataReducer.players);
-    const clientUsername = useSelector((state: IRootState) => state.gameDataReducer.clientUsername);
-    const currentHost = useSelector((state: IRootState) => state.gameDataReducer.currentHost);
+    const currentPlayer = useSelector(selectCurrentPlayer);
+    const currentHost = useSelector(selectHost);
     const turnCount = useSelector((state: IRootState) => state.gameDataReducer.turnCount);
     const chatMessages = useSelector((state: IRootState) => (state.chatReducer.chatMessages));
     const dispatch = useDispatch();
@@ -58,7 +63,7 @@ export default function MainGameUI() {
             {/* TODO make <Header/> component */}
             <div className="flex flex-row justify-center m-1 relative">
                 <p className="text-center font-bold text-base lg:text-lg pt-3">EPIC GAME - CODE - Player 1's Turn</p>
-                {turnCount != -1 || clientUsername != currentHost ? <></> : 
+                {turnCount != -1 || currentPlayer !== currentHost ? <></> : 
                     <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end absolute right-0" onClick={startGame}>Start Game</button>
                 }
             </div>
@@ -83,7 +88,7 @@ export default function MainGameUI() {
                 <select name="playersList" id="playerSelect" className="ml-2">
                     {players.map((player) => player.lives > 0 ? <option key={player.username + "_playerSelect"} value={player.username}>{player.username}</option> : <></>)}
                 </select>
-                {/* TODO ITEMS */}
+                {/* TODO ITEMS fetchCurrentPlayerData function */}
                 <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end">Shoot Player</button>
                 <label htmlFor="itemsList" className="align-middle">Select Item:</label>
                 <select name="itemsList" id="itemSelect" className="ml-2">

@@ -1,12 +1,16 @@
 import { FormEvent, useContext, useEffect, useState } from "react";
-import WebSocketConnection, { WebSocketServerPacketSubscription } from "./WebSocketConnection";
-import { NewChatMessageSentPacket, SendNewChatMessagePacket } from "./Packet";
-import { ChatMessage as ChatMessageObj } from "./GameData";
-import ChatMessage from "./ChatMessage";
 import { useDispatch, useSelector } from "react-redux";
-import { IRootState } from "./Store";
-import { ServerConnectionContext } from "./ServerConnectionContext";
-import { addChatMessage, } from "./ChatSlice";
+
+import WebSocketConnection, { WebSocketServerPacketSubscription } from "~/lib/WebSocketConnection";
+
+import ChatMessage from "~/components/ChatMessage";
+
+import { ServerConnectionContext } from "~/store/ServerConnectionContext";
+import { IRootState } from "~/store/Store";
+import { ChatMessage as ChatMessageObj } from "~/store/GameData";
+import { addChatMessage } from "~/store/ChatSlice";
+
+import { NewChatMessageSentPacket, SendNewChatMessagePacket } from "~/types/PacketType";
 
 
 export default function ChatBox() {
@@ -23,6 +27,7 @@ export default function ChatBox() {
         const chatMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newChatMessageSent", (packet) => {
             packet = packet as NewChatMessageSentPacket;
             dispatch(addChatMessage(packet.message));
+            console.log(endOfMessages)
             endOfMessages?.scrollIntoView({behavior: "instant"}); // TODO this doesn't work, but it should
         });
         endOfMessages?.scrollIntoView({behavior: "instant"});

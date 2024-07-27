@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import Lobby from "./Lobby";
-import WebSocketConnection from "./WebSocketConnection";
-import MainGameUI from "./MainGameUI";
-import store from "./Store";
 import { Provider } from "react-redux";
-import { ServerConnectionContext } from "./ServerConnectionContext";
+
+import WebSocketConnection from "~/lib/WebSocketConnection";
+
+import Lobby from "~/components/Lobby";
+import MainGameUI from "~/components/MainGameUI";
+
+import store from "~/store/Store";
+import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 
 
 export default function App() {

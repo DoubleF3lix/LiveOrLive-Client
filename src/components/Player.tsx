@@ -1,8 +1,10 @@
-import { Player as PlayerObj } from "./GameData"
+import { PlayerType } from "~/types/PlayerType";
+
 
 type PlayerArgs = {
-    player: PlayerObj
-}
+    player: PlayerType
+};
+
 
 export default function Player({ player }: PlayerArgs) {
     return (

@@ -1,4 +1,5 @@
-import { ChatMessage as ChatMessageObj } from "./GameData";
+import { ChatMessage as ChatMessageObj } from "../store/GameData";
+
 
 type ChatMessageArgs = {
     message: ChatMessageObj,

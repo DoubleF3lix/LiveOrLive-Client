@@ -1,28 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import Item from "./Item";
-import { GameDataSyncPacket } from "./Packet";
 
-// Only represents players who are in the game, and only used for UI purposes
-export type Player = {
-    username: string, 
-    lives: number, 
-    items: Item[]
-};
+import { GameDataType } from "~/types/GameDataType";
+import { GameDataSyncPacket } from "~/types/PacketType";
+import { PlayerType } from "~/types/PlayerType";
 
-export type ChatMessage = {
-    author: Player,
-    message: string,
-    timestamp: number
-};
-
-// Setup for Redux store
-type GameDataType = {
-    players: Player[];
-    clientUsername: string; 
-    currentHost: string;
-    turnCount: number;
-    gameID: string;
-};
 
 const initialGameData: GameDataType = {
     players: [],
@@ -36,7 +17,7 @@ export const gameDataSlice = createSlice({
     name: "gameData",
     initialState: initialGameData,
     reducers: {
-        addPlayer: (state, action: {payload: Player}) => {
+        addPlayer: (state, action: {payload: PlayerType}) => {
             // Check for duplicates, and don't add if they're already in there (just as a failsafe)
             if (!state.players.some(player => player.username === action.payload.username)) {
                 state.players.push(action.payload);

@@ -1,14 +1,18 @@
 import { FormEvent, useContext, useState } from "react";
-import { JoinGamePacket } from "./Packet";
 import { useDispatch } from "react-redux";
-import { setClientUsername } from "./GameData";
-import { ServerConnectionContext } from "./ServerConnectionContext";
-import WebSocketConnection from "./WebSocketConnection";
+
+import WebSocketConnection from "~/lib/WebSocketConnection";
+
+import { ServerConnectionContext } from "~/store/ServerConnectionContext";
+import { setClientUsername } from "~/store/GameData";
+
+import { JoinGamePacket } from "~/types/PacketType";
 
 
 type LobbyArgs = {
     setIsLobby: (value: boolean) => void
 };
+
 
 export default function Lobby({ setIsLobby }: LobbyArgs) {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;

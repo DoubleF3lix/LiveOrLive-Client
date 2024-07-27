@@ -1,4 +1,5 @@
-import { ClientPacket, ServerPacket } from "./Packet";
+import { ClientPacket, ServerPacket } from "~/types/PacketType";
+
 
 type ServerPacketType = ServerPacket["packetType"];
 type ServerPacketCallback = (packet: ServerPacket) => void
@@ -37,7 +38,6 @@ export class WebSocketEventSubscription {
         this.callback = callback;
     }
 }
-
 
 export default class WebSocketConnection {
     private connection: WebSocket;

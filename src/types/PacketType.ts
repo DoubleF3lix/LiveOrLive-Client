@@ -1,13 +1,14 @@
-import Item from "./Item"
-import { Player, ChatMessage } from "./GameData"
-import AmmoType from "./AmmoType"
+import { ChatMessageType } from "./ChatMessageType";
+import { PlayerType } from "~/types/PlayerType"
+import ItemType from "~/types/ItemType"
+import AmmoType from "~/types/AmmoType"
 
 
 // Server packets
 export type GameDataSyncPacket = {
     packetType: "gameDataSync",
     gameData: {
-        players: Player[],
+        players: PlayerType[],
         host: string,
         turnCount: number,
         gameID: string
@@ -16,7 +17,7 @@ export type GameDataSyncPacket = {
 
 export type PlayerJoinedPacket = {
     packetType: "playerJoined",
-    player: Player
+    player: PlayerType
 };
 
 export type PlayerJoinRejectedPacket = {
@@ -55,12 +56,12 @@ export type UseChamberCheckItemResultPacket = {
 
 export type NewChatMessageSentPacket = {
     packetType: "newChatMessageSent",
-    message: ChatMessage
+    message: ChatMessageType
 };
 
 export type ChatMessagesSyncPacket = {
     packetType: "chatMessagesSync",
-    messages: ChatMessage[]
+    messages: ChatMessageType[]
 };
 
 export type ShowAlertPacket = {
@@ -117,7 +118,7 @@ export type UseQuickshotItemPacket = {
 export type UseStealItemPacket = {
     packetType: "useStealItem",
     target: string
-    item: Item
+    item: ItemType
 };
 
 export type SendNewChatMessagePacket = {

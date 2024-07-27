@@ -1,10 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ChatMessagesSyncPacket } from "./Packet";
-import { ChatMessage } from "./GameData";
+
+import { ChatMessageType } from "~/types/ChatMessageType";
+import { ChatMessagesSyncPacket } from "~/types/PacketType";
+
 
 type ChatSliceType = {
-    chatMessages: ChatMessage[];
+    chatMessages: ChatMessageType[];
 };
+
 
 const initialChatSliceState: ChatSliceType = {
     chatMessages: [{author: {username: "", items: [], lives: 0}, message: "", timestamp: 0}]
@@ -14,7 +17,7 @@ export const chatSlice = createSlice({
     name: "gameData",
     initialState: initialChatSliceState,
     reducers: {
-        addChatMessage: (state, action: {payload: ChatMessage}) => {
+        addChatMessage: (state, action: {payload: ChatMessageType}) => {
             state.chatMessages.push(action.payload);
         },
         populateChatFromPacket: (state, action: {payload: ChatMessagesSyncPacket}) => {
