@@ -8,10 +8,10 @@ import Player from "~/components/Player";
 
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState } from "~/store/Store";
-import { addPlayer, populateGameDataFromPacket, setCurrentHost } from "~/store/GameData";
 import { populateChatFromPacket } from "~/store/ChatSlice";
+import { addPlayer, gameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost } from "~/store/GameData";
 
-import { ChatMessagesRequest, ChatMessagesSyncPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, PlayerJoinedPacket } from "~/types/PacketType";
+import { ChatMessagesRequest, ChatMessagesSyncPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket } from "~/types/PacketType";
 import MainGameHeader from "./MainGameHeader";
 import MainGameFooter from "./MainGameFooter";
 
@@ -50,6 +50,16 @@ export default function MainGameUI() {
             dispatch(populateChatFromPacket(packet));
         });
 
+        const gameStartedSubscription = serverConnection.subscribeToServerPacket("gameStarted", () => {
+            dispatch(gameStarted());
+        });
+
+        const newRoundStartedSubscription = serverConnection.subscribeToServerPacket("newRoundStarted", (packet) => {
+            packet = packet as NewRoundStartedPacket;
+            dispatch(newRoundStarted(packet));
+            alert(`A new round has started. The chamber has been loaded with ${packet.liveCount} live rounds and ${packet.blankCount} blanks`);
+        });
+
         // Populate the UI initially by making requests (handled by the above)
         const getGameInfoPacket: GameDataRequestPacket = {packetType: "gameDataRequest"};
         const getChatMessagesPacket: ChatMessagesRequest = {packetType: "chatMessagesRequest"};
@@ -61,6 +71,8 @@ export default function MainGameUI() {
             serverConnection.unsubscribeFromServerPacket(chatMessagesSyncSubscription);
             serverConnection.unsubscribeFromServerPacket(playerJoinedSubscription);
             serverConnection.unsubscribeFromServerPacket(hostSetSubscription);
+            serverConnection.unsubscribeFromServerPacket(gameStartedSubscription);
+            serverConnection.unsubscribeFromServerPacket(newRoundStartedSubscription);
         };
     }, []);
 
@@ -73,6 +85,7 @@ export default function MainGameUI() {
                     {players.map((player) => <Player key={player.username + "_playerCard"} player={player}/>)}
                 </div>
 
+                {/* Used to push the chatbox to the bottom on smaller views */}
                 <div className="flex-grow"></div>
                 <hr></hr>
 

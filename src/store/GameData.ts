@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { GameDataType } from "~/types/GameDataType";
-import { GameDataSyncPacket } from "~/types/PacketType";
+import { GameDataSyncPacket, NewRoundStartedPacket } from "~/types/PacketType";
 import { PlayerType } from "~/types/PlayerType";
 
 
@@ -9,7 +9,7 @@ const initialGameData: GameDataType = {
     players: [],
     clientUsername: "",
     currentHost: "",
-    turnCount: -1,
+    gameStarted: false,
     gameID: ""
 };
 
@@ -29,17 +29,20 @@ export const gameDataSlice = createSlice({
         setCurrentHost: (state, action: {payload: string}) => {
             state.currentHost = action.payload;
         },
-        // incrementTurnCount: (state) => {
-        //     state.turnCount++;
-        // },
+        gameStarted: (state) => {
+            state.gameStarted = true;
+        },
+        newRoundStarted: (state, action: {payload: NewRoundStartedPacket}) => {
+            state.players = action.payload.players;
+        },
         populateGameDataFromPacket: (state, action: {payload: GameDataSyncPacket}) => {
             state.players = action.payload.gameData.players;
             state.currentHost = action.payload.gameData.host;
-            state.turnCount = action.payload.gameData.turnCount;
+            state.gameStarted = action.payload.gameData.gameStarted;
             state.gameID = action.payload.gameData.gameID;
         }
     }
 });
 
-export const {addPlayer, setClientUsername, setCurrentHost, populateGameDataFromPacket} = gameDataSlice.actions;
+export const {addPlayer, setClientUsername, setCurrentHost, gameStarted, newRoundStarted, populateGameDataFromPacket} = gameDataSlice.actions;
 export default gameDataSlice.reducer;

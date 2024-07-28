@@ -14,9 +14,11 @@ export default function Player({ player }: PlayerArgs) {
             </p>
             <br/>
             <br/>
+            {/* TODO only show when game started */}
             <p>Items:</p>
             <ul className="list-disc list-inside">
-                {player.items.map((item, index) => <li key={index + "_playerItem"}>{item}</li>)}
+                {/* TODO need collapsible items (like Double Damage x2) */}
+                {player.items.map((item, index) => <li key={index + "_playerItem"}>{item}</li>)} 
             </ul>
 
             <div className="flex flex-row mt-auto pt-2">

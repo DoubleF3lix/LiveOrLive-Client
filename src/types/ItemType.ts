@@ -1,4 +1,4 @@
-type ItemType = "skipPlayerTurn" | "doubleDamage" | "checkBullet" | "rebalancer" | "shootAir" | "stealItem" | "addLife";
+type ItemType = "skipPlayerTurn" | "doubleDamage" | "checkBullet" | "rebalancer" | "adrenaline" | "stealItem" | "addLife" | "quickshot";
 
 
 export default ItemType;

@@ -5,6 +5,6 @@ export type GameDataType = {
     players: PlayerType[];
     clientUsername: string; 
     currentHost: string;
-    turnCount: number;
+    gameStarted: boolean;
     gameID: string;
 };

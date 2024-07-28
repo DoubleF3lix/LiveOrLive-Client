@@ -7,10 +7,11 @@ import AmmoType from "~/types/AmmoType"
 // Server packets
 export type GameDataSyncPacket = {
     packetType: "gameDataSync",
+    // Doesn't use GameDataType because that has clientUsername
     gameData: {
         players: PlayerType[],
         host: string,
-        turnCount: number,
+        gameStarted: boolean,
         gameID: string
     }
 };
@@ -31,8 +32,15 @@ export type HostSetPacket = {
 };
 
 export type GameStartedPacket = {
-    packetType: "gameStarted",
+    packetType: "gameStarted"
 };
+
+export type NewRoundStartedPacket = {
+    packetType: "newRoundStarted",
+    players: PlayerType[],
+    liveCount: number,
+    blankCount: number
+}
 
 export type TurnStartedPacket = {
     packetType: "turnStarted",
@@ -136,6 +144,7 @@ export type ServerPacket = (
     | PlayerJoinRejectedPacket
     | HostSetPacket
     | GameStartedPacket
+    | NewRoundStartedPacket
     | TurnStartedPacket
     | TurnEndedPacket
     | ActionFailedPacket
