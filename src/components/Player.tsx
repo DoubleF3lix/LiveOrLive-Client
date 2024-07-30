@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { condenseItemList } from "~/lib/util";
 
 import { selectCurrentPlayer, selectHost } from "~/store/Selectors";
 
@@ -12,6 +13,7 @@ type PlayerArgs = {
 
 export default function Player({ player }: PlayerArgs) {
     const currentPlayer = useSelector(selectCurrentPlayer);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const currentHost = useSelector(selectHost);
 
     return (
@@ -26,15 +28,14 @@ export default function Player({ player }: PlayerArgs) {
             {currentPlayer?.items.length !== 0 ? (<>
                 <p>Items:</p>
                 <ul className="list-disc list-inside">
-                    {/* TODO need collapsible items (like Double Damage x2) */}
-                    {player.items.map((item, index) => <li key={index + "_playerItem"}>{item}</li>)} 
+                    {condenseItemList(player.items).map((item, index) => <li key={index + "_playerItem"}>{item}</li>)} 
                 </ul>
             </>) : <p>No Items</p>}
 
 
             <div className="flex flex-row mt-auto pt-2">
                 <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 flex-grow disabled:bg-opacity-50">Shoot</button>
-                {currentPlayer === currentHost ? <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 flex-grow disabled:bg-opacity-50">Kick</button> : <></>}
+                {/* {currentPlayer === currentHost ? <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 flex-grow disabled:bg-opacity-50">Kick</button> : <></>} */}
             </div>
         </div>
     );
