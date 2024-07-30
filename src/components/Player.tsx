@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { condenseItemList } from "~/lib/util";
 
-import { selectCurrentPlayer, selectHost } from "~/store/Selectors";
+import { selectCurrentPlayer } from "~/store/Selectors";
 
 import { PlayerType } from "~/types/PlayerType";
 
@@ -13,8 +13,6 @@ type PlayerArgs = {
 
 export default function Player({ player }: PlayerArgs) {
     const currentPlayer = useSelector(selectCurrentPlayer);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const currentHost = useSelector(selectHost);
 
     return (
         <div className="flex flex-col flex-grow border-solid border-black border-2 rounded-lg p-3 m-3 lg:p-4 lg:m-4">
@@ -35,7 +33,6 @@ export default function Player({ player }: PlayerArgs) {
 
             <div className="flex flex-row mt-auto pt-2">
                 <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 flex-grow disabled:bg-opacity-50">Shoot</button>
-                {/* {currentPlayer === currentHost ? <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 flex-grow disabled:bg-opacity-50">Kick</button> : <></>} */}
             </div>
         </div>
     );
