@@ -7,10 +7,10 @@ import ChatMessage from "~/components/ChatMessage";
 
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState } from "~/store/Store";
-import { addChatMessage } from "~/store/ChatSlice";
+import { addChatMessage, populateChatFromPacket } from "~/store/ChatSlice";
 
 import { ChatMessageType } from "~/types/ChatMessageType";
-import { NewChatMessageSentPacket, SendNewChatMessagePacket } from "~/types/PacketType";
+import { ChatMessagesRequest, ChatMessagesSyncPacket, NewChatMessageSentPacket, SendNewChatMessagePacket } from "~/types/PacketType";
 
 
 export default function ChatBox() {
@@ -24,13 +24,24 @@ export default function ChatBox() {
     const endOfMessages = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        // This should only be called once per client (on page load) in theory, but technically the server can send this whenever it wants 
+        const chatMessagesSyncSubscription = serverConnection.subscribeToServerPacket("chatMessagesSync", (packet) => {
+            packet = packet as ChatMessagesSyncPacket;
+            dispatch(populateChatFromPacket(packet));
+        });
+
         const chatMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newChatMessageSent", (packet) => {
             packet = packet as NewChatMessageSentPacket;
             dispatch(addChatMessage(packet.message));
         });
 
+
+        const getChatMessagesPacket: ChatMessagesRequest = {packetType: "chatMessagesRequest"};
+        serverConnection.send(getChatMessagesPacket);
+
         return () => {
             serverConnection.unsubscribeFromServerPacket(chatMessageSubscription);
+            serverConnection.unsubscribeFromServerPacket(chatMessagesSyncSubscription);
         };
     }, []);
 

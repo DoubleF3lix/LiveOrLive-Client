@@ -3,7 +3,7 @@ import { IRootState } from "./Store";
 
 
 export function selectCurrentPlayer(state: IRootState): PlayerType | undefined {
-    return state.gameDataReducer.players.find(player => player.username === state.gameDataReducer.clientUsername) 
+    return state.gameDataReducer.players.find(player => player.username === state.gameDataReducer.clientUsername);
 }
 
 export function selectNonSpectators(state: IRootState) {
@@ -11,5 +11,5 @@ export function selectNonSpectators(state: IRootState) {
 }
 
 export function selectHost(state: IRootState): PlayerType | undefined {
-    return state.gameDataReducer.players.find(player => player.username === state.gameDataReducer.currentHost) 
+    return state.gameDataReducer.players.find(player => player.username === state.gameDataReducer.currentHost);
 }

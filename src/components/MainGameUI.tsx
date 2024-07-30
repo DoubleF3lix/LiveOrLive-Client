@@ -8,10 +8,9 @@ import Player from "~/components/Player";
 
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState } from "~/store/Store";
-import { populateChatFromPacket } from "~/store/ChatSlice";
-import { addPlayer, gameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost } from "~/store/GameData";
+import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost } from "~/store/GameData";
 
-import { ActionFailedPacket, ChatMessagesRequest, ChatMessagesSyncPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket } from "~/types/PacketType";
+import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket } from "~/types/PacketType";
 import MainGameHeader from "./MainGameHeader";
 import MainGameFooter from "./MainGameFooter";
 
@@ -19,7 +18,6 @@ import MainGameFooter from "./MainGameFooter";
 export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
     const players = useSelector((state: IRootState) => state.gameDataReducer.players);
-    const chatMessages = useSelector((state: IRootState) => (state.chatReducer.chatMessages));
     const dispatch = useDispatch();
 
     // Runs on successful connection
@@ -43,15 +41,8 @@ export default function MainGameUI() {
             dispatch(populateGameDataFromPacket(packet));
         });    
 
-        // This should only be called once per client (on page load) in theory, but technically the server can send this whenever it wants 
-        // NewChatMessageSent is handled in the ChatBox component to avoid all message history when a single message is sent
-        const chatMessagesSyncSubscription = serverConnection.subscribeToServerPacket("chatMessagesSync", (packet) => {
-            packet = packet as ChatMessagesSyncPacket;
-            dispatch(populateChatFromPacket(packet));
-        });
-
         const gameStartedSubscription = serverConnection.subscribeToServerPacket("gameStarted", () => {
-            dispatch(gameStarted());
+            dispatch(onGameStarted());
         });
 
         const newRoundStartedSubscription = serverConnection.subscribeToServerPacket("newRoundStarted", (packet) => {
@@ -65,15 +56,14 @@ export default function MainGameUI() {
             alert(packet.reason);
         });
 
-        // Populate the UI initially by making requests (handled by the above)
+
+        // Trigger the initial UI population *after* we've setup the callbacks
         const getGameInfoPacket: GameDataRequestPacket = {packetType: "gameDataRequest"};
-        const getChatMessagesPacket: ChatMessagesRequest = {packetType: "chatMessagesRequest"};
         serverConnection.send(getGameInfoPacket);
-        serverConnection.send(getChatMessagesPacket);
+        
 
         return () => {
             serverConnection.unsubscribeFromServerPacket(gameDataSyncSubscription);
-            serverConnection.unsubscribeFromServerPacket(chatMessagesSyncSubscription);
             serverConnection.unsubscribeFromServerPacket(playerJoinedSubscription);
             serverConnection.unsubscribeFromServerPacket(hostSetSubscription);
             serverConnection.unsubscribeFromServerPacket(gameStartedSubscription);
@@ -95,10 +85,7 @@ export default function MainGameUI() {
                 <div className="flex-grow"></div>
                 <hr></hr>
 
-                {/* Make sure we're fully initialized (after getGameInfo comes in) */}
-                {chatMessages.length === 0 || chatMessages[0].timestamp !== 0 ? (
-                    <ChatBox/>
-                ) : <></>}  
+                <ChatBox/>
             </div>
             <hr></hr>
             <MainGameFooter/>

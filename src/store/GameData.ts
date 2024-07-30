@@ -29,7 +29,7 @@ export const gameDataSlice = createSlice({
         setCurrentHost: (state, action: {payload: string}) => {
             state.currentHost = action.payload;
         },
-        gameStarted: (state) => {
+        onGameStarted: (state) => {
             state.gameStarted = true;
         },
         newRoundStarted: (state, action: {payload: NewRoundStartedPacket}) => {
@@ -44,5 +44,5 @@ export const gameDataSlice = createSlice({
     }
 });
 
-export const {addPlayer, setClientUsername, setCurrentHost, gameStarted, newRoundStarted, populateGameDataFromPacket} = gameDataSlice.actions;
+export const {addPlayer, setClientUsername, setCurrentHost, onGameStarted, newRoundStarted, populateGameDataFromPacket} = gameDataSlice.actions;
 export default gameDataSlice.reducer;
