@@ -7,17 +7,17 @@ import ChatBox from "~/components/ChatBox";
 import Player from "~/components/Player";
 
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { IRootState } from "~/store/Store";
 import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn } from "~/store/GameData";
 
 import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, TurnStartedPacket } from "~/types/PacketType";
 import MainGameHeader from "./MainGameHeader";
 import MainGameFooter from "./MainGameFooter";
+import { selectNonSpectators } from "~/store/Selectors";
 
 
 export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
-    const players = useSelector((state: IRootState) => state.gameDataReducer.players);
+    const nonSpecatorPlayers = useSelector(selectNonSpectators);
     const dispatch = useDispatch();
 
     // Runs on successful connection
@@ -84,7 +84,7 @@ export default function MainGameUI() {
             <hr></hr>
             <div className="flex flex-col flex-grow lg:flex-row overflow-auto"> 
                 <div className="w-full overflow-auto grid auto-rows-min sm:grid-cols-2 xl:grid-cols-3">
-                    {players.map((player) => <Player key={player.username + "_playerCard"} player={player}/>)}
+                    {nonSpecatorPlayers.map((player) => <Player key={player.username + "_playerCard"} player={player}/>)}
                 </div>
 
                 {/* Used to push the chatbox to the bottom on smaller views */}
