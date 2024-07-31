@@ -6,5 +6,6 @@ export type GameDataType = {
     clientUsername: string; 
     currentHost: string;
     gameStarted: boolean;
+    currentTurn: string;
     gameID: string;
 };

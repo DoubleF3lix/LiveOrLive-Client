@@ -12,6 +12,7 @@ export type GameDataSyncPacket = {
         players: PlayerType[],
         host: string,
         gameStarted: boolean,
+        currentTurn: string,
         gameID: string
     }
 };

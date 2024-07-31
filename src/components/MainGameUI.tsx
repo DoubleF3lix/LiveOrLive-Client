@@ -8,9 +8,9 @@ import Player from "~/components/Player";
 
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState } from "~/store/Store";
-import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost } from "~/store/GameData";
+import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn } from "~/store/GameData";
 
-import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket } from "~/types/PacketType";
+import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, TurnStartedPacket } from "~/types/PacketType";
 import MainGameHeader from "./MainGameHeader";
 import MainGameFooter from "./MainGameFooter";
 
@@ -51,6 +51,11 @@ export default function MainGameUI() {
             alert(`A new round has started. The chamber has been loaded with ${packet.liveCount} live rounds and ${packet.blankCount} blanks`);
         });
 
+        const turnStartedSubscription = serverConnection.subscribeToServerPacket("turnStarted", (packet) => {
+            packet = packet as TurnStartedPacket;
+            dispatch(setCurrentTurn(packet));
+        });
+
         const actionFailedSubscription = serverConnection.subscribeToServerPacket("actionFailed", (packet) => {
             packet = packet as ActionFailedPacket;
             alert(packet.reason);
@@ -68,6 +73,7 @@ export default function MainGameUI() {
             serverConnection.unsubscribeFromServerPacket(hostSetSubscription);
             serverConnection.unsubscribeFromServerPacket(gameStartedSubscription);
             serverConnection.unsubscribeFromServerPacket(newRoundStartedSubscription);
+            serverConnection.unsubscribeFromServerPacket(turnStartedSubscription);
             serverConnection.unsubscribeFromServerPacket(actionFailedSubscription);
         };
     }, []);
