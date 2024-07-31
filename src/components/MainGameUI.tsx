@@ -5,14 +5,14 @@ import WebSocketConnection from "~/lib/WebSocketConnection";
 
 import ChatBox from "~/components/ChatBox";
 import Player from "~/components/Player";
+import MainGameHeader from "~/components/MainGameHeader";
+import MainGameFooter from "~/components/MainGameFooter";
 
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn } from "~/store/GameData";
+import { selectNonSpectators } from "~/store/Selectors";
 
 import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, TurnStartedPacket } from "~/types/PacketType";
-import MainGameHeader from "./MainGameHeader";
-import MainGameFooter from "./MainGameFooter";
-import { selectNonSpectators } from "~/store/Selectors";
 
 
 export default function MainGameUI() {

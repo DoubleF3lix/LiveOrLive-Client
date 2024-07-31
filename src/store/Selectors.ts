@@ -7,7 +7,7 @@ export function selectCurrentPlayer(state: IRootState): PlayerType | undefined {
 }
 
 export function selectNonSpectators(state: IRootState) {
-    return state.gameDataReducer.players.filter(player => player.isSpectator === false && player.inGame === true);
+    return state.gameDataReducer.players.filter(player => player.isSpectator === false);
 }
 
 export function selectHost(state: IRootState): PlayerType | undefined {

@@ -1,4 +1,4 @@
-import { ChatMessageType } from "./ChatMessageType";
+import { ChatMessageType } from "~/types/ChatMessageType";
 import { PlayerType } from "~/types/PlayerType"
 import ItemType from "~/types/ItemType"
 import AmmoType from "~/types/AmmoType"
@@ -58,11 +58,45 @@ export type ActionFailedPacket = {
     reason: string
 };
 
-export type UseChamberCheckItemResultPacket = {
-    packetType: "useChamberCheckItemResult",
-    ammoType: AmmoType
-};
+export type PlayerShotPacket = {
+    packetType: "playerShot",
+    target: string
+}
 
+export type SkipItemUsedPacket = {
+    packetType: "skipItemUsed",
+    target: string
+}
+
+export type DoubleDamageItemUsedPacket = {
+    packetType: "doubleDamageItemUsed"
+}
+
+export type ChamberCheckItemUsedPacket = {
+    packetType: "chamberCheckItemUsed",
+    result: AmmoType
+}
+
+export type RebalancerItemUsedPacket = {
+    packetType: "rebalancerItemUsed",
+    ammoType: AmmoType,
+    count: number
+}
+
+export type AdrenalineItemUsedPacket = {
+    packetType: "adrenalineItemUsed",
+    result: number
+}
+
+export type QuickshotItemUsedPacket = {
+    packetType: "quickshotItemUsed",
+}
+
+export type StealItemUsedPacket = {
+    packetType: "stealItemUsed",
+    target: string,
+    item: ItemType
+}
 export type NewChatMessageSentPacket = {
     packetType: "newChatMessageSent",
     message: ChatMessageType
@@ -120,6 +154,10 @@ export type UseRebalancerItemPacket = {
     ammoType: AmmoType
 };
 
+export type UseAdrenalineItemPacket = {
+    packetType: "useAdrenalineItem"
+}
+
 export type UseQuickshotItemPacket = {
     packetType: "useQuickshotItem",
 };
@@ -149,7 +187,14 @@ export type ServerPacket = (
     | TurnStartedPacket
     | TurnEndedPacket
     | ActionFailedPacket
-    | UseChamberCheckItemResultPacket
+    | PlayerShotPacket
+    | SkipItemUsedPacket
+    | DoubleDamageItemUsedPacket
+    | ChamberCheckItemUsedPacket
+    | RebalancerItemUsedPacket
+    | AdrenalineItemUsedPacket
+    | QuickshotItemUsedPacket
+    | StealItemUsedPacket
     | NewChatMessageSentPacket
     | ChatMessagesSyncPacket
     | ShowAlertPacket
@@ -165,6 +210,7 @@ export type ClientPacket = (
     | UseDoubleDamageItemPacket
     | UseChamberCheckItemPacket
     | UseRebalancerItemPacket
+    | UseAdrenalineItemPacket
     | UseQuickshotItemPacket
     | UseStealItemPacket
     | SendNewChatMessagePacket
