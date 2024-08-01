@@ -58,9 +58,10 @@ export type ActionFailedPacket = {
     reason: string
 };
 
-export type PlayerShotPacket = {
-    packetType: "playerShot",
-    target: string
+export type PlayerShotAtPacket = {
+    packetType: "playerShotAt",
+    target: string,
+    ammoType: AmmoType
 }
 
 export type SkipItemUsedPacket = {
@@ -187,7 +188,7 @@ export type ServerPacket = (
     | TurnStartedPacket
     | TurnEndedPacket
     | ActionFailedPacket
-    | PlayerShotPacket
+    | PlayerShotAtPacket
     | SkipItemUsedPacket
     | DoubleDamageItemUsedPacket
     | ChamberCheckItemUsedPacket

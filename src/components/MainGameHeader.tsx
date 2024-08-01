@@ -14,6 +14,7 @@ export default function MainGameHeader() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
     const currentPlayer = useSelector(selectCurrentPlayer);
     const currentHost = useSelector(selectHost);
+    const currentTurn = useSelector((state: IRootState) => state.gameDataReducer.currentTurn);
     const gameStarted = useSelector((state: IRootState) => state.gameDataReducer.gameStarted);
 
     function startGame() {
@@ -23,7 +24,7 @@ export default function MainGameHeader() {
 
     return (
         <div className="flex flex-row justify-center m-1 relative">
-            <p className="text-center font-bold text-base lg:text-lg pt-3">EPIC GAME - CODE - Player 1's Turn</p>
+            <p className="text-center font-bold text-base lg:text-lg pt-3">Live or Live{currentTurn ? ` - ${currentTurn}'s turn`: ""}</p>
             {gameStarted || currentPlayer !== currentHost ? <></> : 
                 <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end absolute right-0" onClick={startGame}>Start Game</button>
             }

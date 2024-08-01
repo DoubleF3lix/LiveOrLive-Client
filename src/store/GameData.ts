@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { GameDataType } from "~/types/GameDataType";
-import { GameDataSyncPacket, NewRoundStartedPacket, TurnStartedPacket } from "~/types/PacketType";
+import { GameDataSyncPacket, NewRoundStartedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
 import { PlayerType } from "~/types/PlayerType";
 
 
@@ -35,12 +35,15 @@ export const gameDataSlice = createSlice({
         },
         setCurrentTurn: (state, action: {payload: TurnStartedPacket}) => {
             state.currentTurn = action.payload.username;
-            if (action.payload.username === state.clientUsername) {
-                alert("It's your turn!");
-            }
         },
         newRoundStarted: (state, action: {payload: NewRoundStartedPacket}) => {
             state.players = action.payload.players;
+        },
+        playerShotAt: (state, action: {payload: PlayerShotAtPacket}) => {
+            if (action.payload.ammoType === "Live") {
+                const targetIndex = state.players.findIndex(player => player.username === action.payload.target);
+                state.players[targetIndex].lives -= 1;
+            }
         },
         populateGameDataFromPacket: (state, action: {payload: GameDataSyncPacket}) => {
             state.players = action.payload.gameData.players;
@@ -52,5 +55,5 @@ export const gameDataSlice = createSlice({
     }
 });
 
-export const {addPlayer, setClientUsername, setCurrentHost, onGameStarted, setCurrentTurn, newRoundStarted, populateGameDataFromPacket} = gameDataSlice.actions;
+export const {addPlayer, setClientUsername, setCurrentHost, onGameStarted, setCurrentTurn, newRoundStarted, playerShotAt, populateGameDataFromPacket} = gameDataSlice.actions;
 export default gameDataSlice.reducer;

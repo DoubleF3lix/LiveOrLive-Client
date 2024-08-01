@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import WebSocketConnection from "~/lib/WebSocketConnection";
 
@@ -8,17 +8,39 @@ import Player from "~/components/Player";
 import MainGameHeader from "~/components/MainGameHeader";
 import MainGameFooter from "~/components/MainGameFooter";
 
+import { AppDispatch, IRootState, useAppDispatch } from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn } from "~/store/GameData";
+import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt } from "~/store/GameData";
 import { selectNonSpectators } from "~/store/Selectors";
 
-import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, TurnStartedPacket } from "~/types/PacketType";
+import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
 
 
 export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
-    const nonSpecatorPlayers = useSelector(selectNonSpectators);
-    const dispatch = useDispatch();
+    // const currentTurn = useSelector((state: IRootState) => state.gameDataReducer.currentTurn);
+    // const currentPlayer = useSelector(selectCurrentPlayer);
+    // const clientUsername = useSelector((state: IRootState) => state.gameDataReducer.clientUsername);
+    const nonSpectatorPlayers = useSelector(selectNonSpectators);
+    const dispatch = useAppDispatch();
+
+    function handleShotThunk(packet: PlayerShotAtPacket) {
+        return (dispatch: AppDispatch, getState: () => IRootState) => {
+            const state: IRootState = getState();
+            const clientUsername = state.gameDataReducer.clientUsername;
+            const currentTurn = state.gameDataReducer.currentTurn;
+        
+            const weFiredShot = clientUsername === currentTurn;
+
+            const who = weFiredShot ? "You" : currentTurn;
+            const target = clientUsername === packet.target ? (clientUsername === currentTurn ? "yourself" : "you") : packet.target;
+            const next = weFiredShot && packet.ammoType === "Blank" && clientUsername === packet.target ? " Go again!" : "";
+            alert(`${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`);
+        
+            // Handles subtracting life if it was live
+            dispatch(playerShotAt(packet));
+        }
+    }
 
     // Runs on successful connection
     useEffect(() => {
@@ -48,12 +70,17 @@ export default function MainGameUI() {
         const newRoundStartedSubscription = serverConnection.subscribeToServerPacket("newRoundStarted", (packet) => {
             packet = packet as NewRoundStartedPacket;
             dispatch(newRoundStarted(packet));
-            alert(`A new round has started. The chamber has been loaded with ${packet.liveCount} live rounds and ${packet.blankCount} blanks`);
+            alert(`A new round has started. The chamber has been loaded with ${packet.liveCount} live rounds and ${packet.blankCount} blanks.`);
         });
 
         const turnStartedSubscription = serverConnection.subscribeToServerPacket("turnStarted", (packet) => {
             packet = packet as TurnStartedPacket;
             dispatch(setCurrentTurn(packet));
+        });
+
+        const playerShotAtSubscription = serverConnection.subscribeToServerPacket("playerShotAt", (packet) => {
+            packet = packet as PlayerShotAtPacket;
+            dispatch(handleShotThunk(packet));
         });
 
         const actionFailedSubscription = serverConnection.subscribeToServerPacket("actionFailed", (packet) => {
@@ -74,6 +101,7 @@ export default function MainGameUI() {
             serverConnection.unsubscribeFromServerPacket(gameStartedSubscription);
             serverConnection.unsubscribeFromServerPacket(newRoundStartedSubscription);
             serverConnection.unsubscribeFromServerPacket(turnStartedSubscription);
+            serverConnection.unsubscribeFromServerPacket(playerShotAtSubscription);
             serverConnection.unsubscribeFromServerPacket(actionFailedSubscription);
         };
     }, []);
@@ -84,7 +112,7 @@ export default function MainGameUI() {
             <hr></hr>
             <div className="flex flex-col flex-grow lg:flex-row overflow-auto"> 
                 <div className="w-full overflow-auto grid auto-rows-min sm:grid-cols-2 xl:grid-cols-3">
-                    {nonSpecatorPlayers.map((player) => <Player key={player.username + "_playerCard"} player={player}/>)}
+                    {nonSpectatorPlayers.map((player) => <Player key={player.username + "_playerCard"} player={player}/>)}
                 </div>
 
                 {/* Used to push the chatbox to the bottom on smaller views */}

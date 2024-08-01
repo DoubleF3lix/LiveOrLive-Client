@@ -6,6 +6,7 @@ import { condenseItemList } from "~/lib/util";
 
 import { selectCurrentPlayer } from "~/store/Selectors";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
+import { IRootState } from "~/store/Store";
 
 import { ShootPlayerPacket } from "~/types/PacketType";
 import { PlayerType } from "~/types/PlayerType";
@@ -19,6 +20,7 @@ type PlayerArgs = {
 export default function Player({ player }: PlayerArgs) {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
     const currentPlayer = useSelector(selectCurrentPlayer);
+    const currentTurn = useSelector((state: IRootState) => state.gameDataReducer.currentTurn);
 
     function shootPlayer() {
         const shootPlayerPacket: ShootPlayerPacket = {packetType: "shootPlayer", target: player.username};
@@ -43,7 +45,7 @@ export default function Player({ player }: PlayerArgs) {
 
 
             <div className="flex flex-row mt-auto pt-2">
-                <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 flex-grow disabled:bg-opacity-50" onClick={shootPlayer}>Shoot</button>
+                <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 flex-grow disabled:bg-opacity-50" onClick={shootPlayer} disabled={currentPlayer.username !== currentTurn}>Shoot</button>
             </div>
         </div>
     ) : <></>;

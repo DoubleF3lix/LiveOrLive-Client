@@ -8,6 +8,7 @@ import { convertItemTypeToName } from "~/types/ItemType";
 
 export default function MainGameFooter() {
     const currentPlayer = useSelector(selectCurrentPlayer);
+    const currentTurn = useSelector((state: IRootState) => state.gameDataReducer.currentTurn);
     const currentActionablePlayers = useSelector(selectNonSpectators);
     const gameStarted = useSelector((state: IRootState) => state.gameDataReducer.gameStarted);
 
@@ -21,7 +22,6 @@ export default function MainGameFooter() {
                 </select>
 
                 <div className="min-w-10"></div>
-                {/* <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end">Shoot Player</button> */}
                 
                 <label htmlFor="itemsList" className="">Select Item:</label>
                 <select name="itemsList" id="itemSelect" className="ml-2" disabled={currentPlayer.items.length === 0}>
@@ -37,7 +37,7 @@ export default function MainGameFooter() {
                     }
 
                 </select>
-                <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end disabled:bg-opacity-50" disabled={currentPlayer.items.length === 0}>Use</button>
+                <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end disabled:bg-opacity-50" disabled={currentPlayer.items.length === 0 || currentPlayer.username !== currentTurn}>Use</button>
             </div>
         : <></>
     );

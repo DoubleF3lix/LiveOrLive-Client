@@ -1,4 +1,4 @@
-type AmmoType = "live" | "blank";
+type AmmoType = "Live" | "Blank";
 
 
 export default AmmoType;
