@@ -1,19 +1,21 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import WebSocketConnection from "~/lib/WebSocketConnection";
 
 import ChatBox from "~/components/ChatBox";
+import GameLog from "~/components/GameLog";
 import Player from "~/components/Player";
 import MainGameHeader from "~/components/MainGameHeader";
 import MainGameFooter from "~/components/MainGameFooter";
 
 import { AppDispatch, IRootState, useAppDispatch } from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt } from "~/store/GameData";
+import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt, addGameLogMessage } from "~/store/GameData";
 import { selectNonSpectators } from "~/store/Selectors";
 
-import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
+import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewGameLogMessageSentPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
+import MessageBoxControlButton from "./MessageBoxControlButton";
 
 
 export default function MainGameUI() {
@@ -24,6 +26,8 @@ export default function MainGameUI() {
     const nonSpectatorPlayers = useSelector(selectNonSpectators);
     const dispatch = useAppDispatch();
 
+    const [gameLogShown, setShowGameLog] = useState<boolean>(false);
+
     function handleShotThunk(packet: PlayerShotAtPacket) {
         return (dispatch: AppDispatch, getState: () => IRootState) => {
             const state: IRootState = getState();
@@ -31,9 +35,9 @@ export default function MainGameUI() {
             const currentTurn = state.gameDataReducer.currentTurn;
         
             const weFiredShot = clientUsername === currentTurn;
-
+            
             const who = weFiredShot ? "You" : currentTurn;
-            const target = clientUsername === packet.target ? (clientUsername === currentTurn ? "yourself" : "you") : packet.target;
+            const target = clientUsername === packet.target ? (weFiredShot ? "yourself" : "you") : packet.target;
             const next = weFiredShot && packet.ammoType === "Blank" && clientUsername === packet.target ? " Go again!" : "";
             alert(`${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`);
         
@@ -88,6 +92,11 @@ export default function MainGameUI() {
             alert(packet.reason);
         });
 
+        const newGameLogMessageSentSubscription = serverConnection.subscribeToServerPacket("newGameLogMessageSent", (packet) => {
+            packet = packet as NewGameLogMessageSentPacket;
+            dispatch(addGameLogMessage(packet.content));
+        });
+
 
         // Trigger the initial UI population *after* we've setup the callbacks
         const getGameInfoPacket: GameDataRequestPacket = {packetType: "gameDataRequest"};
@@ -103,6 +112,7 @@ export default function MainGameUI() {
             serverConnection.unsubscribeFromServerPacket(turnStartedSubscription);
             serverConnection.unsubscribeFromServerPacket(playerShotAtSubscription);
             serverConnection.unsubscribeFromServerPacket(actionFailedSubscription);
+            serverConnection.unsubscribeFromServerPacket(newGameLogMessageSentSubscription);
         };
     }, []);
 
@@ -115,11 +125,19 @@ export default function MainGameUI() {
                     {nonSpectatorPlayers.map((player) => <Player key={player.username + "_playerCard"} player={player}/>)}
                 </div>
 
-                {/* Used to push the chatbox to the bottom on smaller views */}
+                {/* Used to push the box to the bottom on smaller views */}
                 <div className="flex-grow"></div>
                 <hr></hr>
 
-                <ChatBox/>
+                <div className="flex flex-col border-solid border-black border-2 rounded-lg p-3 m-3 h-[25dvh] min-h-[25dvh] w-auto lg:w-[25dvw] lg:h-auto lg:p-4 lg:m-4">
+                    <div className="flex flex-row">
+                        <MessageBoxControlButton text={"Chat"} underlined={!gameLogShown} onClickCallback={() => {setShowGameLog(false)}} />
+                        <div className="min-w-12"></div>
+                        <MessageBoxControlButton text={"Game Log"} underlined={gameLogShown} onClickCallback={() => {setShowGameLog(true)}} />
+                    </div>
+                    <GameLog visible={gameLogShown}/> 
+                    <ChatBox visible={!gameLogShown}/>
+                </div>
             </div>
             <hr></hr>
             <MainGameFooter/>

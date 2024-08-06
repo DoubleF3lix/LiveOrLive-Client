@@ -33,7 +33,7 @@ export default function MainGameFooter() {
                                 {convertItemTypeToName(item)}{count > 1 ? ` (x${count})` : ``}
                             </option>
                         ) 
-                        : <option value={"N/A"}>No Items</option>
+                        : <option key={`${currentPlayer.username}_noItems_itemSelect`} value={"N/A"}>No Items</option>
                     }
 
                 </select>

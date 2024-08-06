@@ -11,7 +11,8 @@ const initialGameData: GameDataType = {
     currentHost: "",
     gameStarted: false,
     currentTurn: "",
-    gameID: ""
+    gameID: "",
+    gameLog: []
 };
 
 export const gameDataSlice = createSlice({
@@ -36,6 +37,9 @@ export const gameDataSlice = createSlice({
         setCurrentTurn: (state, action: {payload: TurnStartedPacket}) => {
             state.currentTurn = action.payload.username;
         },
+        addGameLogMessage: (state, action: {payload: string}) => {
+            state.gameLog.push(action.payload);
+        },
         newRoundStarted: (state, action: {payload: NewRoundStartedPacket}) => {
             state.players = action.payload.players;
         },
@@ -51,9 +55,10 @@ export const gameDataSlice = createSlice({
             state.gameStarted = action.payload.gameData.gameStarted;
             state.currentTurn = action.payload.gameData.currentTurn;
             state.gameID = action.payload.gameData.gameID;
+            state.gameLog = action.payload.gameData.gameLog;
         }
     }
 });
 
-export const {addPlayer, setClientUsername, setCurrentHost, onGameStarted, setCurrentTurn, newRoundStarted, playerShotAt, populateGameDataFromPacket} = gameDataSlice.actions;
+export const {addPlayer, setClientUsername, setCurrentHost, onGameStarted, setCurrentTurn, addGameLogMessage, newRoundStarted, playerShotAt, populateGameDataFromPacket} = gameDataSlice.actions;
 export default gameDataSlice.reducer;

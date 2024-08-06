@@ -13,7 +13,12 @@ import { ChatMessageType } from "~/types/ChatMessageType";
 import { ChatMessagesRequest, ChatMessagesSyncPacket, NewChatMessageSentPacket, SendNewChatMessagePacket } from "~/types/PacketType";
 
 
-export default function ChatBox() {
+type ChatBoxArgs = {
+    visible: boolean
+};
+
+
+export default function ChatBox({ visible }: ChatBoxArgs) {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
     const chatMessages = useSelector((state: IRootState) => (state.chatReducer.chatMessages));
     const dispatch = useDispatch();
@@ -71,8 +76,7 @@ export default function ChatBox() {
     }
 
     return (
-        <div className="flex flex-col border-solid border-black border-2 rounded-lg p-3 m-3 h-[25dvh] min-h-[25dvh] w-auto lg:w-[25dvw] lg:h-auto lg:p-4 lg:m-4">
-            <p className="font-bold text-base lg:text-lg">Chat:</p>
+        visible ? <>
             <br className="mt-1 lg:mt-4"/>
             <div className="-space-y-0 overflow-y-auto break-words text-sm lg:text-base lg:h-screen ">
                 {chatMessages.map((message, index) => getChatMessageComponent(message, index))}
@@ -89,6 +93,6 @@ export default function ChatBox() {
                 />
                 <button type="submit" className="ml-2 bg-gray-600 px-2 text-white rounded">Send</button>
             </form>
-        </div>
+        </> : <></>
     );
 }

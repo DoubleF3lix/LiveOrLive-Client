@@ -8,4 +8,5 @@ export type GameDataType = {
     gameStarted: boolean;
     currentTurn: string;
     gameID: string;
+    gameLog: string[];
 };

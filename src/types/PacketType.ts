@@ -13,7 +13,8 @@ export type GameDataSyncPacket = {
         host: string,
         gameStarted: boolean,
         currentTurn: string,
-        gameID: string
+        gameID: string,
+        gameLog: string[]
     }
 };
 
@@ -113,6 +114,11 @@ export type ShowAlertPacket = {
     content: string
 };
 
+export type NewGameLogMessageSentPacket = {
+    packetType: "newGameLogMessageSent",
+    content: string
+};
+
 // Client packets
 export type JoinGamePacket = {
     packetType: "joinGame",
@@ -199,6 +205,7 @@ export type ServerPacket = (
     | NewChatMessageSentPacket
     | ChatMessagesSyncPacket
     | ShowAlertPacket
+    | NewGameLogMessageSentPacket
 );
 
 export type ClientPacket = (
