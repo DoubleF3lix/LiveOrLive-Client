@@ -39,7 +39,7 @@ export default function MainGameUI() {
             const who = weFiredShot ? "You" : currentTurn;
             const target = clientUsername === packet.target ? (weFiredShot ? "yourself" : "you") : packet.target;
             const next = weFiredShot && packet.ammoType === "Blank" && clientUsername === packet.target ? " Go again!" : "";
-            alert(`${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`);
+            dispatch(addGameLogMessage(`${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`));
         
             // Handles subtracting life if it was live
             dispatch(playerShotAt(packet));
@@ -74,7 +74,7 @@ export default function MainGameUI() {
         const newRoundStartedSubscription = serverConnection.subscribeToServerPacket("newRoundStarted", (packet) => {
             packet = packet as NewRoundStartedPacket;
             dispatch(newRoundStarted(packet));
-            alert(`A new round has started. The chamber has been loaded with ${packet.liveCount} live rounds and ${packet.blankCount} blanks.`);
+            dispatch(addGameLogMessage(`A new round has started. The chamber has been loaded with ${packet.liveCount} live rounds and ${packet.blankCount} blanks.`));
         });
 
         const turnStartedSubscription = serverConnection.subscribeToServerPacket("turnStarted", (packet) => {
