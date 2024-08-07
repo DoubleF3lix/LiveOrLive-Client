@@ -1,4 +1,5 @@
-import { PlayerType } from "./PlayerType";
+import { GameLogMessageType } from "~/types/GameLogMessageType";
+import { PlayerType } from "~/types/PlayerType";
 
 
 export type GameDataType = {
@@ -8,5 +9,5 @@ export type GameDataType = {
     gameStarted: boolean;
     currentTurn: string;
     gameID: string;
-    gameLog: string[];
+    gameLog: GameLogMessageType[];
 };

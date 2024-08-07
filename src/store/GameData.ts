@@ -38,7 +38,7 @@ export const gameDataSlice = createSlice({
             state.currentTurn = action.payload.username;
         },
         addGameLogMessage: (state, action: {payload: string}) => {
-            state.gameLog.push(action.payload);
+            state.gameLog.push({"message": action.payload, "timestamp": 0}); // TODO replace
         },
         newRoundStarted: (state, action: {payload: NewRoundStartedPacket}) => {
             state.players = action.payload.players;

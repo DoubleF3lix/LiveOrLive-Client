@@ -94,7 +94,7 @@ export default function MainGameUI() {
 
         const newGameLogMessageSentSubscription = serverConnection.subscribeToServerPacket("newGameLogMessageSent", (packet) => {
             packet = packet as NewGameLogMessageSentPacket;
-            dispatch(addGameLogMessage(packet.content));
+            dispatch(addGameLogMessage(packet.message.message));
         });
 
 

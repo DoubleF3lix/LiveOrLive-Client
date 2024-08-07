@@ -2,6 +2,7 @@ import { ChatMessageType } from "~/types/ChatMessageType";
 import { PlayerType } from "~/types/PlayerType"
 import ItemType from "~/types/ItemType"
 import AmmoType from "~/types/AmmoType"
+import { GameLogMessageType } from "~/types/GameLogMessageType";
 
 
 // Server packets
@@ -14,7 +15,7 @@ export type GameDataSyncPacket = {
         gameStarted: boolean,
         currentTurn: string,
         gameID: string,
-        gameLog: string[]
+        gameLog: GameLogMessageType[]
     }
 };
 
@@ -116,7 +117,7 @@ export type ShowAlertPacket = {
 
 export type NewGameLogMessageSentPacket = {
     packetType: "newGameLogMessageSent",
-    content: string
+    message: GameLogMessageType
 };
 
 // Client packets
