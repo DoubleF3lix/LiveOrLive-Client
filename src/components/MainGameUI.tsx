@@ -9,7 +9,7 @@ import Player from "~/components/Player";
 import MainGameHeader from "~/components/MainGameHeader";
 import MainGameFooter from "~/components/MainGameFooter";
 
-import { AppDispatch, IRootState, useAppDispatch } from "~/store/Store";
+import { AppDispatch, useAppDispatch } from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt, addGameLogMessage } from "~/store/GameData";
 import { selectNonSpectators } from "~/store/Selectors";
@@ -30,17 +30,16 @@ export default function MainGameUI() {
     const [gameLogShown, setShowGameLog] = useState<boolean>(import.meta.env.DEV);
 
     function handleShotThunk(packet: PlayerShotAtPacket) {
-        return (dispatch: AppDispatch, getState: () => IRootState) => {
-            const state: IRootState = getState();
-            const clientUsername = state.gameDataReducer.clientUsername;
-            const currentTurn = state.gameDataReducer.currentTurn;
-        
-            const weFiredShot = clientUsername === currentTurn;
+        return (dispatch: AppDispatch) => { //, getState: () => IRootState) => {
+            // const state: IRootState = getState();
+            // const clientUsername = state.gameDataReducer.clientUsername;
+            // const currentTurn = state.gameDataReducer.currentTurn;
+            // const weFiredShot = clientUsername === currentTurn;
             
-            const who = weFiredShot ? "You" : currentTurn;
-            const target = clientUsername === packet.target ? (weFiredShot ? "yourself" : "you") : packet.target;
-            const next = weFiredShot && packet.ammoType === "Blank" && clientUsername === packet.target ? " Go again!" : "";
-            dispatch(addGameLogMessage(`${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`));
+            // const who = weFiredShot ? "You" : currentTurn;
+            // const target = clientUsername === packet.target ? (weFiredShot ? "yourself" : "you") : packet.target;
+            // const next = weFiredShot && packet.ammoType === "Blank" && clientUsername === packet.target ? " Go again!" : "";
+            // dispatch(addGameLogMessage(`${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`));
         
             // Handles subtracting life if it was live
             dispatch(playerShotAt(packet));
@@ -75,7 +74,6 @@ export default function MainGameUI() {
         const newRoundStartedSubscription = serverConnection.subscribeToServerPacket("newRoundStarted", (packet) => {
             packet = packet as NewRoundStartedPacket;
             dispatch(newRoundStarted(packet));
-            dispatch(addGameLogMessage(`A new round has started. The chamber has been loaded with ${packet.liveCount} live rounds and ${packet.blankCount} blanks.`));
         });
 
         const turnStartedSubscription = serverConnection.subscribeToServerPacket("turnStarted", (packet) => {
@@ -95,7 +93,7 @@ export default function MainGameUI() {
 
         const newGameLogMessageSentSubscription = serverConnection.subscribeToServerPacket("newGameLogMessageSent", (packet) => {
             packet = packet as NewGameLogMessageSentPacket;
-            dispatch(addGameLogMessage(packet.message.message));
+            dispatch(addGameLogMessage(packet));
         });
 
 

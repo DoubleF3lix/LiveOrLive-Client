@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { GameDataType } from "~/types/GameDataType";
-import { GameDataSyncPacket, NewRoundStartedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
+import { GameDataSyncPacket, NewGameLogMessageSentPacket, NewRoundStartedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
 import { PlayerType } from "~/types/PlayerType";
 
 
@@ -37,8 +37,8 @@ export const gameDataSlice = createSlice({
         setCurrentTurn: (state, action: {payload: TurnStartedPacket}) => {
             state.currentTurn = action.payload.username;
         },
-        addGameLogMessage: (state, action: {payload: string}) => {
-            state.gameLog.push({"message": action.payload, "timestamp": 0}); // TODO replace
+        addGameLogMessage: (state, action: {payload: NewGameLogMessageSentPacket}) => {
+            state.gameLog.push(action.payload.message);
         },
         newRoundStarted: (state, action: {payload: NewRoundStartedPacket}) => {
             state.players = action.payload.players;
