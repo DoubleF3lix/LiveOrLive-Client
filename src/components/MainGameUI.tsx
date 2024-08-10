@@ -26,7 +26,8 @@ export default function MainGameUI() {
     const nonSpectatorPlayers = useSelector(selectNonSpectators);
     const dispatch = useAppDispatch();
 
-    const [gameLogShown, setShowGameLog] = useState<boolean>(false);
+    // Show game log by default if debug, otherwise show chat by default
+    const [gameLogShown, setShowGameLog] = useState<boolean>(import.meta.env.DEV);
 
     function handleShotThunk(packet: PlayerShotAtPacket) {
         return (dispatch: AppDispatch, getState: () => IRootState) => {
