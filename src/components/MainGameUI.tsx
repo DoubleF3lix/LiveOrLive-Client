@@ -9,20 +9,17 @@ import Player from "~/components/Player";
 import MainGameHeader from "~/components/MainGameHeader";
 import MainGameFooter from "~/components/MainGameFooter";
 
-import { AppDispatch, useAppDispatch } from "~/store/Store";
+import { AppDispatch, IRootState, useAppDispatch } from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt, addGameLogMessage } from "~/store/GameData";
+import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt } from "~/store/GameData";
 import { selectNonSpectators } from "~/store/Selectors";
 
-import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewGameLogMessageSentPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
+import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
 import MessageBoxControlButton from "./MessageBoxControlButton";
 
 
 export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
-    // const currentTurn = useSelector((state: IRootState) => state.gameDataReducer.currentTurn);
-    // const currentPlayer = useSelector(selectCurrentPlayer);
-    // const clientUsername = useSelector((state: IRootState) => state.gameDataReducer.clientUsername);
     const nonSpectatorPlayers = useSelector(selectNonSpectators);
     const dispatch = useAppDispatch();
 
@@ -30,16 +27,19 @@ export default function MainGameUI() {
     const [gameLogShown, setShowGameLog] = useState<boolean>(import.meta.env.DEV);
 
     function handleShotThunk(packet: PlayerShotAtPacket) {
-        return (dispatch: AppDispatch) => { //, getState: () => IRootState) => {
-            // const state: IRootState = getState();
-            // const clientUsername = state.gameDataReducer.clientUsername;
-            // const currentTurn = state.gameDataReducer.currentTurn;
-            // const weFiredShot = clientUsername === currentTurn;
+        return (dispatch: AppDispatch, getState: () => IRootState) => {
+            const state: IRootState = getState();
+            const clientUsername = state.gameDataReducer.clientUsername;
+            const currentTurn = state.gameDataReducer.currentTurn;
+            const weFiredShot = clientUsername === currentTurn;
 
-            // const who = weFiredShot ? "You" : currentTurn;
-            // const target = clientUsername === packet.target ? (weFiredShot ? "yourself" : "you") : packet.target;
-            // const next = weFiredShot && packet.ammoType === "Blank" && clientUsername === packet.target ? " Go again!" : "";
-            // dispatch(addGameLogMessage(`${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`));
+            // Display an alert with better grammar if we took the shot
+            if (weFiredShot) {
+                const who = weFiredShot ? "You" : currentTurn;
+                const target = clientUsername === packet.target ? (weFiredShot ? "yourself" : "you") : packet.target;
+                const next = weFiredShot && packet.ammoType === "Blank" && clientUsername === packet.target ? " Go again!" : "";
+                alert(`${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`);
+            }
 
             // Handles subtracting life if it was live
             dispatch(playerShotAt(packet));
@@ -106,7 +106,6 @@ export default function MainGameUI() {
             serverConnection.unsubscribeFromServerPacket(turnStartedSubscription);
             serverConnection.unsubscribeFromServerPacket(playerShotAtSubscription);
             serverConnection.unsubscribeFromServerPacket(actionFailedSubscription);
-            serverConnection.unsubscribeFromServerPacket(newGameLogMessageSentSubscription);
         };
     }, []);
 
