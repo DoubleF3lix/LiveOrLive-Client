@@ -110,6 +110,11 @@ export type ChatMessagesSyncPacket = {
     messages: ChatMessageType[]
 };
 
+export type GameLogMessagesSyncPacket = {
+    packetType: "gameLogMessagesSync",
+    messages: GameLogMessageType[]
+};
+
 export type ShowAlertPacket = {
     packetType: "showAlert",
     content: string
@@ -181,8 +186,12 @@ export type SendNewChatMessagePacket = {
     content: string
 };
 
-export type ChatMessagesRequest = {
+export type ChatMessagesRequestPacket = {
     packetType: "chatMessagesRequest"
+};
+
+export type GameLogMessagesRequestPacket = {
+    packetType: "gameLogMessagesRequest"
 };
 
 export type ServerPacket = (
@@ -205,6 +214,7 @@ export type ServerPacket = (
     | StealItemUsedPacket
     | NewChatMessageSentPacket
     | ChatMessagesSyncPacket
+    | GameLogMessagesSyncPacket
     | ShowAlertPacket
     | NewGameLogMessageSentPacket
 );
@@ -223,7 +233,8 @@ export type ClientPacket = (
     | UseQuickshotItemPacket
     | UseStealItemPacket
     | SendNewChatMessagePacket
-    | ChatMessagesRequest
+    | ChatMessagesRequestPacket
+    | GameLogMessagesRequestPacket
 );
 
 export type Packet = ServerPacket | ClientPacket;

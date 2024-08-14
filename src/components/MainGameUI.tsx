@@ -91,11 +91,6 @@ export default function MainGameUI() {
             alert(packet.reason);
         });
 
-        const newGameLogMessageSentSubscription = serverConnection.subscribeToServerPacket("newGameLogMessageSent", (packet) => {
-            packet = packet as NewGameLogMessageSentPacket;
-            dispatch(addGameLogMessage(packet));
-        });
-
 
         // Trigger the initial UI population *after* we've setup the callbacks
         const getGameInfoPacket: GameDataRequestPacket = { packetType: "gameDataRequest" };

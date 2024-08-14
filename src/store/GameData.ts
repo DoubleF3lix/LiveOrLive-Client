@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { GameDataType } from "~/types/GameDataType";
-import { GameDataSyncPacket, NewGameLogMessageSentPacket, NewRoundStartedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
+import { GameDataSyncPacket, GameLogMessagesSyncPacket, NewGameLogMessageSentPacket, NewRoundStartedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
 import { PlayerType } from "~/types/PlayerType";
 
 
@@ -37,6 +37,9 @@ export const gameDataSlice = createSlice({
         setCurrentTurn: (state, action: {payload: TurnStartedPacket}) => {
             state.currentTurn = action.payload.username;
         },
+        populateGameLogFromPacket: (state, action: {payload: GameLogMessagesSyncPacket}) => {
+            state.gameLog = action.payload.messages;
+        },
         addGameLogMessage: (state, action: {payload: NewGameLogMessageSentPacket}) => {
             state.gameLog.push(action.payload.message);
         },
@@ -58,10 +61,9 @@ export const gameDataSlice = createSlice({
             state.gameStarted = action.payload.gameData.gameStarted;
             state.currentTurn = action.payload.gameData.currentTurn;
             state.gameID = action.payload.gameData.gameID;
-            state.gameLog = action.payload.gameData.gameLog;
         }
     }
 });
 
-export const {addPlayer, setClientUsername, setCurrentHost, onGameStarted, setCurrentTurn, addGameLogMessage, newRoundStarted, playerShotAt, populateGameDataFromPacket} = gameDataSlice.actions;
+export const {addPlayer, setClientUsername, setCurrentHost, onGameStarted, setCurrentTurn, populateGameLogFromPacket, addGameLogMessage, newRoundStarted, playerShotAt, populateGameDataFromPacket} = gameDataSlice.actions;
 export default gameDataSlice.reducer;

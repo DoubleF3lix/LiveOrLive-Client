@@ -10,7 +10,7 @@ import { IRootState } from "~/store/Store";
 import { addChatMessage, populateChatFromPacket } from "~/store/ChatSlice";
 
 import { ChatMessageType } from "~/types/ChatMessageType";
-import { ChatMessagesRequest, ChatMessagesSyncPacket, NewChatMessageSentPacket, SendNewChatMessagePacket } from "~/types/PacketType";
+import { ChatMessagesRequestPacket, ChatMessagesSyncPacket, NewChatMessageSentPacket, SendNewChatMessagePacket } from "~/types/PacketType";
 
 
 type ChatBoxArgs = {
@@ -41,7 +41,7 @@ export default function ChatBox({ visible }: ChatBoxArgs) {
         });
 
 
-        const getChatMessagesPacket: ChatMessagesRequest = {packetType: "chatMessagesRequest"};
+        const getChatMessagesPacket: ChatMessagesRequestPacket = {packetType: "chatMessagesRequest"};
         serverConnection.send(getChatMessagesPacket);
 
         return () => {
