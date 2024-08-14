@@ -35,12 +35,12 @@ export default function MainGameUI() {
             // const clientUsername = state.gameDataReducer.clientUsername;
             // const currentTurn = state.gameDataReducer.currentTurn;
             // const weFiredShot = clientUsername === currentTurn;
-            
+
             // const who = weFiredShot ? "You" : currentTurn;
             // const target = clientUsername === packet.target ? (weFiredShot ? "yourself" : "you") : packet.target;
             // const next = weFiredShot && packet.ammoType === "Blank" && clientUsername === packet.target ? " Go again!" : "";
             // dispatch(addGameLogMessage(`${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`));
-        
+
             // Handles subtracting life if it was live
             dispatch(playerShotAt(packet));
         }
@@ -65,7 +65,7 @@ export default function MainGameUI() {
         const gameDataSyncSubscription = serverConnection.subscribeToServerPacket("gameDataSync", (packet) => {
             packet = packet as GameDataSyncPacket;
             dispatch(populateGameDataFromPacket(packet));
-        });    
+        });
 
         const gameStartedSubscription = serverConnection.subscribeToServerPacket("gameStarted", () => {
             dispatch(onGameStarted());
@@ -98,9 +98,9 @@ export default function MainGameUI() {
 
 
         // Trigger the initial UI population *after* we've setup the callbacks
-        const getGameInfoPacket: GameDataRequestPacket = {packetType: "gameDataRequest"};
+        const getGameInfoPacket: GameDataRequestPacket = { packetType: "gameDataRequest" };
         serverConnection.send(getGameInfoPacket);
-        
+
 
         return () => {
             serverConnection.unsubscribeFromServerPacket(gameDataSyncSubscription);
@@ -117,11 +117,11 @@ export default function MainGameUI() {
 
     return (
         <div className="flex flex-col h-dvh">
-            <MainGameHeader/>
+            <MainGameHeader />
             <hr></hr>
-            <div className="flex flex-col flex-grow lg:flex-row overflow-auto"> 
+            <div className="flex flex-col flex-grow lg:flex-row overflow-auto">
                 <div className="w-full overflow-auto grid auto-rows-min sm:grid-cols-2 xl:grid-cols-3">
-                    {nonSpectatorPlayers.map((player) => <Player key={player.username + "_playerCard"} player={player}/>)}
+                    {nonSpectatorPlayers.map((player) => <Player key={player.username + "_playerCard"} player={player} />)}
                 </div>
 
                 {/* Used to push the box to the bottom on smaller views */}
@@ -130,16 +130,16 @@ export default function MainGameUI() {
 
                 <div className="flex flex-col border-solid border-black border-2 rounded-lg p-3 m-3 h-[25dvh] min-h-[25dvh] w-auto lg:w-[25dvw] lg:h-auto lg:p-4 lg:m-4">
                     <div className="flex flex-row">
-                        <MessageBoxControlButton text={"Chat"} underlined={!gameLogShown} onClickCallback={() => {setShowGameLog(false)}} />
+                        <MessageBoxControlButton text={"Chat"} underlined={!gameLogShown} onClickCallback={() => { setShowGameLog(false) }} />
                         <div className="min-w-12"></div>
-                        <MessageBoxControlButton text={"Game Log"} underlined={gameLogShown} onClickCallback={() => {setShowGameLog(true)}} />
+                        <MessageBoxControlButton text={"Game Log"} underlined={gameLogShown} onClickCallback={() => { setShowGameLog(true) }} />
                     </div>
-                    <GameLog visible={gameLogShown}/> 
-                    <ChatBox visible={!gameLogShown}/>
+                    <GameLog visible={gameLogShown} />
+                    <ChatBox visible={!gameLogShown} />
                 </div>
             </div>
             <hr></hr>
-            <MainGameFooter/>
+            <MainGameFooter />
         </div>
     );
 }
