@@ -49,7 +49,7 @@ export const gameDataSlice = createSlice({
         playerShotAt: (state, action: {payload: PlayerShotAtPacket}) => {
             if (action.payload.ammoType === "Live") {
                 const targetIndex = state.players.findIndex(player => player.username === action.payload.target);
-                state.players[targetIndex].lives -= 1;
+                state.players[targetIndex].lives -= action.payload.damage;
                 if (state.players[targetIndex].lives == 0) {
                     state.players[targetIndex].isSpectator = true;
                 }

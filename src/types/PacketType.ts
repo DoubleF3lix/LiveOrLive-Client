@@ -63,7 +63,8 @@ export type ActionFailedPacket = {
 export type PlayerShotAtPacket = {
     packetType: "playerShotAt",
     target: string,
-    ammoType: AmmoType
+    ammoType: AmmoType,
+    damage: number
 }
 
 export type SkipItemUsedPacket = {
