@@ -7,7 +7,6 @@ import ChatBox from "~/components/ChatBox";
 import GameLog from "~/components/GameLog";
 import Player from "~/components/Player";
 import MainGameHeader from "~/components/MainGameHeader";
-import MainGameFooter from "~/components/MainGameFooter";
 
 import { AppDispatch, IRootState, useAppDispatch } from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
@@ -16,6 +15,7 @@ import { selectNonSpectators } from "~/store/Selectors";
 
 import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
 import MessageBoxControlButton from "./MessageBoxControlButton";
+import Popup from "./Popup";
 
 
 export default function MainGameUI() {
@@ -133,7 +133,7 @@ export default function MainGameUI() {
                 </div>
             </div>
             <hr></hr>
-            <MainGameFooter />
+            <Popup header="Alert!" text="Popup text!" buttons={[["text1", () => alert("clicked1")], ["text2", () => alert("clicked2"), "red"]]}/>
         </div>
     );
 }

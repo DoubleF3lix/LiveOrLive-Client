@@ -28,6 +28,10 @@ export default function ChatBox({ visible }: ChatBoxArgs) {
     let lastMessageAuthor: string = "";
     const endOfMessages = useRef<HTMLDivElement>(null);
 
+    function scrollToBottom() {
+        endOfMessages.current?.scrollIntoView({behavior: "instant"});
+    }
+
     useEffect(() => {
         // This should only be called once per client (on page load) in theory, but technically the server can send this whenever it wants 
         const chatMessagesSyncSubscription = serverConnection.subscribeToServerPacket("chatMessagesSync", (packet) => {
@@ -44,6 +48,8 @@ export default function ChatBox({ visible }: ChatBoxArgs) {
         const getChatMessagesPacket: ChatMessagesRequestPacket = {packetType: "chatMessagesRequest"};
         serverConnection.send(getChatMessagesPacket);
 
+        scrollToBottom();
+
         return () => {
             serverConnection.unsubscribeFromServerPacket(chatMessageSubscription);
             serverConnection.unsubscribeFromServerPacket(chatMessagesSyncSubscription);
@@ -52,7 +58,7 @@ export default function ChatBox({ visible }: ChatBoxArgs) {
 
     // Always move to the bottom
     useEffect(() => {
-        endOfMessages.current?.scrollIntoView({behavior: "instant"});
+        scrollToBottom();
     }, [chatMessages]);
 
     function sendChatMessage(event: FormEvent) {

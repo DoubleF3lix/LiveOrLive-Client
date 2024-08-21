@@ -20,6 +20,7 @@ export default function MainGameFooter() {
     // Stores what item we have selected via the dropdown
     const [selectedItem, setSelectedItem] = useState<ItemType>();
 
+
     // Weird name because VSCode thinks it's a react hook if we use "useItem" lol
     function itemUse() {
         if (selectedItem !== undefined) {
@@ -31,6 +32,14 @@ export default function MainGameFooter() {
                 default:
                     console.log(selectedItem);
                     break;
+            }
+
+            if (currentPlayer) {
+                if (currentPlayer.items.length > 0) {
+                    setSelectedItem(currentPlayer.items[0]);
+                } else {
+                    setSelectedItem(undefined);
+                }
             }
         }
     }

@@ -22,6 +22,10 @@ export default function ChatBox({ visible }: GameLogArgs) {
     
     const endOfMessages = useRef<HTMLDivElement>(null);
 
+    function scrollToBottom() {
+        endOfMessages.current?.scrollIntoView({behavior: "instant"});
+    }
+
     useEffect(() => {
         // This should only be called once per client (on page load) in theory, but technically the server can send this whenever it wants 
         const gameLogMessagesSyncSubscription = serverConnection.subscribeToServerPacket("gameLogMessagesSync", (packet) => {
@@ -38,6 +42,8 @@ export default function ChatBox({ visible }: GameLogArgs) {
         const getGameLogMessagesPacket: GameLogMessagesRequestPacket = { packetType: "gameLogMessagesRequest" };
         serverConnection.send(getGameLogMessagesPacket);
 
+        scrollToBottom();
+
         return () => {
             serverConnection.unsubscribeFromServerPacket(gameLogMessageSubscription);
             serverConnection.unsubscribeFromServerPacket(gameLogMessagesSyncSubscription);
@@ -46,7 +52,7 @@ export default function ChatBox({ visible }: GameLogArgs) {
 
     // Always move to the bottom
     useEffect(() => {
-        endOfMessages.current?.scrollIntoView({ behavior: "instant" });
+        scrollToBottom();
     }, [gameLog]);
 
     return (

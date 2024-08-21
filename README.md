@@ -7,6 +7,7 @@ Chat length limits
 Message deletion/moderation
 Kicking
 Minimum username length (3)
+Sound effects
 
 
 Wishlist:
