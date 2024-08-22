@@ -7,6 +7,8 @@ import ChatBox from "~/components/ChatBox";
 import GameLog from "~/components/GameLog";
 import Player from "~/components/Player";
 import MainGameHeader from "~/components/MainGameHeader";
+import MessageBoxControlButton from "~/components/MessageBoxControlButton";
+import Popup from "~/components/Popup";
 
 import { AppDispatch, IRootState, useAppDispatch } from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
@@ -14,8 +16,8 @@ import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, 
 import { selectNonSpectators } from "~/store/Selectors";
 
 import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
-import MessageBoxControlButton from "./MessageBoxControlButton";
-import Popup from "./Popup";
+import PopupButtonsType from "~/types/PopupButtons";
+import PopupType from "~/types/PopupType";
 
 
 export default function MainGameUI() {
@@ -25,6 +27,24 @@ export default function MainGameUI() {
 
     // Show game log by default if debug, otherwise show chat by default
     const [gameLogShown, setShowGameLog] = useState<boolean>(import.meta.env.DEV);
+
+    // Popup stuff
+    const [popupQueue, setPopupQueue] = useState<PopupType[]>([]);
+
+    function queuePopup(header: string, content: string, buttons: PopupButtonsType) {
+        // This magic is needed to avoid it going stale
+        setPopupQueue(prevQueue => {
+            const newQueue = [...prevQueue, { header, content, buttons }];
+            return newQueue;
+        });
+    }
+
+    function closePopup() {
+        // Pop the first item in the queue in a weird way
+        const [, ...allButFirstPopupQueue] = popupQueue;
+        setPopupQueue(allButFirstPopupQueue);
+    }
+
 
     function handleShotThunk(packet: PlayerShotAtPacket) {
         return (dispatch: AppDispatch, getState: () => IRootState) => {
@@ -88,14 +108,19 @@ export default function MainGameUI() {
 
         const actionFailedSubscription = serverConnection.subscribeToServerPacket("actionFailed", (packet) => {
             packet = packet as ActionFailedPacket;
-            alert(packet.reason);
+            queuePopup("Error", packet.reason, [
+                {
+                    "text": "Close",
+                    "callback": () => closePopup()
+                }
+            ]);
         });
 
 
         // Trigger the initial UI population *after* we've setup the callbacks
         const getGameInfoPacket: GameDataRequestPacket = { packetType: "gameDataRequest" };
         serverConnection.send(getGameInfoPacket);
-
+        
 
         return () => {
             serverConnection.unsubscribeFromServerPacket(gameDataSyncSubscription);
@@ -133,7 +158,7 @@ export default function MainGameUI() {
                 </div>
             </div>
             <hr></hr>
-            <Popup header="Alert!" text="Popup text!" buttons={[["text1", () => alert("clicked1")], ["text2", () => alert("clicked2"), "red"]]}/>
+            {popupQueue.length > 0 ? <Popup onPopupClose={closePopup} popup={popupQueue[0]} /> : <></>}
         </div>
     );
 }
