@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import WebSocketConnection from "~/lib/WebSocketConnection";
 
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { setClientUsername } from "~/store/GameData";
+import { setClientUsername } from "~/store/GameDataSlice";
 
 import { JoinGamePacket } from "~/types/PacketType";
 

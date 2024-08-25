@@ -8,6 +8,7 @@ import MainGameUI from "~/components/MainGameUI";
 
 import store from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
+import PopupManager from "./components/PopupManager";
 
 
 export default function App() {
@@ -32,17 +33,12 @@ export default function App() {
     }, []);
 
     // No more null checking downstream :D
-    return isConnected ? (isLobby ? (
+    return isConnected ? (
         <Provider store={store}>
             <ServerConnectionContext.Provider value={serverConnection}>
-                <Lobby setIsLobby={(value: boolean) => {setIsLobby(value)}} />
+                {isLobby ? <Lobby setIsLobby={(value: boolean) => { setIsLobby(value) }} /> : <MainGameUI />}
+                <PopupManager />
             </ServerConnectionContext.Provider>
         </Provider>
-    ) : (
-        <Provider store={store}>
-            <ServerConnectionContext.Provider value={serverConnection}>
-                <MainGameUI/>
-            </ServerConnectionContext.Provider>
-        </Provider>
-    )) : <p>Connecting...</p>;
+    ) : <p>Connecting...</p>;
 }

@@ -1,9 +1,6 @@
-import PopupButtonsType from "./PopupButtons";
+type PopupType = 
+    | { type: "GenericText", header: string, text: string }
+    | { type: "SelectItem" }
+;
 
-type PopupType = {
-    header: string,
-    content: string,
-    buttons: PopupButtonsType
-};
-
-export default PopupType
+export default PopupType;

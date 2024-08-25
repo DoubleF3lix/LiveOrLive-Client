@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import WebSocketConnection, { WebSocketServerPacketSubscription } from "~/lib/WebSocketConnection";
-import { addGameLogMessage, populateGameLogFromPacket } from "~/store/GameData";
+import { addGameLogMessage, populateGameLogFromPacket } from "~/store/GameDataSlice";
 
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState } from "~/store/Store";

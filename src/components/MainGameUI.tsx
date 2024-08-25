@@ -8,43 +8,24 @@ import GameLog from "~/components/GameLog";
 import Player from "~/components/Player";
 import MainGameHeader from "~/components/MainGameHeader";
 import MessageBoxControlButton from "~/components/MessageBoxControlButton";
-import Popup from "~/components/Popup";
 
 import { AppDispatch, IRootState, useAppDispatch } from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt } from "~/store/GameData";
+import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt } from "~/store/GameDataSlice";
 import { selectNonSpectators } from "~/store/Selectors";
 
 import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
-import PopupButtonsType from "~/types/PopupButtons";
-import PopupType from "~/types/PopupType";
+import { queuePopup } from "~/store/PopupSlice";
 
 
 export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
     const nonSpectatorPlayers = useSelector(selectNonSpectators);
+
     const dispatch = useAppDispatch();
 
     // Show game log by default if debug, otherwise show chat by default
     const [gameLogShown, setShowGameLog] = useState<boolean>(import.meta.env.DEV);
-
-    // Popup stuff
-    const [popupQueue, setPopupQueue] = useState<PopupType[]>([]);
-
-    function queuePopup(header: string, content: string, buttons: PopupButtonsType) {
-        // This magic is needed to avoid it going stale
-        setPopupQueue(prevQueue => {
-            const newQueue = [...prevQueue, { header, content, buttons }];
-            return newQueue;
-        });
-    }
-
-    function closePopup() {
-        // Pop the first item in the queue in a weird way
-        const [, ...allButFirstPopupQueue] = popupQueue;
-        setPopupQueue(allButFirstPopupQueue);
-    }
-
 
     function handleShotThunk(packet: PlayerShotAtPacket) {
         return (dispatch: AppDispatch, getState: () => IRootState) => {
@@ -58,7 +39,19 @@ export default function MainGameUI() {
                 const who = weFiredShot ? "You" : currentTurn;
                 const target = clientUsername === packet.target ? (weFiredShot ? "yourself" : "you") : packet.target;
                 const next = weFiredShot && packet.ammoType === "Blank" && clientUsername === packet.target ? " Go again!" : "";
-                alert(`${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`);
+                dispatch(queuePopup({
+                    type: "GenericText", 
+                    header: "Shot Taken", 
+                    text: `${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`
+                }));
+            } else {
+                const target = packet.target === clientUsername ? "you" : 
+                    (packet.target === currentTurn ? "themselves" : packet.target);
+                dispatch(queuePopup({
+                    type: "GenericText", 
+                    header: "Shot Taken", 
+                    text: `${currentTurn} shot ${target} with a ${packet.ammoType.toLowerCase()} round.`
+                }));
             }
 
             // Handles subtracting life if it was live
@@ -108,14 +101,12 @@ export default function MainGameUI() {
 
         const actionFailedSubscription = serverConnection.subscribeToServerPacket("actionFailed", (packet) => {
             packet = packet as ActionFailedPacket;
-            queuePopup("Error", packet.reason, [
-                {
-                    "text": "Close",
-                    "callback": () => closePopup()
-                }
-            ]);
+            dispatch(queuePopup({
+                type: "GenericText", 
+                header: "Error", 
+                text: packet.reason
+            }));
         });
-
 
         // Trigger the initial UI population *after* we've setup the callbacks
         const getGameInfoPacket: GameDataRequestPacket = { packetType: "gameDataRequest" };
@@ -139,7 +130,7 @@ export default function MainGameUI() {
             <MainGameHeader />
             <hr></hr>
             <div className="flex flex-col flex-grow lg:flex-row overflow-auto">
-                <div className="w-full overflow-auto grid auto-rows-min sm:grid-cols-2 xl:grid-cols-3">
+                <div className="w-full overflow-auto grid auto-rows-min sm:grid-cols-2 2xl:grid-cols-3">
                     {nonSpectatorPlayers.map((player) => <Player key={player.username + "_playerCard"} player={player} />)}
                 </div>
 
@@ -158,7 +149,6 @@ export default function MainGameUI() {
                 </div>
             </div>
             <hr></hr>
-            {popupQueue.length > 0 ? <Popup onPopupClose={closePopup} popup={popupQueue[0]} /> : <></>}
         </div>
     );
 }
