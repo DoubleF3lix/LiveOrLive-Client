@@ -76,8 +76,8 @@ export type DoubleDamageItemUsedPacket = {
     packetType: "doubleDamageItemUsed"
 }
 
-export type ChamberCheckItemUsedPacket = {
-    packetType: "chamberCheckItemUsed",
+export type CheckBulletItemUsedPacket = {
+    packetType: "checkBulletItemUsed",
     result: AmmoType
 }
 
@@ -90,6 +90,10 @@ export type RebalancerItemUsedPacket = {
 export type AdrenalineItemUsedPacket = {
     packetType: "adrenalineItemUsed",
     result: number
+}
+
+export type AddLifeItemUsedPacket = {
+    packetType: "addLifeItemUsed"
 }
 
 export type QuickshotItemUsedPacket = {
@@ -142,7 +146,7 @@ export type GameDataRequestPacket = {
 };
 
 export type StartGamePacket = {
-    packetType: "startGame",
+    packetType: "startGame"
 };
 
 export type ShootPlayerPacket = {
@@ -156,11 +160,11 @@ export type UseSkipItemPacket = {
 };
 
 export type UseDoubleDamageItemPacket = {
-    packetType: "useDoubleDamageItem",
+    packetType: "useDoubleDamageItem"
 };
 
-export type UseChamberCheckItemPacket = {
-    packetType: "useChamberCheckItem",
+export type UseCheckBulletItemPacket = {
+    packetType: "useCheckBulletItem"
 };
 
 export type UseRebalancerItemPacket = {
@@ -172,8 +176,12 @@ export type UseAdrenalineItemPacket = {
     packetType: "useAdrenalineItem"
 }
 
+export type UseAddLifeItemPacket = {
+    packetType: "useAddLifeItem"
+}
+
 export type UseQuickshotItemPacket = {
-    packetType: "useQuickshotItem",
+    packetType: "useQuickshotItem"
 };
 
 export type UseStealItemPacket = {
@@ -208,9 +216,10 @@ export type ServerPacket = (
     | PlayerShotAtPacket
     | SkipItemUsedPacket
     | DoubleDamageItemUsedPacket
-    | ChamberCheckItemUsedPacket
+    | CheckBulletItemUsedPacket
     | RebalancerItemUsedPacket
     | AdrenalineItemUsedPacket
+    | AddLifeItemUsedPacket
     | QuickshotItemUsedPacket
     | StealItemUsedPacket
     | NewChatMessageSentPacket
@@ -228,9 +237,10 @@ export type ClientPacket = (
     | ShootPlayerPacket
     | UseSkipItemPacket
     | UseDoubleDamageItemPacket
-    | UseChamberCheckItemPacket
+    | UseCheckBulletItemPacket
     | UseRebalancerItemPacket
     | UseAdrenalineItemPacket
+    | UseAddLifeItemPacket
     | UseQuickshotItemPacket
     | UseStealItemPacket
     | SendNewChatMessagePacket

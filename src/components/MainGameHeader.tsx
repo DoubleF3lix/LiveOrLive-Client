@@ -25,7 +25,7 @@ export default function MainGameHeader() {
             return;
         }
 
-        dispatch(queuePopup({type: "SelectItem"}));
+        dispatch(queuePopup({ type: "SelectItem" }));
     }
 
     function startGame() {
