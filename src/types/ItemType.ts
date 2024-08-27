@@ -4,10 +4,10 @@ export function convertItemTypeToName(item: ItemType) {
     return {
         "SkipPlayerTurn": "Skip", 
         "DoubleDamage": "Double Damage",
-        "CheckBullet": "Check Chamber",
+        "CheckBullet": "Chamber Check",
         "Rebalancer": "Rebalancer",
         "Adrenaline": "Adrenaline",
-        "StealItem": "Steal Item",
+        "StealItem": "Pickpocket",
         "AddLife": "+1 Life",
         "Quickshot": "Quickshot"
     }[item]

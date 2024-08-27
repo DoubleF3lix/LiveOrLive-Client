@@ -7,10 +7,11 @@ type StyledButtonArgs = {
     className?: string,
     onClick?: () => void,
     key?: string,
+    disabled?: boolean,
     children?: ReactNode
 };
 
-export default function StyledButton({ style, className, onClick, key, children }: StyledButtonArgs) {
+export default function StyledButton({ style, className, onClick, key, disabled, children }: StyledButtonArgs) {
     function getColorForStyle(style: PopupButtonStyleType | undefined): string {
         return {
             "default": "bg-gray-600",
@@ -19,5 +20,5 @@ export default function StyledButton({ style, className, onClick, key, children 
         }[style ?? "default"];
     }
 
-    return <button key={key} onClick={onClick} className={`${getColorForStyle(style)} px-2 mx-0.5 text-white rounded h-8 flex-grow ${className}`}>{children}</button>
+    return <button key={key} onClick={onClick} disabled={disabled} className={`${getColorForStyle(style)} px-2 mx-0.5 text-white rounded h-8 flex-grow ${className}`}>{children}</button>
 }

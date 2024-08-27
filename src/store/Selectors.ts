@@ -1,16 +1,34 @@
+import { createSelector } from '@reduxjs/toolkit'
 import { PlayerType } from "~/types/PlayerType";
 import { IRootState } from "./Store";
 
 
-export function selectCurrentPlayer(state: IRootState): PlayerType {
-    return state.gameDataReducer.players.find(player => player.username === state.gameDataReducer.clientUsername) ||
-        { username: "", inGame: false, isSpectator: true, lives: 0, items: [], isSkipped: false, joinTime: 0 };
-}
+// These look like magic, but they're just to make sure that we don't return a new array with the same input
+// (and thus avoid those pesky warnings)
+export const selectCurrentPlayer = createSelector(
+    [
+        (state: IRootState) => state.gameDataReducer.players,
+        (state: IRootState) => state.gameDataReducer.clientUsername
+    ],
+    (players, clientUsername): PlayerType => {
+        return (
+            players.find(player => player.username === clientUsername) ||
+            { username: "", inGame: false, isSpectator: true, lives: 0, items: [], isSkipped: false, joinTime: 0 }
+        );
+    }
+);
 
-export function selectNonSpectators(state: IRootState) {
-    return state.gameDataReducer.players.filter(player => player.isSpectator === false);
-}
+export const selectNonSpectators = createSelector(
+    (state: IRootState) => state.gameDataReducer.players,
+    players => players.filter(player => player.isSpectator === false)
+);
 
-export function selectHost(state: IRootState): PlayerType | undefined {
-    return state.gameDataReducer.players.find(player => player.username === state.gameDataReducer.currentHost);
-}
+export const selectHost = createSelector(
+    [
+        (state: IRootState) => state.gameDataReducer.players,
+        (state: IRootState) => state.gameDataReducer.currentHost
+    ],
+    (players, currentHost): PlayerType | undefined => {
+        return players.find(player => player.username === currentHost);
+    }
+);
