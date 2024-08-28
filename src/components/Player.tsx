@@ -27,7 +27,7 @@ export default function Player({ player }: PlayerArgs) {
         serverConnection.send(shootPlayerPacket);
     }
 
-    return currentPlayer ? (
+    return (
         <div className={`flex flex-col flex-grow border-solid border-${player.isSkipped ? "red-700" : "black"} border-2 rounded-lg p-3 m-3 lg:p-4 lg:m-4`}>
             <p>
                 <strong>{player.username}</strong> - {player.lives} {player.lives !== 1 ? "lives" : "life"}
@@ -36,7 +36,7 @@ export default function Player({ player }: PlayerArgs) {
             <br/>
             <br/>
 
-            {currentPlayer.items.length > 0 ? (<>
+            {player.items.length > 0 ? (<>
                 <p>Items:</p>
                 <ul className="list-disc list-inside">
                     {condenseItemList(player.items).map((item, index) => <li key={index + "_playerItem"}>{item}</li>)} 
@@ -55,5 +55,5 @@ export default function Player({ player }: PlayerArgs) {
                 <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 flex-grow disabled:bg-opacity-50" onClick={shootPlayer} disabled={currentPlayer.username !== currentTurn}>Shoot</button>
             </div>
         </div>
-    ) : <></>;
+    );
 }
