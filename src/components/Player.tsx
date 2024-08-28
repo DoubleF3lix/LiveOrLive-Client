@@ -28,7 +28,7 @@ export default function Player({ player }: PlayerArgs) {
     }
 
     return currentPlayer ? (
-        <div className="flex flex-col flex-grow border-solid border-black border-2 rounded-lg p-3 m-3 lg:p-4 lg:m-4">
+        <div className={`flex flex-col flex-grow border-solid border-${player.isSkipped ? "red-700" : "black"} border-2 rounded-lg p-3 m-3 lg:p-4 lg:m-4`}>
             <p>
                 <strong>{player.username}</strong> - {player.lives} {player.lives !== 1 ? "lives" : "life"}
             </p>

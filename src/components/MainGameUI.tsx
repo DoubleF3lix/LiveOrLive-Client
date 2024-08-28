@@ -11,17 +11,16 @@ import MessageBoxControlButton from "~/components/MessageBoxControlButton";
 
 import { AppDispatch, IRootState, useAppDispatch } from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt } from "~/store/GameDataSlice";
+import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt, skipItemUsed, adrenalineItemUsed, addLifeItemUsed, stealItemUsed, quickshotItemUsed, rebalancerItemUsed, doubleDamageItemUsed, checkBulletItemUsed, addGameLogMessage } from "~/store/GameDataSlice";
 import { selectNonSpectators } from "~/store/Selectors";
 
-import { ActionFailedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
+import { ActionFailedPacket, AdrenalineItemUsedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";
 import { queuePopup } from "~/store/PopupSlice";
 
 
 export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
     const nonSpectatorPlayers = useSelector(selectNonSpectators);
-
     const dispatch = useAppDispatch();
 
     // Show game log by default if debug, otherwise show chat by default
@@ -40,16 +39,16 @@ export default function MainGameUI() {
                 const target = clientUsername === packet.target ? (weFiredShot ? "yourself" : "you") : packet.target;
                 const next = weFiredShot && packet.ammoType === "Blank" && clientUsername === packet.target ? " Go again!" : "";
                 dispatch(queuePopup({
-                    type: "GenericText", 
-                    header: "Shot Taken", 
+                    type: "GenericText",
+                    header: "Shot Taken",
                     text: `${who} shot ${target} with a ${packet.ammoType.toLowerCase()} round.${next}`
                 }));
             } else {
-                const target = packet.target === clientUsername ? "you" : 
+                const target = packet.target === clientUsername ? "you" :
                     (packet.target === currentTurn ? "themselves" : packet.target);
                 dispatch(queuePopup({
-                    type: "GenericText", 
-                    header: "Shot Taken", 
+                    type: "GenericText",
+                    header: "Shot Taken",
                     text: `${currentTurn} shot ${target} with a ${packet.ammoType.toLowerCase()} round.`
                 }));
             }
@@ -63,55 +62,92 @@ export default function MainGameUI() {
     useEffect(() => {
         // These are their own packets for now just to avoid an extra sync
         // If any new players connect mid-game (doesn't catch us)
-        const playerJoinedSubscription = serverConnection.subscribeToServerPacket("playerJoined", (packet) => {
+        const playerJoinedSubscription = serverConnection.subscribeToServerPacket("playerJoined", packet => {
             packet = packet as PlayerJoinedPacket;
             dispatch(addPlayer(packet.player)); // De-duplication is handled in here
         });
 
-        const hostSetSubscription = serverConnection.subscribeToServerPacket("hostSet", (packet) => {
+        const hostSetSubscription = serverConnection.subscribeToServerPacket("hostSet", packet => {
             packet = packet as HostSetPacket;
             dispatch(setCurrentHost(packet.username));
         });
 
         // These are subscriptions cause we want to be up to date just in case anything else gets sent, but they're also triggered by the below requests
         // Responsible for existing info (players, host, etc.)
-        const gameDataSyncSubscription = serverConnection.subscribeToServerPacket("gameDataSync", (packet) => {
+        const gameDataSyncSubscription = serverConnection.subscribeToServerPacket("gameDataSync", packet => {
             packet = packet as GameDataSyncPacket;
             dispatch(populateGameDataFromPacket(packet));
         });
 
         const gameStartedSubscription = serverConnection.subscribeToServerPacket("gameStarted", () => {
             dispatch(onGameStarted());
+            serverConnection.send({ "packetType": "gameDataRequest" }); // TODO remove me (temp fix to stop straggling player cards)
         });
 
-        const newRoundStartedSubscription = serverConnection.subscribeToServerPacket("newRoundStarted", (packet) => {
+        const newRoundStartedSubscription = serverConnection.subscribeToServerPacket("newRoundStarted", packet => {
             packet = packet as NewRoundStartedPacket;
             dispatch(newRoundStarted(packet));
         });
 
-        const turnStartedSubscription = serverConnection.subscribeToServerPacket("turnStarted", (packet) => {
+        const turnStartedSubscription = serverConnection.subscribeToServerPacket("turnStarted", packet => {
             packet = packet as TurnStartedPacket;
             dispatch(setCurrentTurn(packet));
         });
 
-        const playerShotAtSubscription = serverConnection.subscribeToServerPacket("playerShotAt", (packet) => {
+        const playerShotAtSubscription = serverConnection.subscribeToServerPacket("playerShotAt", packet => {
             packet = packet as PlayerShotAtPacket;
             dispatch(handleShotThunk(packet));
         });
 
-        const actionFailedSubscription = serverConnection.subscribeToServerPacket("actionFailed", (packet) => {
+        const skipItemUsedSubscription = serverConnection.subscribeToServerPacket("skipItemUsed", packet => {
+            packet = packet as SkipItemUsedPacket;
+            dispatch(skipItemUsed(packet));
+        });
+
+        const doubleDamageItemUsedSubscription = serverConnection.subscribeToServerPacket("doubleDamageItemUsed", () => {
+            dispatch(doubleDamageItemUsed());
+        });
+
+        const checkBulletItemUsedSubscription = serverConnection.subscribeToServerPacket("checkBulletItemUsed", () => {
+            dispatch(checkBulletItemUsed());
+        });
+
+        const rebalancerItemUsedSubscription = serverConnection.subscribeToServerPacket("rebalancerItemUsed", () => {
+            dispatch(rebalancerItemUsed());
+        });
+
+        const adrenalineItemUsedSubscription = serverConnection.subscribeToServerPacket("adrenalineItemUsed", packet => {
+            packet = packet as AdrenalineItemUsedPacket;
+            dispatch(adrenalineItemUsed(packet));
+        });
+
+        const addLifeItemUsedSubscription = serverConnection.subscribeToServerPacket("addLifeItemUsed", () => {
+            dispatch(addLifeItemUsed());
+        });
+
+        const quickshotItemUsedSubscription = serverConnection.subscribeToServerPacket("quickshotItemUsed", () => {
+            dispatch(quickshotItemUsed());
+        });
+
+        const stealItemUsedSubscription = serverConnection.subscribeToServerPacket("stealItemUsed", packet => {
+            packet = packet as StealItemUsedPacket;
+            dispatch(stealItemUsed(packet));
+        });
+
+        const actionFailedSubscription = serverConnection.subscribeToServerPacket("actionFailed", packet => {
             packet = packet as ActionFailedPacket;
-            dispatch(queuePopup({
-                type: "GenericText", 
-                header: "Error", 
-                text: packet.reason
-            }));
+            dispatch(addGameLogMessage({"packetType": "newGameLogMessageSent", "message": {"message": "ACTION FAILED: " + packet.reason, "timestamp": 0}}));
+            // dispatch(queuePopup({
+            //     type: "GenericText",
+            //     header: "Error",
+            //     text: packet.reason
+            // }));
         });
 
         // Trigger the initial UI population *after* we've setup the callbacks
         const getGameInfoPacket: GameDataRequestPacket = { packetType: "gameDataRequest" };
         serverConnection.send(getGameInfoPacket);
-        
+
 
         return () => {
             serverConnection.unsubscribeFromServerPacket(gameDataSyncSubscription);
@@ -121,6 +157,14 @@ export default function MainGameUI() {
             serverConnection.unsubscribeFromServerPacket(newRoundStartedSubscription);
             serverConnection.unsubscribeFromServerPacket(turnStartedSubscription);
             serverConnection.unsubscribeFromServerPacket(playerShotAtSubscription);
+            serverConnection.unsubscribeFromServerPacket(skipItemUsedSubscription);
+            serverConnection.unsubscribeFromServerPacket(doubleDamageItemUsedSubscription);
+            serverConnection.unsubscribeFromServerPacket(checkBulletItemUsedSubscription);
+            serverConnection.unsubscribeFromServerPacket(rebalancerItemUsedSubscription);
+            serverConnection.unsubscribeFromServerPacket(adrenalineItemUsedSubscription);
+            serverConnection.unsubscribeFromServerPacket(addLifeItemUsedSubscription);
+            serverConnection.unsubscribeFromServerPacket(quickshotItemUsedSubscription);
+            serverConnection.unsubscribeFromServerPacket(stealItemUsedSubscription);
             serverConnection.unsubscribeFromServerPacket(actionFailedSubscription);
         };
     }, []);

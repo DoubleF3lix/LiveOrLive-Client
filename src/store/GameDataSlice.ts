@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { removeItemFromArray } from "~/lib/util";
 
 import { GameDataType } from "~/types/GameDataType";
-import { GameDataSyncPacket, GameLogMessagesSyncPacket, NewGameLogMessageSentPacket, NewRoundStartedPacket, PlayerShotAtPacket, TurnStartedPacket } from "~/types/PacketType";
+import { AdrenalineItemUsedPacket, GameDataSyncPacket, GameLogMessagesSyncPacket, NewGameLogMessageSentPacket, NewRoundStartedPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";
 import { PlayerType } from "~/types/PlayerType";
 
 
@@ -36,6 +37,10 @@ export const gameDataSlice = createSlice({
         },
         setCurrentTurn: (state, action: PayloadAction<TurnStartedPacket>) => {
             state.currentTurn = action.payload.username;
+
+            // Always overwrite their skipped state when their turn comes up
+            const playerForTurnIndex = state.players.findIndex(player => player.username === action.payload.username);
+            state.players[playerForTurnIndex].isSkipped = false;
         },
         populateGameLogFromPacket: (state, action: PayloadAction<GameLogMessagesSyncPacket>) => {
             state.gameLog = action.payload.messages;
@@ -46,6 +51,13 @@ export const gameDataSlice = createSlice({
         newRoundStarted: (state, action: PayloadAction<NewRoundStartedPacket>) => {
             state.players = action.payload.players;
         },
+        populateGameDataFromPacket: (state, action: PayloadAction<GameDataSyncPacket>) => {
+            state.players = action.payload.gameData.players;
+            state.currentHost = action.payload.gameData.host;
+            state.gameStarted = action.payload.gameData.gameStarted;
+            state.currentTurn = action.payload.gameData.currentTurn;
+            state.gameID = action.payload.gameData.gameID;
+        },
         playerShotAt: (state, action: PayloadAction<PlayerShotAtPacket>) => {
             if (action.payload.ammoType === "Live") {
                 const targetIndex = state.players.findIndex(player => player.username === action.payload.target);
@@ -55,15 +67,53 @@ export const gameDataSlice = createSlice({
                 }
             }
         },
-        populateGameDataFromPacket: (state, action: PayloadAction<GameDataSyncPacket>) => {
-            state.players = action.payload.gameData.players;
-            state.currentHost = action.payload.gameData.host;
-            state.gameStarted = action.payload.gameData.gameStarted;
-            state.currentTurn = action.payload.gameData.currentTurn;
-            state.gameID = action.payload.gameData.gameID;
+        skipItemUsed: (state, action: PayloadAction<SkipItemUsedPacket>) => {
+            const senderIndex = state.players.findIndex(player => player.username === state.currentTurn);
+            const targetIndex = state.players.findIndex(player => player.username === action.payload.target);
+
+            state.players[senderIndex].items = removeItemFromArray(state.players[senderIndex].items, "SkipPlayerTurn");
+            state.players[targetIndex].isSkipped = true;
+        },
+        doubleDamageItemUsed: (state) => {
+            const senderIndex = state.players.findIndex(player => player.username === state.currentTurn);
+            state.players[senderIndex].items = removeItemFromArray(state.players[senderIndex].items, "DoubleDamage");
+        },
+        checkBulletItemUsed: (state) => {
+            const senderIndex = state.players.findIndex(player => player.username === state.currentTurn);
+            state.players[senderIndex].items = removeItemFromArray(state.players[senderIndex].items, "CheckBullet");
+        },
+        rebalancerItemUsed: (state) => {
+            const senderIndex = state.players.findIndex(player => player.username === state.currentTurn);
+            state.players[senderIndex].items = removeItemFromArray(state.players[senderIndex].items, "Rebalancer");
+        },
+        adrenalineItemUsed: (state, action: PayloadAction<AdrenalineItemUsedPacket>) => {
+            const senderIndex = state.players.findIndex(player => player.username === state.currentTurn);
+
+            state.players[senderIndex].items = removeItemFromArray(state.players[senderIndex].items, "Adrenaline");
+            state.players[senderIndex].lives += action.payload.result;
+        },
+        addLifeItemUsed: (state) => {
+            const senderIndex = state.players.findIndex(player => player.username === state.currentTurn);
+
+            state.players[senderIndex].items = removeItemFromArray(state.players[senderIndex].items, "AddLife");
+            state.players[senderIndex].lives += 1;
+        },
+        quickshotItemUsed: (state) => {
+            const senderIndex = state.players.findIndex(player => player.username === state.currentTurn);
+            state.players[senderIndex].items = removeItemFromArray(state.players[senderIndex].items, "Quickshot");
+        },
+        stealItemUsed: (state, action: PayloadAction<StealItemUsedPacket>) => {
+            const senderIndex = state.players.findIndex(player => player.username === state.currentTurn);
+            const targetIndex = state.players.findIndex(player => player.username === action.payload.target);
+
+            state.players[senderIndex].items = removeItemFromArray(state.players[senderIndex].items, "StealItem");
+            state.players[targetIndex].items = removeItemFromArray(state.players[targetIndex].items, action.payload.item);
         }
     }
 });
 
-export const {addPlayer, setClientUsername, setCurrentHost, onGameStarted, setCurrentTurn, populateGameLogFromPacket, addGameLogMessage, newRoundStarted, playerShotAt, populateGameDataFromPacket} = gameDataSlice.actions;
+export const { addPlayer, setClientUsername, setCurrentHost, onGameStarted, setCurrentTurn,
+    populateGameLogFromPacket, addGameLogMessage, newRoundStarted, populateGameDataFromPacket, playerShotAt, 
+    skipItemUsed, doubleDamageItemUsed, checkBulletItemUsed, rebalancerItemUsed, adrenalineItemUsed, addLifeItemUsed, quickshotItemUsed, stealItemUsed
+} = gameDataSlice.actions;
 export default gameDataSlice.reducer;

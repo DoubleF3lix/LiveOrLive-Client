@@ -27,7 +27,7 @@ export default function Lobby({ setIsLobby }: LobbyArgs) {
         const joinGamePacket: JoinGamePacket = { packetType: "joinGame", username: usernameField };
         serverConnection.send(joinGamePacket);
 
-        serverConnection.waitForServerPacket(["playerJoined", "playerJoinRejected"]).then((packet) => {
+        serverConnection.waitForServerPacket(["playerJoined", "playerJoinRejected"]).then(packet => {
             if (packet.packetType === "playerJoined") {
                 // Check if the accepted player is us, and if so, log in
                 if (packet.player.username == usernameField) {

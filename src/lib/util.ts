@@ -1,4 +1,5 @@
 import ItemType, { convertItemTypeToName } from "~/types/ItemType";
+import { PlayerType } from "~/types/PlayerType";
 
 export function normalizeItemListWithCounts(items: ItemType[]): Map<ItemType, number> {
     // Turns ["StealItem", "StealItem"] into {"Steal Item": 2}
@@ -15,4 +16,14 @@ export function condenseItemList(items: ItemType[]): string[] {
         output.push(`${convertItemTypeToName(itemType)}${count > 1 ? ` (x${count})` : ``}`);
     }
     return output;
+}
+
+export function removeItemFromArray<T>(array: T[], item: T): T[] {
+    // Find the item, and generate a new array with the item removed
+    const index = array.indexOf(item);
+    array = [
+        ...array.slice(0, index),
+        ...array.slice(index + 1)
+    ];
+    return array;
 }

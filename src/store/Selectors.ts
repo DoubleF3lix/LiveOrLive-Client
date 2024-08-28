@@ -18,6 +18,19 @@ export const selectCurrentPlayer = createSelector(
     }
 );
 
+export const selectPlayerForTurn = createSelector(
+    [
+        (state: IRootState) => state.gameDataReducer.players,
+        (state: IRootState) => state.gameDataReducer.currentTurn
+    ],
+    (players, currentTurn): PlayerType => {
+        return (
+            players.find(player => player.username === currentTurn) ||
+            { username: "", inGame: false, isSpectator: true, lives: 0, items: [], isSkipped: false, joinTime: 0 }
+        );
+    }
+);
+
 export const selectNonSpectators = createSelector(
     (state: IRootState) => state.gameDataReducer.players,
     players => players.filter(player => player.isSpectator === false)

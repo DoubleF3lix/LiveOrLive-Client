@@ -28,14 +28,14 @@ export default function SelectItemPopup() {
     function showSelectPlayerItem(): ReactElement {
         // Guaranteed to not be null since showPlayerSelect is called first
         const selectedPlayerObject = selectablePlayers.find(player => player.username === selectedPlayer) as PlayerType;
-        selectedPlayerItem.current = selectedPlayerObject.items[0];
-        // selectedPlayerItem.current = selectedPlayerObject.items[0];
+        // Because we don't want people pickpocketing pickpocket items
+        selectedPlayerItem.current = selectedPlayerObject.items.filter(item => item !== "StealItem")[0];
         return <>
             <div className="flex flex-row m-1 items-center">
                 <label htmlFor="playerItemSelect" className="align-middle">Steal:</label>
                 <select name="playerItemList" id="playerItemSelect" className="ml-2" onChange={e => selectedPlayerItem.current = e.target.value as ItemType}>
                     {currentPlayer.items.length > 0 ?
-                        Array.from(normalizeItemListWithCounts(selectedPlayerObject.items)).map(([item, count]) =>
+                        Array.from(normalizeItemListWithCounts(selectedPlayerObject.items.filter(item => item !== "StealItem"))).map(([item, count]) =>
                             <option key={`${selectedPlayerObject.username}_${item}_playerItemSelect`} value={item}>
                                 {convertItemTypeToName(item)}{count > 1 ? ` (x${count})` : ``}
                             </option>
@@ -67,6 +67,7 @@ export default function SelectItemPopup() {
                     break;
                 case "StealItem":
                     if (selectedPlayer && selectedPlayerItem.current) {
+                        console.log(selectedPlayer, selectedPlayerItem.current);
                         serverConnection.send({ packetType: "useStealItem", target: selectedPlayer, item: selectedPlayerItem.current });
                     }
                     break;

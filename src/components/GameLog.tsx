@@ -28,12 +28,12 @@ export default function ChatBox({ visible }: GameLogArgs) {
 
     useEffect(() => {
         // This should only be called once per client (on page load) in theory, but technically the server can send this whenever it wants 
-        const gameLogMessagesSyncSubscription = serverConnection.subscribeToServerPacket("gameLogMessagesSync", (packet) => {
+        const gameLogMessagesSyncSubscription = serverConnection.subscribeToServerPacket("gameLogMessagesSync", packet => {
             packet = packet as GameLogMessagesSyncPacket;
             dispatch(populateGameLogFromPacket(packet));
         });
 
-        const gameLogMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newGameLogMessageSent", (packet) => {
+        const gameLogMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newGameLogMessageSent", packet => {
             packet = packet as NewGameLogMessageSentPacket;
             dispatch(addGameLogMessage(packet));
         });

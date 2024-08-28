@@ -34,12 +34,12 @@ export default function ChatBox({ visible }: ChatBoxArgs) {
 
     useEffect(() => {
         // This should only be called once per client (on page load) in theory, but technically the server can send this whenever it wants 
-        const chatMessagesSyncSubscription = serverConnection.subscribeToServerPacket("chatMessagesSync", (packet) => {
+        const chatMessagesSyncSubscription = serverConnection.subscribeToServerPacket("chatMessagesSync", packet => {
             packet = packet as ChatMessagesSyncPacket;
             dispatch(populateChatFromPacket(packet));
         });
 
-        const chatMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newChatMessageSent", (packet) => {
+        const chatMessageSubscription: WebSocketServerPacketSubscription = serverConnection.subscribeToServerPacket("newChatMessageSent", packet => {
             packet = packet as NewChatMessageSentPacket;
             dispatch(addChatMessage(packet.message));
         });
