@@ -1,5 +1,4 @@
 import ItemType, { convertItemTypeToName } from "~/types/ItemType";
-import { PlayerType } from "~/types/PlayerType";
 
 export function normalizeItemListWithCounts(items: ItemType[]): Map<ItemType, number> {
     // Turns ["StealItem", "StealItem"] into {"Steal Item": 2}
