@@ -4,13 +4,14 @@ import { IRootState, useAppDispatch } from "~/store/Store";
 import SelectItemPopup from "./popup/SelectItemPopup";
 import GenericTextPopup from "./popup/GenericTextPopup";
 import PopupType from "~/types/PopupType";
-
+import KickPlayerPopup from "./popup/KickPlayerPopup";
+import PlayerKickedPopup from "./popup/PlayerKickedPopup";
 
 
 export default function PopupManager() {
     const popupQueue = useSelector((state: IRootState) => state.popupReducer.popupQueue);
     const dispatch = useAppDispatch();
-    
+
     // Huge shoutout to acemarke (developer on Redux actually) for helping me get the code to a point where it was usable like this
     function getPopupDetails(popup: PopupType) {
         if (popup === undefined) {
@@ -21,9 +22,13 @@ export default function PopupManager() {
                 return { header: popup.header, component: <GenericTextPopup text={popup.text} /> };
             case "SelectItem":
                 return { header: "Use Item", component: <SelectItemPopup /> };
+            case "KickPlayer":
+                return { header: "Kick Player", component: <KickPlayerPopup /> }
+            case "PlayerKicked":
+                return { header: "Admin", component: <PlayerKickedPopup /> }
         }
     }
-    const {header, component} = getPopupDetails(popupQueue[0]);
+    const { header, component } = getPopupDetails(popupQueue[0]);
 
     return (
         popupQueue.length > 0 ? <>

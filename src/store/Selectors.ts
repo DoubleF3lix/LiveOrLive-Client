@@ -41,7 +41,10 @@ export const selectHost = createSelector(
         (state: IRootState) => state.gameDataReducer.players,
         (state: IRootState) => state.gameDataReducer.currentHost
     ],
-    (players, currentHost): PlayerType | undefined => {
-        return players.find(player => player.username === currentHost);
+    (players, currentHost): PlayerType => {
+        return (
+            players.find(player => player.username === currentHost) ||
+            { username: "", inGame: false, isSpectator: true, lives: 0, items: [], isSkipped: false, joinTime: 0 }
+        );
     }
 );

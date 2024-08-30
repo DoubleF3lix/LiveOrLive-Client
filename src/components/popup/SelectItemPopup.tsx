@@ -79,8 +79,6 @@ export default function SelectItemPopup() {
                     break;
             }
         }
-
-        console.log(selectedItem);
     }
 
     return <>

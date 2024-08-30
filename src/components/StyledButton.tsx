@@ -20,5 +20,5 @@ export default function StyledButton({ style, className, onClick, key, disabled,
         }[style ?? "default"];
     }
 
-    return <button key={key} onClick={onClick} disabled={disabled} className={`${getColorForStyle(style)} px-2 mx-0.5 text-white rounded h-8 flex-grow ${className}`}>{children}</button>
+    return <button key={key} onClick={onClick} disabled={disabled} className={`${getColorForStyle(style)} px-2 mx-0.5 text-white rounded h-8 flex-grow disabled:bg-opacity-50 ${className}`}>{children}</button>
 }

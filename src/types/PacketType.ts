@@ -130,6 +130,13 @@ export type NewGameLogMessageSentPacket = {
     message: GameLogMessageType
 };
 
+export type PlayerKickedPacket = {
+    packetType: "playerKicked",
+    username: string,
+    currentTurn: string
+};
+
+
 // Client packets
 export type JoinGamePacket = {
     packetType: "joinGame",
@@ -203,6 +210,12 @@ export type GameLogMessagesRequestPacket = {
     packetType: "gameLogMessagesRequest"
 };
 
+export type KickPlayerPacket = {
+    packetType: "kickPlayer",
+    username: string
+};
+
+
 export type ServerPacket = (
     | GameDataSyncPacket
     | PlayerJoinedPacket
@@ -227,6 +240,7 @@ export type ServerPacket = (
     | GameLogMessagesSyncPacket
     | ShowAlertPacket
     | NewGameLogMessageSentPacket
+    | PlayerKickedPacket
 );
 
 export type ClientPacket = (
@@ -246,6 +260,7 @@ export type ClientPacket = (
     | SendNewChatMessagePacket
     | ChatMessagesRequestPacket
     | GameLogMessagesRequestPacket
+    | KickPlayerPacket
 );
 
 export type Packet = ServerPacket | ClientPacket;

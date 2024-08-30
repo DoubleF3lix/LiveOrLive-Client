@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { removeItemFromArray } from "~/lib/util";
 
 import { GameDataType } from "~/types/GameDataType";
-import { AdrenalineItemUsedPacket, GameDataSyncPacket, GameLogMessagesSyncPacket, NewGameLogMessageSentPacket, NewRoundStartedPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";
+import { AdrenalineItemUsedPacket, GameDataSyncPacket, GameLogMessagesSyncPacket, NewGameLogMessageSentPacket, NewRoundStartedPacket, PlayerKickedPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";
 import { PlayerType } from "~/types/PlayerType";
 
 
@@ -31,6 +31,11 @@ export const gameDataSlice = createSlice({
         },
         setCurrentHost: (state, action: PayloadAction<string>) => {
             state.currentHost = action.payload;
+        },
+        playerKicked: (state, action: PayloadAction<PlayerKickedPacket>) => {
+            // Remove the player who got yeeted
+            state.players = state.players.filter(player => player.username !== action.payload.username);
+            state.currentTurn = action.payload.currentTurn;
         },
         onGameStarted: (state) => {
             state.gameStarted = true;
@@ -112,7 +117,7 @@ export const gameDataSlice = createSlice({
     }
 });
 
-export const { addPlayer, setClientUsername, setCurrentHost, onGameStarted, setCurrentTurn,
+export const { addPlayer, setClientUsername, setCurrentHost, playerKicked, onGameStarted, setCurrentTurn,
     populateGameLogFromPacket, addGameLogMessage, newRoundStarted, populateGameDataFromPacket, playerShotAt, 
     skipItemUsed, doubleDamageItemUsed, checkBulletItemUsed, rebalancerItemUsed, adrenalineItemUsed, addLifeItemUsed, quickshotItemUsed, stealItemUsed
 } = gameDataSlice.actions;

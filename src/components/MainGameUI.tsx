@@ -11,16 +11,18 @@ import MessageBoxControlButton from "~/components/MessageBoxControlButton";
 
 import { AppDispatch, IRootState, useAppDispatch } from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt, skipItemUsed, adrenalineItemUsed, addLifeItemUsed, stealItemUsed, quickshotItemUsed, rebalancerItemUsed, doubleDamageItemUsed, checkBulletItemUsed, addGameLogMessage } from "~/store/GameDataSlice";
+import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt, skipItemUsed, adrenalineItemUsed, addLifeItemUsed, stealItemUsed, quickshotItemUsed, rebalancerItemUsed, doubleDamageItemUsed, checkBulletItemUsed, addGameLogMessage, playerKicked } from "~/store/GameDataSlice";
 import { selectNonSpectators } from "~/store/Selectors";
 
-import { ActionFailedPacket, AdrenalineItemUsedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";
+import { ActionFailedPacket, AdrenalineItemUsedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerKickedPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";
 import { queuePopup } from "~/store/PopupSlice";
 
 
 export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as WebSocketConnection;
     const nonSpectatorPlayers = useSelector(selectNonSpectators);
+    const clientUsername = useSelector((state: IRootState) => state.gameDataReducer.clientUsername);
+
     const dispatch = useAppDispatch();
 
     // Show game log by default if debug, otherwise show chat by default
@@ -58,8 +60,17 @@ export default function MainGameUI() {
         }
     }
 
-    // Runs on successful connection
     useEffect(() => {
+        // For when we get kicked
+        const playerKickedSubscription = serverConnection.subscribeToServerPacket("playerKicked", packet => {
+            packet = packet as PlayerKickedPacket;
+            if (packet.username === clientUsername) {
+                dispatch(queuePopup({ type: "PlayerKicked" }));
+            } else {
+                dispatch(playerKicked(packet));
+            }
+        });
+
         // These are their own packets for now just to avoid an extra sync
         // If any new players connect mid-game (doesn't catch us)
         const playerJoinedSubscription = serverConnection.subscribeToServerPacket("playerJoined", packet => {
@@ -136,7 +147,7 @@ export default function MainGameUI() {
 
         const actionFailedSubscription = serverConnection.subscribeToServerPacket("actionFailed", packet => {
             packet = packet as ActionFailedPacket;
-            dispatch(addGameLogMessage({"packetType": "newGameLogMessageSent", "message": {"message": "ACTION FAILED: " + packet.reason, "timestamp": 0}}));
+            dispatch(addGameLogMessage({ "packetType": "newGameLogMessageSent", "message": { "message": "ACTION FAILED: " + packet.reason, "timestamp": 0 } }));
             // dispatch(queuePopup({
             //     type: "GenericText",
             //     header: "Error",
@@ -150,6 +161,7 @@ export default function MainGameUI() {
 
 
         return () => {
+            serverConnection.unsubscribeFromServerPacket(playerKickedSubscription);
             serverConnection.unsubscribeFromServerPacket(gameDataSyncSubscription);
             serverConnection.unsubscribeFromServerPacket(playerJoinedSubscription);
             serverConnection.unsubscribeFromServerPacket(hostSetSubscription);

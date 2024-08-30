@@ -19,15 +19,6 @@ export default function MainGameHeader() {
     const gameStarted = useSelector((state: IRootState) => state.gameDataReducer.gameStarted);
     const dispatch = useAppDispatch();
 
-
-    function openSelectItemPopup() {
-        if (!currentPlayer || currentPlayer.username !== currentTurn || currentPlayer.items.length === 0) {
-            return;
-        }
-
-        dispatch(queuePopup({ type: "SelectItem" }));
-    }
-
     function startGame() {
         const startGamePacket: StartGamePacket = { packetType: "startGame" };
         serverConnection.send(startGamePacket);
@@ -35,21 +26,32 @@ export default function MainGameHeader() {
 
     return (
         <div className="flex flex-row justify-center m-1 relative">
-            <p className="text-center font-bold text-base lg:text-lg pt-3">Live or Live{currentTurn ? ` - ${currentTurn}'s turn` : ""}</p>
+            <p className="font-bold text-base lg:text-lg pt-2 pb-2">Live or Live - {currentTurn ? `${currentTurn}'s turn` : `Waiting for ${currentHost.username}`}</p>
 
-            {!gameStarted || !currentPlayer ? <></> :
-                <button
-                    className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-start absolute left-0 disabled:bg-opacity-50"
-                    onClick={openSelectItemPopup}
-                    disabled={currentPlayer.username !== currentTurn || currentPlayer.items.length === 0}
-                >
-                    Use Item
-                </button>
-            }
+            <div className="flex flex-row left-0 absolute self-start mt-1.5">
+                {!gameStarted ? <></> :
+                    <button
+                        className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 disabled:bg-opacity-50"
+                        onClick={() => dispatch(queuePopup({ type: "SelectItem" }))}
+                        disabled={currentPlayer.username !== currentTurn || currentPlayer.items.length === 0}
+                    >
+                        Use Item
+                    </button>
+                }
 
-            {gameStarted || currentPlayer !== currentHost ? <></> :
-                <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 self-end absolute right-0" onClick={startGame}>Start Game</button>
-            }
+                {gameStarted || currentPlayer !== currentHost ? <></> :
+                    <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8" onClick={startGame}>Start Game</button>
+                }
+
+                {currentPlayer !== currentHost ? <></> :
+                    <button
+                        className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 disabled:bg-opacity-50"
+                        onClick={() => dispatch(queuePopup({ type: "KickPlayer" }))}
+                    >
+                        Kick
+                    </button>
+                }
+            </div>
         </div>
     );
 }

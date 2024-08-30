@@ -19,14 +19,14 @@ export default function App() {
 
     useEffect(() => {
         const webSocketConn = import.meta.env.DEV ? new WebSocketConnection("http://localhost:8080") : new WebSocketConnection("https://liveorlive-server.fly.dev/");
-        webSocketConn.subscribeToEvent("onConnect", () => {
-            console.log("New connection!");
+        const onConnectSubscription = webSocketConn.subscribeToEvent("onConnect", () => {
             setIsConnected(true);
         });
 
         setWs(webSocketConn);
 
         return () => {
+            webSocketConn.unsubscribeFromEvent(onConnectSubscription);
             webSocketConn.close();
             setWs(null);
         }
@@ -36,7 +36,7 @@ export default function App() {
     return isConnected ? (
         <Provider store={store}>
             <ServerConnectionContext.Provider value={serverConnection}>
-                {isLobby ? <Lobby setIsLobby={(value: boolean) => { setIsLobby(value) }} /> : <MainGameUI />}
+                {isLobby ? <Lobby setIsLobby={setIsLobby} /> : <MainGameUI />}
                 <PopupManager />
             </ServerConnectionContext.Provider>
         </Provider>
