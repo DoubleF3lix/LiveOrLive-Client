@@ -43,7 +43,7 @@ export type NewRoundStartedPacket = {
     players: PlayerType[],
     liveCount: number,
     blankCount: number
-}
+};
 
 export type TurnStartedPacket = {
     packetType: "turnStarted",
@@ -65,40 +65,44 @@ export type PlayerShotAtPacket = {
     target: string,
     ammoType: AmmoType,
     damage: number
-}
+};
 
 export type SkipItemUsedPacket = {
     packetType: "skipItemUsed",
     target: string
-}
+};
 
 export type DoubleDamageItemUsedPacket = {
     packetType: "doubleDamageItemUsed"
-}
+};
 
 export type CheckBulletItemUsedPacket = {
-    packetType: "checkBulletItemUsed",
+    packetType: "checkBulletItemUsed"
+};
+
+export type CheckBulletItemResultPacket = {
+    packetType: "checkBulletItemResult",
     result: AmmoType
-}
+};
 
 export type RebalancerItemUsedPacket = {
     packetType: "rebalancerItemUsed",
     ammoType: AmmoType,
     count: number
-}
+};
 
 export type AdrenalineItemUsedPacket = {
     packetType: "adrenalineItemUsed",
     result: number
-}
+};
 
 export type AddLifeItemUsedPacket = {
     packetType: "addLifeItemUsed"
-}
+};
 
 export type QuickshotItemUsedPacket = {
     packetType: "quickshotItemUsed",
-}
+};
 
 export type StealItemUsedPacket = {
     packetType: "stealItemUsed",
@@ -181,11 +185,11 @@ export type UseRebalancerItemPacket = {
 
 export type UseAdrenalineItemPacket = {
     packetType: "useAdrenalineItem"
-}
+};
 
 export type UseAddLifeItemPacket = {
     packetType: "useAddLifeItem"
-}
+};
 
 export type UseQuickshotItemPacket = {
     packetType: "useQuickshotItem"
@@ -230,6 +234,7 @@ export type ServerPacket = (
     | SkipItemUsedPacket
     | DoubleDamageItemUsedPacket
     | CheckBulletItemUsedPacket
+    | CheckBulletItemResultPacket
     | RebalancerItemUsedPacket
     | AdrenalineItemUsedPacket
     | AddLifeItemUsedPacket

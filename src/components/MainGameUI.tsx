@@ -14,7 +14,7 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt, skipItemUsed, adrenalineItemUsed, addLifeItemUsed, stealItemUsed, quickshotItemUsed, rebalancerItemUsed, doubleDamageItemUsed, checkBulletItemUsed, addGameLogMessage, playerKicked } from "~/store/GameDataSlice";
 import { selectNonSpectators } from "~/store/Selectors";
 
-import { ActionFailedPacket, AdrenalineItemUsedPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerKickedPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";
+import { ActionFailedPacket, AdrenalineItemUsedPacket, CheckBulletItemResultPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerKickedPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";
 import { queuePopup } from "~/store/PopupSlice";
 
 
@@ -123,6 +123,15 @@ export default function MainGameUI() {
             dispatch(checkBulletItemUsed());
         });
 
+        const checkBulletItemResultSubscription = serverConnection.subscribeToServerPacket("checkBulletItemResult", packet => {
+            packet = packet as CheckBulletItemResultPacket;
+            dispatch(queuePopup({
+                type: "GenericText",
+                header: "Chamber Check",
+                text: `It's a ${packet.result.toLowerCase()} round!`
+            }));
+        });
+
         const rebalancerItemUsedSubscription = serverConnection.subscribeToServerPacket("rebalancerItemUsed", () => {
             dispatch(rebalancerItemUsed());
         });
@@ -172,6 +181,7 @@ export default function MainGameUI() {
             serverConnection.unsubscribeFromServerPacket(skipItemUsedSubscription);
             serverConnection.unsubscribeFromServerPacket(doubleDamageItemUsedSubscription);
             serverConnection.unsubscribeFromServerPacket(checkBulletItemUsedSubscription);
+            serverConnection.unsubscribeFromServerPacket(checkBulletItemResultSubscription);
             serverConnection.unsubscribeFromServerPacket(rebalancerItemUsedSubscription);
             serverConnection.unsubscribeFromServerPacket(adrenalineItemUsedSubscription);
             serverConnection.unsubscribeFromServerPacket(addLifeItemUsedSubscription);
