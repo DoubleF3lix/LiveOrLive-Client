@@ -1,4 +1,4 @@
-import { ReactElement, useContext, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import WebSocketConnection from "~/lib/WebSocketConnection";
 import { normalizeItemListWithCounts } from "~/lib/util";
@@ -22,30 +22,21 @@ export default function SelectItemPopup() {
     // Stores what item we have selected via the dropdowns
     const [selectedItem, setSelectedItem] = useState<ItemType>(currentPlayer.items[0]);
     const [selectedPlayer, setSelectedPlayer] = useState<string>(selectablePlayers[0].username);
-    const selectedPlayerItem = useRef<ItemType>();
     const selectedAmmoType = useRef<AmmoType>("Live");
+    const selectedSkipTarget = useRef<string>(selectablePlayers[0].username);
 
-    function showSelectPlayerItem(): ReactElement {
-        // Guaranteed to not be null since showPlayerSelect is called first
-        const selectedPlayerObject = selectablePlayers.find(player => player.username === selectedPlayer) as PlayerType;
-        // Because we don't want people pickpocketing pickpocket items
-        selectedPlayerItem.current = selectedPlayerObject.items.filter(item => item !== "StealItem")[0];
-        return <>
-            <div className="flex flex-row m-1 items-center">
-                <label htmlFor="playerItemSelect" className="align-middle">Steal:</label>
-                <select name="playerItemList" id="playerItemSelect" className="ml-2" onChange={e => selectedPlayerItem.current = e.target.value as ItemType}>
-                    {currentPlayer.items.length > 0 ?
-                        Array.from(normalizeItemListWithCounts(selectedPlayerObject.items.filter(item => item !== "StealItem"))).map(([item, count]) =>
-                            <option key={`${selectedPlayerObject.username}_${item}_playerItemSelect`} value={item}>
-                                {convertItemTypeToName(item)}{count > 1 ? ` (x${count})` : ``}
-                            </option>
-                        )
-                        : <option key={`${currentPlayer.username}_noItems_playerItemSelect`} value={undefined}>No Items</option>
-                    }
-                </select>
-            </div>
-        </>;
-    }
+    const selectedPlayerObject = selectablePlayers.find(player => player.username === selectedPlayer) as PlayerType;
+    const [selectedPlayerItem, setSelectedPlayerItem] = useState<ItemType>(selectedPlayerObject.items.filter(item => item !== "StealItem")[0]);
+
+    const rebalancerAmmoSelect = <>
+        <div className="flex flex-row m-1 items-center">
+            <label htmlFor="ammoTypeSelect" className="align-middle">Type:</label>
+            <select name="ammoTypeList" id="ammoTypeSelect" className="ml-2" onChange={e => selectedAmmoType.current = e.target.value as AmmoType}>
+                <option key="live_ammoTypeSelect" value="Live">Live</option>
+                <option key="blank_ammoTypeSelect" value="Blank">Blank</option>
+            </select>
+        </div>
+    </>;
 
     function itemUse() {
         if (selectedItem !== undefined) {
@@ -66,9 +57,21 @@ export default function SelectItemPopup() {
                     serverConnection.send({ packetType: "useAdrenalineItem" });
                     break;
                 case "StealItem":
-                    if (selectedPlayer && selectedPlayerItem.current) {
-                        console.log(selectedPlayer, selectedPlayerItem.current);
-                        serverConnection.send({ packetType: "useStealItem", target: selectedPlayer, item: selectedPlayerItem.current });
+                    if (selectedPlayer && selectedPlayerItem) {
+                        console.log("STEAL ITEM PACKET:", { 
+                            packetType: "useStealItem", 
+                            target: selectedPlayer, 
+                            item: selectedPlayerItem, 
+                            ammoType: selectedPlayerItem === "Rebalancer" ? selectedAmmoType.current : null, 
+                            skipTarget: selectedPlayerItem === "SkipPlayerTurn" ? selectedSkipTarget.current : null 
+                        });
+                        serverConnection.send({ 
+                            packetType: "useStealItem", 
+                            target: selectedPlayer, 
+                            item: selectedPlayerItem, 
+                            ammoType: selectedPlayerItem === "Rebalancer" ? selectedAmmoType.current : null, 
+                            skipTarget: selectedPlayerItem === "SkipPlayerTurn" ? selectedSkipTarget.current : null 
+                        });
                     }
                     break;
                 case "AddLife":
@@ -81,6 +84,7 @@ export default function SelectItemPopup() {
         }
     }
 
+    // TODO this is bad and really should have like a ConditionalSelect component or something
     return <>
         <div className="pt-3 pb-4">
             <div className="flex flex-row m-1 items-center">
@@ -99,23 +103,40 @@ export default function SelectItemPopup() {
 
             {selectedItem === "SkipPlayerTurn" || selectedItem === "StealItem" ? <>
                 <div className="flex flex-row m-1 items-center">
-                    <label htmlFor="playersSelect" className="align-middle">Player:</label>
-                    <select name="playersList" id="playerSelect" className="ml-2" onChange={e => setSelectedPlayer(e.target.value as ItemType)}>
+                    <label htmlFor="playerSelect" className="align-middle">Player:</label>
+                    <select name="playersList" id="playerSelect" className="ml-2" onChange={e => setSelectedPlayer(e.target.value)}>
                         {selectablePlayers.map((player) => <option key={player.username + "_playerSelect"} value={player.username}>{player.username}</option>)}
                     </select>
                 </div>
             </> : <></>}
-            {selectedItem === "StealItem" && selectedPlayer ? showSelectPlayerItem() : <></>}
-
-            {selectedItem === "Rebalancer" ? <>
+            {selectedItem === "StealItem" && selectedPlayer ? <>
                 <div className="flex flex-row m-1 items-center">
-                    <label htmlFor="ammoTypeSelect" className="align-middle">Type:</label>
-                    <select name="ammoTypeList" id="ammoTypeSelect" className="ml-2" onChange={e => selectedAmmoType.current = e.target.value as AmmoType}>
-                        <option key="live_ammoTypeSelect" value="Live">Live</option>
-                        <option key="blank_ammoTypeSelect" value="Blank">Blank</option>
+                    <label htmlFor="playerItemSelect" className="align-middle">Steal:</label>
+                    <select name="playerItemList" id="playerItemSelect" className="ml-2" onChange={e => setSelectedPlayerItem(e.target.value as ItemType)}>
+                        {currentPlayer.items.length > 0 ?
+                            Array.from(normalizeItemListWithCounts(selectedPlayerObject.items.filter(item => item !== "StealItem"))).map(([item, count]) =>
+                                <option key={`${selectedPlayerObject.username}_${item}_playerItemSelect`} value={item}>
+                                    {convertItemTypeToName(item)}{count > 1 ? ` (x${count})` : ``}
+                                </option>
+                            )
+                            : <option key={`${currentPlayer.username}_noItems_playerItemSelect`} value={undefined}>No Items</option>
+                        }
                     </select>
                 </div>
+
+                {selectedPlayerItem === "Rebalancer" ? rebalancerAmmoSelect : <></>}
+
+                {selectedPlayerItem === "SkipPlayerTurn" ? <>
+                    <div className="flex flex-row m-1 items-center">
+                        <label htmlFor="stealItemSkipPlayerSelect" className="align-middle">Skip Player:</label>
+                        <select name="stealItemSkipPlayersList" id="stealItemSkipPlayerSelect" className="ml-2" onChange={e => selectedSkipTarget.current = e.target.value}>
+                            {selectablePlayers.map((player) => <option key={player.username + "_stealItemSkipPlayerSelect"} value={player.username}>{player.username}</option>)}
+                        </select>
+                    </div>
+                </> : <></>}
             </> : <></>}
+
+            {selectedItem === "Rebalancer" ? rebalancerAmmoSelect : <></>}
 
         </div>
         <div className="flex flex-row">

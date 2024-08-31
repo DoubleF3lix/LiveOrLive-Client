@@ -198,7 +198,9 @@ export type UseQuickshotItemPacket = {
 export type UseStealItemPacket = {
     packetType: "useStealItem",
     target: string
-    item: ItemType
+    item: ItemType,
+    ammoType: AmmoType | null,
+    skipTarget: string | null
 };
 
 export type SendNewChatMessagePacket = {

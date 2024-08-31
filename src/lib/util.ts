@@ -20,9 +20,11 @@ export function condenseItemList(items: ItemType[]): string[] {
 export function removeItemFromArray<T>(array: T[], item: T): T[] {
     // Find the item, and generate a new array with the item removed
     const index = array.indexOf(item);
-    array = [
+    if (index == -1) {
+        return array;
+    }
+    return [
         ...array.slice(0, index),
         ...array.slice(index + 1)
     ];
-    return array;
 }
