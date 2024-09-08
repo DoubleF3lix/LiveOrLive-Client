@@ -11,10 +11,10 @@ import MessageBoxControlButton from "~/components/MessageBoxControlButton";
 
 import { AppDispatch, IRootState, useAppDispatch } from "~/store/Store";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt, skipItemUsed, adrenalineItemUsed, addLifeItemUsed, stealItemUsed, quickshotItemUsed, rebalancerItemUsed, doubleDamageItemUsed, checkBulletItemUsed, addGameLogMessage, playerKicked } from "~/store/GameDataSlice";
+import { addPlayer, onGameStarted, newRoundStarted, populateGameDataFromPacket, setCurrentHost, setCurrentTurn, playerShotAt, skipItemUsed, adrenalineItemUsed, addLifeItemUsed, stealItemUsed, quickshotItemUsed, rebalancerItemUsed, doubleDamageItemUsed, checkBulletItemUsed, addGameLogMessage, playerKicked, playerLeft } from "~/store/GameDataSlice";
 import { selectNonSpectators } from "~/store/Selectors";
 
-import { ActionFailedPacket, AdrenalineItemUsedPacket, CheckBulletItemResultPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerKickedPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";
+import { ActionFailedPacket, AdrenalineItemUsedPacket, CheckBulletItemResultPacket, GameDataRequestPacket, GameDataSyncPacket, HostSetPacket, NewRoundStartedPacket, PlayerJoinedPacket, PlayerKickedPacket, PlayerLeftPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";
 import { queuePopup } from "~/store/PopupSlice";
 
 
@@ -71,23 +71,25 @@ export default function MainGameUI() {
             }
         });
 
-        // These are their own packets for now just to avoid an extra sync
-        // If any new players connect mid-game (doesn't catch us)
         const playerJoinedSubscription = serverConnection.subscribeToServerPacket("playerJoined", packet => {
             packet = packet as PlayerJoinedPacket;
             dispatch(addPlayer(packet.player)); // De-duplication is handled in here
         });
 
-        const hostSetSubscription = serverConnection.subscribeToServerPacket("hostSet", packet => {
-            packet = packet as HostSetPacket;
-            dispatch(setCurrentHost(packet.username));
+        const playerLeftSubscription = serverConnection.subscribeToServerPacket("playerLeft", packet => {
+            packet = packet as PlayerLeftPacket;
+            dispatch(playerLeft(packet.username));
         });
 
-        // These are subscriptions cause we want to be up to date just in case anything else gets sent, but they're also triggered by the below requests
         // Responsible for existing info (players, host, etc.)
         const gameDataSyncSubscription = serverConnection.subscribeToServerPacket("gameDataSync", packet => {
             packet = packet as GameDataSyncPacket;
             dispatch(populateGameDataFromPacket(packet));
+        });
+
+        const hostSetSubscription = serverConnection.subscribeToServerPacket("hostSet", packet => {
+            packet = packet as HostSetPacket;
+            dispatch(setCurrentHost(packet.username));
         });
 
         const gameStartedSubscription = serverConnection.subscribeToServerPacket("gameStarted", () => {
@@ -173,6 +175,7 @@ export default function MainGameUI() {
             serverConnection.unsubscribeFromServerPacket(playerKickedSubscription);
             serverConnection.unsubscribeFromServerPacket(gameDataSyncSubscription);
             serverConnection.unsubscribeFromServerPacket(playerJoinedSubscription);
+            serverConnection.unsubscribeFromServerPacket(playerLeftSubscription);
             serverConnection.unsubscribeFromServerPacket(hostSetSubscription);
             serverConnection.unsubscribeFromServerPacket(gameStartedSubscription);
             serverConnection.unsubscribeFromServerPacket(newRoundStartedSubscription);

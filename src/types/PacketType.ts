@@ -29,6 +29,11 @@ export type PlayerJoinRejectedPacket = {
     reason: string
 };
 
+export type PlayerLeftPacket = {
+    packetType: "playerLeft",
+    username: string
+};
+
 export type HostSetPacket = {
     packetType: "hostSet",
     username: string
@@ -226,6 +231,7 @@ export type ServerPacket = (
     | GameDataSyncPacket
     | PlayerJoinedPacket
     | PlayerJoinRejectedPacket
+    | PlayerLeftPacket
     | HostSetPacket
     | GameStartedPacket
     | NewRoundStartedPacket

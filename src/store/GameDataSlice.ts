@@ -24,6 +24,20 @@ export const gameDataSlice = createSlice({
             // Check for duplicates, and don't add if they're already in there (just as a failsafe)
             if (!state.players.some(player => player.username === action.payload.username)) {
                 state.players.push(action.payload);
+            } else {
+                const targetIndex = state.players.findIndex(player => player.username === action.payload.username);
+                // If they're not dead, show they're back in the game
+                if (state.players[targetIndex].isSpectator === false) {
+                    state.players[targetIndex].inGame = true;
+                }
+            }
+        },
+        playerLeft: (state, action: PayloadAction<string>) => {
+            if (!state.gameStarted) {
+                state.players = state.players.filter(player => player.username !== action.payload);
+            } else {
+                const targetIndex = state.players.findIndex(player => player.username === action.payload);
+                state.players[targetIndex].inGame = false;
             }
         },
         setClientUsername: (state, action: PayloadAction<string>) => {
@@ -117,7 +131,7 @@ export const gameDataSlice = createSlice({
     }
 });
 
-export const { addPlayer, setClientUsername, setCurrentHost, playerKicked, onGameStarted, setCurrentTurn,
+export const { addPlayer, playerLeft, setClientUsername, setCurrentHost, playerKicked, onGameStarted, setCurrentTurn,
     populateGameLogFromPacket, addGameLogMessage, newRoundStarted, populateGameDataFromPacket, playerShotAt, 
     skipItemUsed, doubleDamageItemUsed, checkBulletItemUsed, rebalancerItemUsed, adrenalineItemUsed, addLifeItemUsed, quickshotItemUsed, stealItemUsed
 } = gameDataSlice.actions;
