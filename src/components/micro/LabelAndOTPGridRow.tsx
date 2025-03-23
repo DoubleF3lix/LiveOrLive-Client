@@ -17,8 +17,8 @@ export default function LabelAndTextInputGridRow({ label, OTPRef, length = 4 }: 
     const [OTP, setOTP] = useState<string>(""); 
 
     return [
-        <label htmlFor={label} className="content-center mr-2">{label}</label>,
-        <InputOTP maxLength={length} autoFocus pattern={REGEXP_ONLY_DIGITS_AND_CHARS} value={OTP} onChange={OTP => { 
+        <label key={`${label}-label`} htmlFor={label} className="content-center mr-2">{label}</label>,
+        <InputOTP key={`${label}-input`} maxLength={length} autoFocus pattern={REGEXP_ONLY_DIGITS_AND_CHARS} value={OTP} onChange={OTP => { 
             setOTP(OTP); 
             OTPRef.current = OTP.length === length ? OTP : ""; 
         }}>
