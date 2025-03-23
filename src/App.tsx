@@ -1,8 +1,8 @@
 import { useState } from "react";
-import LobbyHub from "./components/LobbyHub";
-import ContextWrapper from "./components/ContextWrapper";
 import { Provider } from "react-redux";
-import store from "./store/Store";
+import LobbyHub from "~/components/LobbyHub/LobbyHub";
+import ContextWrapper from "~/components/ContextWrapper";
+import store from "~/store/Store";
 
 
 export default function App() {

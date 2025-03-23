@@ -6,11 +6,14 @@ import { IRootState } from "~/store/Store";
 import { Toaster } from "@/sonner";
 import { Button } from "@/button";
 import toast from "~/components/CustomToast";
+import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
 
 
 export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as ServerConnection;
     const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
+
+    
 
 
     useEffect(() => {
@@ -24,6 +27,7 @@ export default function MainGameUI() {
     });
 
     return <>
+        <OpenSidebarButton />
         <p>{clientUsername}</p>
         <Button onClick={() => toast({
                 type: "achievement",
