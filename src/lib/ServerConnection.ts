@@ -3,6 +3,7 @@ import { getHubProxyFactory, getReceiverRegister } from "~/types/generated/Typed
 import { IBaseGameRequest, IBaseGameResponse, IChatRequest, IChatResponse, IConnectionRequest, IConnectionResponse, IGameLogRequest, IGameLogResponse, IGenericRequest, IGenericResponse, IHubServerResponse, IItemRequest, IItemResponse } from "~/types/generated/TypedSignalR.Client/liveorlive_server.HubPartials";
 import { ChatMessage, GameLogMessage, Player, GameData } from "~/types/generated/liveorlive_server";
 import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
+import { BASE_URL } from "~/lib/const";
 
 
 type ResponseCallback<K extends keyof IHubServerResponse = keyof IHubServerResponse> = IHubServerResponse[K];
@@ -35,7 +36,7 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
 
     constructor(lobbyId: string, username: string) {
         this.connection = new HubConnectionBuilder()
-            .withUrl(`http://localhost:8080?lobbyId=${lobbyId}&username=${username}`)
+            .withUrl(`${BASE_URL}?lobbyId=${lobbyId}&username=${username}`)
             .configureLogging(LogLevel.Warning)
             .build();
 
