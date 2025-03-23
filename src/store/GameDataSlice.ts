@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { removeItemFromArray } from "~/lib/util";
+import { removeItemFromArray } from "~/lib/utils";
 
 import { GameDataType } from "~/types/GameDataType";
 import { AdrenalineItemUsedPacket, GameDataSyncPacket, GameLogMessagesSyncPacket, NewGameLogMessageSentPacket, NewRoundStartedPacket, PlayerKickedPacket, PlayerShotAtPacket, SkipItemUsedPacket, StealItemUsedPacket, TurnStartedPacket } from "~/types/PacketType";

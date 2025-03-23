@@ -1,6 +1,5 @@
 import { createContext } from 'react';
+import { ServerConnection } from '~/lib/ServerConnection';
 
-import WebSocketConnection from '~/lib/WebSocketConnection';
 
-
-export const ServerConnectionContext = createContext<WebSocketConnection | null>(null);
+export const ServerConnectionContext = createContext<ServerConnection | null>(null);

@@ -1,4 +1,17 @@
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
 import ItemType, { convertItemTypeToName } from "~/types/ItemType";
+
+export function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs))
+}
+
+export function toCamelCase(str: string) {
+    return str
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/^./, (match) => match.toUpperCase());
+}
 
 export function normalizeItemListWithCounts(items: ItemType[]): Map<ItemType, number> {
     // Turns ["StealItem", "StealItem"] into {"Steal Item": 2}
@@ -28,3 +41,19 @@ export function removeItemFromArray<T>(array: T[], item: T): T[] {
         ...array.slice(index + 1)
     ];
 }
+
+// Needed when parsing JSON into our types (JSON may be uppercase, types are lowercase)
+// ChatGPT totally generated this BTW
+export const toLowercaseKeys = (obj: object): object => {
+    if (Array.isArray(obj)) {
+        return obj.map(toLowercaseKeys);
+    } else if (typeof obj === "object" && obj !== null) {
+        return Object.fromEntries(
+            Object.entries(obj).map(([key, value]) => [
+                key.charAt(0).toLowerCase() + key.slice(1),
+                toLowercaseKeys(value)
+            ])
+        );
+    }
+    return obj;
+};

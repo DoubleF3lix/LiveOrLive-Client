@@ -31,7 +31,7 @@ export default function MainGameHeader() {
             <div className="flex flex-row left-0 absolute self-start mt-1.5">
                 {!gameStarted ? <></> :
                     <button
-                        className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 disabled:bg-opacity-50"
+                        className="bg-gray-600 px-2 mx-0.5 text-white rounded-sm h-8 disabled:bg-opacity-50"
                         onClick={() => dispatch(queuePopup({ type: "SelectItem" }))}
                         disabled={currentPlayer.username !== currentTurn || currentPlayer.items.length === 0}
                     >
@@ -40,12 +40,12 @@ export default function MainGameHeader() {
                 }
 
                 {gameStarted || currentPlayer !== currentHost ? <></> :
-                    <button className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8" onClick={startGame}>Start Game</button>
+                    <button className="bg-gray-600 px-2 mx-0.5 text-white rounded-sm h-8" onClick={startGame}>Start Game</button>
                 }
 
                 {currentPlayer !== currentHost ? <></> :
                     <button
-                        className="bg-gray-600 px-2 mx-0.5 text-white rounded h-8 disabled:bg-opacity-50"
+                        className="bg-gray-600 px-2 mx-0.5 text-white rounded-sm h-8 disabled:bg-opacity-50"
                         onClick={() => dispatch(queuePopup({ type: "KickPlayer" }))}
                     >
                         Kick

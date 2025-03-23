@@ -59,11 +59,11 @@ export default function ChatBox({ visible }: GameLogArgs) {
         visible ? <>
             <br className="mt-1 lg:mt-4" />
             <div className="-space-y-0 overflow-y-auto break-words text-sm lg:text-base lg:h-screen ">
-                {gameLog.map((message, index) => <p key={index}>{message.message}</p>)}
+                {gameLog.map((message, index) => <p id={index}>{message.message}</p>)}
                 <div ref={endOfMessages} id="EOMMarker"></div>
             </div>
             <br className="mt-1 lg:mt-4" />
-            <div className="flex-grow"></div>
+            <div className="grow"></div>
         </> : <></>
     );
 }

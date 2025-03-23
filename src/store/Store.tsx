@@ -1,16 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from 'react-redux'
 
-import gameDataReducer from "~/store/GameDataSlice";
-import chatReducer from "~/store/ChatSlice";
-import popupReducer from "~/store/PopupSlice";
+// import gameDataReducer from "~/store/GameDataSlice";
+// import chatReducer from "~/store/ChatSlice";
+// import popupReducer from "~/store/PopupSlice";
+import selfDataReducer from "~/store/SelfDataSlice";
 
 
 const store = configureStore({
     reducer: {
-        gameDataReducer,
-        chatReducer,
-        popupReducer
+        selfDataReducer
     }
 });
 
