@@ -39,6 +39,9 @@
 
   --table-row-hover: oklch(0.488 0.243 264.376);
   --table-row-active: oklch(0.696 0.17 162.48);
+  --switch-checked: oklch(70% 0.1776 243.53);
+  --chat-send: oklch(70% 0.1776 243.53);
+  --chat-send-hover: oklch(75% 0.1776 243.53);
 }
 
 .dark {
