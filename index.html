@@ -9,6 +9,10 @@
 
     <script>
         document.documentElement.classList.add("dark");
+
+        window.addEventListener("resize", () => {
+            window.innerHeight = window.visualViewport.height;
+        });
     </script>
 </head>
 
