@@ -22,18 +22,12 @@ import {
 
 type LobbySelectorArgs = {
     selectedLobbyIdRef: React.MutableRefObject<string>;
+    lobbies: Lobby[];
     className?: string;
 };
 
-export default function LobbySelector({ selectedLobbyIdRef, className = "" }: LobbySelectorArgs) {
-    const [lobbies, setLobbies] = useState<Lobby[]>([]);
+export default function LobbySelector({ selectedLobbyIdRef, lobbies, className = "" }: LobbySelectorArgs) {
     const [page, setPage] = useState<number>(1);
-
-    useEffect(() => {
-        fetch(`${BASE_URL}/lobbies`)
-            .then(response => response.json())
-            .then((lobbies: Lobby[]) => setLobbies(lobbies.map(toLowercaseKeys) as Lobby[]));
-    }, []);
 
     return <>
         <div className={className}>

@@ -32,3 +32,5 @@ export default function MainGameUI() {
         <Toaster duration={10000} visibleToasts={5} />
     </>
 }
+
+// TODO ADD "Can Loot Dead Players"

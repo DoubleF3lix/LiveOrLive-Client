@@ -20,7 +20,7 @@ export const chatSlice = createSlice({
     reducers: {
         setChatMessages: (state, action: PayloadAction<ChatMessage[]>) => {
             state.chatMessages = action.payload;
-            if (!state.isOpen && state.chatMessages.length > 1) {
+            if (!state.isOpen && state.chatMessages.length >= 1) {
                 state.hasUnread = true;
             }
         },

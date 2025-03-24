@@ -1,6 +1,6 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/sidebar";
 import { SendHorizontal } from "lucide-react";
-import { FormEvent, useContext, useEffect, useState } from "react";
+import React, { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { addChatMessage, setChatMessages } from "~/store/ChatSlice";
@@ -18,6 +18,7 @@ export function ChatSidebar() {
     const dispatch = useDispatch();
 
     const [chatMessageInput, setChatMessageInput] = useState<string>("");
+    const EOMMarker = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const sub_getChatMessagesResponse = serverConnection.subscribe("getChatMessagesResponse", async (messages: ChatMessage[]) => {
@@ -36,11 +37,19 @@ export function ChatSidebar() {
         };
     }, []);
 
+    useEffect(() => {
+        scrollToBottom();
+    }, [chatMessages]);
+
     function sendChatMessage(event: FormEvent) {
         event.preventDefault();
         if (chatMessageInput === "") return;
         serverConnection.sendChatMessage(chatMessageInput);
         setChatMessageInput("");
+    }
+
+    function scrollToBottom() {
+        EOMMarker.current?.scrollIntoView({behavior: "instant"});
     }
 
     return (
@@ -51,6 +60,7 @@ export function ChatSidebar() {
             </SidebarHeader>
             <SidebarContent className="px-4">
                 {chatMessages.map(message => <p key={message.id}>{message.author}: {message.content}</p>)}
+                <div ref={EOMMarker} />
             </SidebarContent>
             <SidebarFooter>
                 <Separator />
