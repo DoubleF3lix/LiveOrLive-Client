@@ -11,7 +11,8 @@
         document.documentElement.classList.add("dark");
 
         visualViewport.addEventListener("resize", () => {
-            document.querySelector('[data-slot="sidebar"]').style.height = window.visualViewport.height; 
+            console.log(visualViewport.height);
+            document.querySelector('[data-slot="sidebar"]')?.style.height = `${window.visualViewport.height}px`;  
         });
     </script>
   <script type="module" crossorigin src="./assets/index-DfYZxChh.js"></script>
