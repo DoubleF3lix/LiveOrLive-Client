@@ -12,7 +12,8 @@
 
         visualViewport.addEventListener("resize", () => {
             console.log(visualViewport.height);
-            document.querySelector('[data-slot="sidebar"]')?.style.height = `${window.visualViewport.height}px`;  
+            const sidebar = document.querySelector('[data-slot="sidebar"]');
+            sidebar.style.height = `${window.visualViewport.height}px`;
         });
     </script>
   <script type="module" crossorigin src="./assets/index-DfYZxChh.js"></script>
