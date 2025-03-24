@@ -37,6 +37,7 @@
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
 
+  --viewport-height: 100dvh;
   --table-row-hover: oklch(0.488 0.243 264.376);
   --table-row-active: oklch(0.696 0.17 162.48);
   --switch-checked: oklch(70% 0.1776 243.53);
@@ -122,6 +123,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  --height-viewport-height: var(--viewport-height);
   --color-table-row-hover: var(--table-row-hover);
   --color-table-row-active: var(--table-row-active);
   --color-switch-checked: var(--switch-checked);
