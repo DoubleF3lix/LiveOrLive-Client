@@ -10,7 +10,7 @@
     <script>
         document.documentElement.classList.add("dark");
 
-        window.addEventListener("resize", () => {
+        visualViewport.addEventListener("resize", () => {
             document.querySelector('[data-slot="sidebar"]').style.height = window.visualViewport.height; 
         });
     </script>
