@@ -49,7 +49,7 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
 
         this.chatReceiver = {
             chatMessageSent: async (message: ChatMessage): Promise<void> => this.sendSubscription("chatMessageSent", message),
-            getChatMessageResponse: async (messages: ChatMessage[]): Promise<void> => this.sendSubscription("getChatMessageResponse", messages),
+            getChatMessagesResponse: async (messages: ChatMessage[]): Promise<void> => this.sendSubscription("getChatMessagesResponse", messages),
             chatMessageDeleted: async (messageId: string): Promise<void> => this.sendSubscription("chatMessageDeleted", messageId),
             chatMessageEdited: async (messageId: string, content: string): Promise<void> => this.sendSubscription("chatMessageEdited", messageId, content)
         };

@@ -125,12 +125,12 @@ class IChatRequest_HubProxy implements IChatRequest {
     public constructor(private connection: HubConnection) {
     }
 
-    public readonly sendChatMessage = async (content: string): Promise<void> => {
-        return await this.connection.invoke("SendChatMessage", content);
-    }
-
     public readonly getChatMessagesRequest = async (): Promise<void> => {
         return await this.connection.invoke("GetChatMessagesRequest");
+    }
+
+    public readonly sendChatMessage = async (content: string): Promise<void> => {
+        return await this.connection.invoke("SendChatMessage", content);
     }
 
     public readonly deleteChatMessage = async (messageId: string): Promise<void> => {
@@ -299,8 +299,8 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
 
     public readonly register = (connection: HubConnection, receiver: IHubServerResponse): Disposable => {
 
+        const __getChatMessagesResponse = (...args: [ChatMessage[]]) => receiver.getChatMessagesResponse(...args);
         const __chatMessageSent = (...args: [ChatMessage]) => receiver.chatMessageSent(...args);
-        const __getChatMessageResponse = (...args: [ChatMessage[]]) => receiver.getChatMessageResponse(...args);
         const __chatMessageDeleted = (...args: [string]) => receiver.chatMessageDeleted(...args);
         const __chatMessageEdited = (...args: [string, string]) => receiver.chatMessageEdited(...args);
         const __getGameLogResponse = (...args: [GameLogMessage[]]) => receiver.getGameLogResponse(...args);
@@ -331,8 +331,8 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __doubleDamageItemUsed = () => receiver.doubleDamageItemUsed();
         const __skipItemUsed = (...args: [string]) => receiver.skipItemUsed(...args);
 
+        connection.on("GetChatMessagesResponse", __getChatMessagesResponse);
         connection.on("ChatMessageSent", __chatMessageSent);
-        connection.on("GetChatMessageResponse", __getChatMessageResponse);
         connection.on("ChatMessageDeleted", __chatMessageDeleted);
         connection.on("ChatMessageEdited", __chatMessageEdited);
         connection.on("GetGameLogResponse", __getGameLogResponse);
@@ -364,8 +364,8 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         connection.on("SkipItemUsed", __skipItemUsed);
 
         const methodList: ReceiverMethod[] = [
+            { methodName: "GetChatMessagesResponse", method: __getChatMessagesResponse },
             { methodName: "ChatMessageSent", method: __chatMessageSent },
-            { methodName: "GetChatMessageResponse", method: __getChatMessageResponse },
             { methodName: "ChatMessageDeleted", method: __chatMessageDeleted },
             { methodName: "ChatMessageEdited", method: __chatMessageEdited },
             { methodName: "GetGameLogResponse", method: __getGameLogResponse },
@@ -410,19 +410,19 @@ class IChatResponse_Binder implements ReceiverRegister<IChatResponse> {
 
     public readonly register = (connection: HubConnection, receiver: IChatResponse): Disposable => {
 
+        const __getChatMessagesResponse = (...args: [ChatMessage[]]) => receiver.getChatMessagesResponse(...args);
         const __chatMessageSent = (...args: [ChatMessage]) => receiver.chatMessageSent(...args);
-        const __getChatMessageResponse = (...args: [ChatMessage[]]) => receiver.getChatMessageResponse(...args);
         const __chatMessageDeleted = (...args: [string]) => receiver.chatMessageDeleted(...args);
         const __chatMessageEdited = (...args: [string, string]) => receiver.chatMessageEdited(...args);
 
+        connection.on("GetChatMessagesResponse", __getChatMessagesResponse);
         connection.on("ChatMessageSent", __chatMessageSent);
-        connection.on("GetChatMessageResponse", __getChatMessageResponse);
         connection.on("ChatMessageDeleted", __chatMessageDeleted);
         connection.on("ChatMessageEdited", __chatMessageEdited);
 
         const methodList: ReceiverMethod[] = [
+            { methodName: "GetChatMessagesResponse", method: __getChatMessagesResponse },
             { methodName: "ChatMessageSent", method: __chatMessageSent },
-            { methodName: "GetChatMessageResponse", method: __getChatMessageResponse },
             { methodName: "ChatMessageDeleted", method: __chatMessageDeleted },
             { methodName: "ChatMessageEdited", method: __chatMessageEdited }
         ]

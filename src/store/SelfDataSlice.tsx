@@ -6,14 +6,13 @@ type SelfDataSliceType = {
     username: string;
 };
 
-
-const initialChatSliceState: SelfDataSliceType = {
+const initialSelfDataSliceState: SelfDataSliceType = {
     username: ""
 };
 
 export const selfDataSlice = createSlice({
     name: "selfData",
-    initialState: initialChatSliceState,
+    initialState: initialSelfDataSliceState,
     reducers: {
         setUsername: (state, action: PayloadAction<string>) => {
             state.username = action.payload;

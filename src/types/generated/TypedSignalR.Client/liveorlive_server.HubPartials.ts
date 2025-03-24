@@ -8,14 +8,14 @@ import type { ChatMessage, GameLogMessage, Player, GameData } from '../liveorliv
 
 export type IChatRequest = {
     /**
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    getChatMessagesRequest(): Promise<void>;
+    /**
     * @param content Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     sendChatMessage(content: string): Promise<void>;
-    /**
-    * @returns Transpiled from System.Threading.Tasks.Task
-    */
-    getChatMessagesRequest(): Promise<void>;
     /**
     * @param messageId Transpiled from System.Guid
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -115,15 +115,15 @@ export type IItemRequest = {
 
 export type IHubServerResponse = {
     /**
+    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.ChatMessage>
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    getChatMessagesResponse(messages: ChatMessage[]): Promise<void>;
+    /**
     * @param message Transpiled from liveorlive_server.ChatMessage
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     chatMessageSent(message: ChatMessage): Promise<void>;
-    /**
-    * @param messages Transpiled from liveorlive_server.ChatMessage[]
-    * @returns Transpiled from System.Threading.Tasks.Task
-    */
-    getChatMessageResponse(messages: ChatMessage[]): Promise<void>;
     /**
     * @param messageId Transpiled from System.Guid
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -275,15 +275,15 @@ export type IHubServerResponse = {
 
 export type IChatResponse = {
     /**
+    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.ChatMessage>
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    getChatMessagesResponse(messages: ChatMessage[]): Promise<void>;
+    /**
     * @param message Transpiled from liveorlive_server.ChatMessage
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     chatMessageSent(message: ChatMessage): Promise<void>;
-    /**
-    * @param messages Transpiled from liveorlive_server.ChatMessage[]
-    * @returns Transpiled from System.Threading.Tasks.Task
-    */
-    getChatMessageResponse(messages: ChatMessage[]): Promise<void>;
     /**
     * @param messageId Transpiled from System.Guid
     * @returns Transpiled from System.Threading.Tasks.Task

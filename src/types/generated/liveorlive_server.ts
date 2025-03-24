@@ -3,12 +3,20 @@
 /* tslint:disable */
 import type { Item } from './liveorlive_server.Enums';
 
+/** Transpiled from liveorlive_server.Chat */
+export type Chat = {
+    /** Transpiled from System.Collections.Generic.List<liveorlive_server.ChatMessage> */
+    messages: ChatMessage[];
+}
+
 /** Transpiled from liveorlive_server.ChatMessage */
 export type ChatMessage = {
-    /** Transpiled from liveorlive_server.Player */
-    author: Player;
+    /** Transpiled from System.Guid */
+    id: string;
     /** Transpiled from string */
-    message: string;
+    author: string;
+    /** Transpiled from string */
+    content: string;
     /** Transpiled from long */
     timestamp: number;
 }
@@ -103,6 +111,8 @@ export type Lobby = {
     host?: string;
     /** Transpiled from bool */
     gameStarted: boolean;
+    /** Transpiled from liveorlive_server.Chat */
+    chat: Chat;
 }
 
 /** Transpiled from liveorlive_server.Player */

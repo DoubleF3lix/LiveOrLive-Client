@@ -13,18 +13,9 @@ export default function MainGameUI() {
     const serverConnection = useContext(ServerConnectionContext) as ServerConnection;
     const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
 
-    
-
-
     useEffect(() => {
-        const hostChangedSubscription = serverConnection.subscribe("hostChanged", async (previous: string, current: string, reason: string) => {
-            console.log(previous, current, reason);
-        });
-
-        return () => {
-            serverConnection.unsubscribe("hostChanged", hostChangedSubscription);
-        };
-    });
+        
+    }, [serverConnection]);
 
     return <>
         <OpenSidebarButton />
