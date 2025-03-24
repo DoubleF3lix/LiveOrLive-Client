@@ -1,9 +1,7 @@
 import { Lobby } from "~/types/generated/liveorlive_server";
 import ClickableTableRowBody from "~/components/micro/ClickableTableRowBody";
 import ClickableTableRow from "~/components/micro/ClickableTableRow";
-import React, { useEffect, useState } from "react";
-import { BASE_URL } from "~/lib/const";
-import { toLowercaseKeys } from "~/lib/utils";
+import React, { useState } from "react";
 import { Check } from "lucide-react";
 import {
     Table,
