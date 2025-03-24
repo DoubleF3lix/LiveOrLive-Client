@@ -65,7 +65,7 @@ export function ChatSidebar() {
         EOMMarker.current?.scrollIntoView({ behavior: "instant" });
     }
 
-    return <div className="h-dvh">
+    return <div>
         <Sidebar variant="floating">
             <SidebarHeader>
                 <p className="font-bold text-xl text-center">Chat</p>
