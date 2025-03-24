@@ -43,7 +43,7 @@ export function ChatSidebar() {
 
     // Update open state depending on desktop/mobile
     useEffect(() => {
-        dispatch(setChatIsOpen(isMobile ? openMobile : open)) 
+        dispatch(setChatIsOpen(isMobile ? openMobile : open))
     }, [dispatch, isMobile, open, openMobile]);
 
     // Scroll down if there's a new message or we open the chat
@@ -51,7 +51,7 @@ export function ChatSidebar() {
         if (chatIsOpen) {
             // For some reason, mobile won't scroll if this timeout isn't there (and why does 0ms time work?)
             setTimeout(scrollToBottom, 1);
-        } 
+        }
     }, [chatMessages, chatIsOpen]);
 
     function sendChatMessage(event: FormEvent) {
@@ -62,10 +62,10 @@ export function ChatSidebar() {
     }
 
     function scrollToBottom() {
-        EOMMarker.current?.scrollIntoView({behavior: "instant"});
+        EOMMarker.current?.scrollIntoView({ behavior: "instant" });
     }
 
-    return (
+    return <div className="h-dvh">
         <Sidebar variant="floating">
             <SidebarHeader>
                 <p className="font-bold text-xl text-center">Chat</p>
@@ -86,5 +86,5 @@ export function ChatSidebar() {
                 </form>
             </SidebarFooter>
         </Sidebar>
-    )
+    </div>;
 }
