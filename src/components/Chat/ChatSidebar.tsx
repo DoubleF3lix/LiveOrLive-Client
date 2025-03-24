@@ -1,21 +1,25 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, useSidebar } from "@/sidebar";
 import { SendHorizontal } from "lucide-react";
-import React, { FormEvent, useContext, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { ServerConnection } from "~/lib/ServerConnection";
-import { addChatMessage, setChatMessages } from "~/store/ChatSlice";
+import { addChatMessage, setChatMessages, setChatIsOpen } from "~/store/ChatSlice";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { IRootState } from "~/store/Store";
+import { IRootState, useAppDispatch } from "~/store/Store";
 import { ChatMessage } from "~/types/generated/liveorlive_server";
 import { Separator } from "@/separator";
 
 
 
 export function ChatSidebar() {
+    const dispatch = useAppDispatch();
+
     const serverConnection = useContext(ServerConnectionContext) as ServerConnection;
 
+    const { isMobile, open, openMobile } = useSidebar();
+
     const chatMessages = useSelector((state: IRootState) => (state.chatReducer.chatMessages));
-    const dispatch = useDispatch();
+    const chatIsOpen = useSelector((state: IRootState) => state.chatReducer.isOpen);
 
     const [chatMessageInput, setChatMessageInput] = useState<string>("");
     const EOMMarker = useRef<HTMLDivElement>(null);
@@ -35,11 +39,20 @@ export function ChatSidebar() {
             serverConnection.unsubscribe("getChatMessagesResponse", sub_getChatMessagesResponse);
             serverConnection.unsubscribe("chatMessageSent", sub_chatMessageSent);
         };
-    }, []);
+    }, [dispatch, serverConnection]);
 
+    // Update open state depending on desktop/mobile
     useEffect(() => {
-        scrollToBottom();
-    }, [chatMessages]);
+        dispatch(setChatIsOpen(isMobile ? openMobile : open)) 
+    }, [dispatch, isMobile, open, openMobile]);
+
+    // Scroll down if there's a new message or we open the chat
+    useEffect(() => {
+        if (chatIsOpen) {
+            // For some reason, mobile won't scroll if this timeout isn't there (and why does 0ms time work?)
+            setTimeout(scrollToBottom, 1);
+        } 
+    }, [chatMessages, chatIsOpen]);
 
     function sendChatMessage(event: FormEvent) {
         event.preventDefault();
@@ -60,7 +73,7 @@ export function ChatSidebar() {
             </SidebarHeader>
             <SidebarContent className="px-4">
                 {chatMessages.map(message => <p key={message.id}>{message.author}: {message.content}</p>)}
-                <div ref={EOMMarker} />
+                <div id="EOMMarker" ref={EOMMarker} />
             </SidebarContent>
             <SidebarFooter>
                 <Separator />

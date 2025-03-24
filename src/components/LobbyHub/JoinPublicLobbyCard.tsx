@@ -9,7 +9,7 @@ import {
     CardTitle,
 } from "@/card"
 import { Button } from "@/button";
-import LabelAndTextInputGridRow from "../micro/LabelAndTextInputGridRow";
+import LabelAndTextInputGridRow from "~/components/micro/LabelAndTextInputGridRow";
 import { RefreshCw } from "lucide-react";
 import { Lobby } from "~/types/generated/liveorlive_server";
 import { toLowercaseKeys } from "~/lib/utils";

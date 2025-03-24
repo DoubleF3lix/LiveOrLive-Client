@@ -39,14 +39,15 @@ export const chatSlice = createSlice({
                 message.content = action.payload.content;
             }
         },
-        setIsOpen: (state, action: PayloadAction<boolean>) => {
+        setChatIsOpen: (state, action: PayloadAction<boolean>) => {
             state.isOpen = action.payload;
-            if (action.payload) {
+            // Mark as read if we opened it up
+            if (state.isOpen) {
                 state.hasUnread = false;
             }
         }
     }
 });
 
-export const { setChatMessages, addChatMessage, deleteChatMessage, editChatMessage, setIsOpen } = chatSlice.actions;
+export const { setChatMessages, addChatMessage, deleteChatMessage, editChatMessage, setChatIsOpen } = chatSlice.actions;
 export default chatSlice.reducer;

@@ -146,3 +146,8 @@
     appearance: textfield;
   }
 }
+
+/* Make sonner show behind sidebar */
+[data-sonner-toaster] {
+  z-index: 49;
+}

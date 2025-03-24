@@ -1,6 +1,6 @@
-import { MessageCircle, MessageCircleMore } from "lucide-react";
-import { useSidebar } from "../ui/sidebar";
 import { useSelector } from "react-redux";
+import { MessageCircle, MessageCircleMore } from "lucide-react";
+import { useSidebar } from "@/sidebar";
 import { IRootState } from "~/store/Store";
 
 

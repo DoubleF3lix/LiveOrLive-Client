@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import { toast as sonnerToast } from 'sonner';
 
+
 interface ToastProps {
     id: string | number;
     type: "achievement" | "normal";
@@ -14,7 +15,7 @@ interface ToastProps {
 
 
 // eslint-disable-next-line react-refresh/only-export-components
-export default function toast(toast: Omit<ToastProps, "id">) {
+export function toast(toast: Omit<ToastProps, "id">) {
     if (toast.type === "achievement") {
         return sonnerToast.custom((id) => (
             <Toast

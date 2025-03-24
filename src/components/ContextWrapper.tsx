@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { IRootState, useAppDispatch } from "~/store/Store";
+import { useAppDispatch } from "~/store/Store";
 import MainGameUI from "~/components/MainGameUI";
 import { setUsername } from "~/store/SelfDataSlice";
 import { SidebarProvider } from "@/sidebar";
 import { ChatSidebar } from "~/components/Chat/ChatSidebar";
-import { useSelector } from "react-redux";
-import { setIsOpen } from "~/store/ChatSlice";
 
 
 type ContextWrapperArgs = {
@@ -18,8 +16,6 @@ type ContextWrapperArgs = {
 export default function ContextWrapper({ lobbyId, username }: ContextWrapperArgs) {
     const serverConnection = useRef<ServerConnection | null>(null);
     const [connected, setConnected] = useState<boolean>(false);
-
-    const chatIsOpen = useSelector((state: IRootState) => state.chatReducer.isOpen);
 
     const dispatch = useAppDispatch();
 
@@ -39,7 +35,7 @@ export default function ContextWrapper({ lobbyId, username }: ContextWrapperArgs
 
     return connected ? <>
         <ServerConnectionContext.Provider value={serverConnection.current}>
-            <SidebarProvider defaultOpen={false} open={chatIsOpen} onOpenChange={(open) => dispatch(setIsOpen(open))}>
+            <SidebarProvider defaultOpen={false}>
                 <ChatSidebar />
                 <MainGameUI />
             </SidebarProvider>
