@@ -22,9 +22,35 @@ export function ChatSidebar() {
     const chatIsOpen = useSelector((state: IRootState) => state.chatReducer.isOpen);
 
     const [chatMessageInput, setChatMessageInput] = useState<string>("");
-    const EOMMarker = useRef<HTMLDivElement>(null);
+
+    function sendChatMessage(event: FormEvent) {
+        event.preventDefault();
+        if (chatMessageInput === "") return;
+        serverConnection.sendChatMessage(chatMessageInput);
+        setChatMessageInput("");
+    }
+
+    function scrollToPercentage(percentage: number = 1) {
+        const sidebarContent = document.querySelector('[data-slot="sidebar-content"]');
+        if (sidebarContent) {
+            sidebarContent.scrollTo({ top: percentage * (sidebarContent.scrollHeight - sidebarContent.clientHeight), behavior: "instant" });
+        }
+    }
 
     useEffect(() => {
+        function resizeListener() {
+            const sidebarContent = document.querySelector('[data-slot="sidebar-content"]')
+            if (sidebarContent) {
+                const oldScrollPercentage = sidebarContent.scrollTop / (sidebarContent.scrollHeight - sidebarContent.clientHeight);
+                document.documentElement.style.setProperty("--viewport-height", `${window.visualViewport?.height}px`); 
+                console.log(oldScrollPercentage);
+                scrollToPercentage(oldScrollPercentage);
+            }
+        }
+
+        // Firefox Mobile doesn't change dvh when the on-screen keyboard goes up, so we have to do this nonsense to hack it
+        window.visualViewport?.addEventListener("resize", resizeListener);
+
         const sub_getChatMessagesResponse = serverConnection.subscribe("getChatMessagesResponse", async (messages: ChatMessage[]) => {
             dispatch(setChatMessages(messages));
         });
@@ -36,6 +62,8 @@ export function ChatSidebar() {
         serverConnection.getChatMessagesRequest();
 
         return () => {
+            window.visualViewport?.removeEventListener("resize", resizeListener);
+
             serverConnection.unsubscribe("getChatMessagesResponse", sub_getChatMessagesResponse);
             serverConnection.unsubscribe("chatMessageSent", sub_chatMessageSent);
         };
@@ -50,20 +78,9 @@ export function ChatSidebar() {
     useEffect(() => {
         if (chatIsOpen) {
             // For some reason, mobile won't scroll if this timeout isn't there (and why does 0ms time work?)
-            setTimeout(scrollToBottom, 1);
+            setTimeout(scrollToPercentage, 1);
         }
     }, [chatMessages, chatIsOpen]);
-
-    function sendChatMessage(event: FormEvent) {
-        event.preventDefault();
-        if (chatMessageInput === "") return;
-        serverConnection.sendChatMessage(chatMessageInput);
-        setChatMessageInput("");
-    }
-
-    function scrollToBottom() {
-        EOMMarker.current?.scrollIntoView({ behavior: "instant" });
-    }
 
     return <div>
         <Sidebar variant="floating">
@@ -73,7 +90,6 @@ export function ChatSidebar() {
             </SidebarHeader>
             <SidebarContent className="px-4">
                 {chatMessages.map(message => <p key={message.id}>{message.author}: {message.content}</p>)}
-                <div id="EOMMarker" ref={EOMMarker} />
             </SidebarContent>
             <SidebarFooter>
                 <Separator />

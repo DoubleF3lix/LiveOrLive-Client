@@ -9,11 +9,6 @@
 
     <script>
         document.documentElement.classList.add("dark");
-
-        // Firefox Mobile doesn't change dvh when the on-screen keyboard goes up, so we have to do this nonsense to hack it
-        visualViewport.addEventListener("resize", () => {
-            document.documentElement.style.setProperty("--viewport-height", `${window.visualViewport.height}px`); 
-        });
     </script>
 </head>
 
