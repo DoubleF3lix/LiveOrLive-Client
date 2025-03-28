@@ -8,7 +8,7 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { ChatMessage as ChatMessageType } from "~/types/generated/liveorlive_server";
 import { Separator } from "@/separator";
-import ChatMessage from "./ChatMessage";
+import ChatMessages from "./ChatMessages";
 
 
 
@@ -45,7 +45,6 @@ export function ChatSidebar() {
             if (sidebarContent) {
                 const oldScrollPercentage = sidebarContent.scrollTop / (sidebarContent.scrollHeight - sidebarContent.clientHeight);
                 document.documentElement.style.setProperty("--viewport-height", `${window.visualViewport?.height}px`);
-                console.log(oldScrollPercentage);
                 scrollToPercentage(oldScrollPercentage);
             }
         }
@@ -90,8 +89,8 @@ export function ChatSidebar() {
                 <p className="font-bold text-xl text-center">Chat</p>
                 <Separator />
             </SidebarHeader>
-            <SidebarContent className="px-4">
-                {chatMessages.map(message => <ChatMessage key={message.id} message={message} />)}
+            <SidebarContent className="px-2">
+                <ChatMessages messages={chatMessages} />
             </SidebarContent>
             <SidebarFooter>
                 <Separator />
