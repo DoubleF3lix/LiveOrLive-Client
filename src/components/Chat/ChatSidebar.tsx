@@ -1,13 +1,14 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, useSidebar } from "@/sidebar";
 import { SendHorizontal } from "lucide-react";
-import { FormEvent, useContext, useEffect, useRef, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { addChatMessage, setChatMessages, setChatIsOpen } from "~/store/ChatSlice";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
-import { ChatMessage } from "~/types/generated/liveorlive_server";
+import { ChatMessage as ChatMessageType } from "~/types/generated/liveorlive_server";
 import { Separator } from "@/separator";
+import ChatMessage from "./ChatMessage";
 
 
 
@@ -39,10 +40,11 @@ export function ChatSidebar() {
 
     useEffect(() => {
         function resizeListener() {
-            const sidebarContent = document.querySelector('[data-slot="sidebar-content"]')
+            // ref is always null for some reason, so this will have to do
+            const sidebarContent = document.querySelector('[data-slot="sidebar-content"]');
             if (sidebarContent) {
                 const oldScrollPercentage = sidebarContent.scrollTop / (sidebarContent.scrollHeight - sidebarContent.clientHeight);
-                document.documentElement.style.setProperty("--viewport-height", `${window.visualViewport?.height}px`); 
+                document.documentElement.style.setProperty("--viewport-height", `${window.visualViewport?.height}px`);
                 console.log(oldScrollPercentage);
                 scrollToPercentage(oldScrollPercentage);
             }
@@ -51,11 +53,11 @@ export function ChatSidebar() {
         // Firefox Mobile doesn't change dvh when the on-screen keyboard goes up, so we have to do this nonsense to hack it
         window.visualViewport?.addEventListener("resize", resizeListener);
 
-        const sub_getChatMessagesResponse = serverConnection.subscribe("getChatMessagesResponse", async (messages: ChatMessage[]) => {
+        const sub_getChatMessagesResponse = serverConnection.subscribe("getChatMessagesResponse", async (messages: ChatMessageType[]) => {
             dispatch(setChatMessages(messages));
         });
 
-        const sub_chatMessageSent = serverConnection.subscribe("chatMessageSent", async (message: ChatMessage) => {
+        const sub_chatMessageSent = serverConnection.subscribe("chatMessageSent", async (message: ChatMessageType) => {
             dispatch(addChatMessage(message));
         });
 
@@ -89,7 +91,7 @@ export function ChatSidebar() {
                 <Separator />
             </SidebarHeader>
             <SidebarContent className="px-4">
-                {chatMessages.map(message => <p key={message.id}>{message.author}: {message.content}</p>)}
+                {chatMessages.map(message => <ChatMessage key={message.id} message={message} />)}
             </SidebarContent>
             <SidebarFooter>
                 <Separator />
