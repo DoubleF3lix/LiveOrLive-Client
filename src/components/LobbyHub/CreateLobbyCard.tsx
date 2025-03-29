@@ -89,8 +89,8 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
             toast.error("Username must be less than 20 characters");
             return;
         }
-        if (username.current.length < 3) {
-            toast.error("Username must be at least 3 characters");
+        if (username.current.length < 2) {
+            toast.error("Username must be at least 2 characters");
             return;
         }
 
@@ -117,7 +117,7 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
             </CardHeader>
             <CardContent className="max-h-[40dvh] overflow-y-auto">
                 <div className="grid grid-cols-[auto_1fr] gap-4 items-center my-4">
-                    <LabelAndTextInputGridRow label="Username:" placeholder="3-20 characters" textInputRef={username} />
+                    <LabelAndTextInputGridRow label="Username:" placeholder="2-20 characters" textInputRef={username} />
                     <LabelAndTextInputGridRow label={`Name:`} placeholder="Optional" textInputRef={lobbyName} /> 
                 </div>
                 <Collapsible>

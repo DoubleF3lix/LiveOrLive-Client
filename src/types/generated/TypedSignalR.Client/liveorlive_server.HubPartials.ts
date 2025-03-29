@@ -41,11 +41,6 @@ export type IConnectionRequest = {
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    joinGameRequest(username: string): Promise<void>;
-    /**
-    * @param username Transpiled from string
-    * @returns Transpiled from System.Threading.Tasks.Task
-    */
     setHost(username: string): Promise<void>;
     /**
     * @param username Transpiled from string
@@ -154,11 +149,6 @@ export type IHubServerResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     connectionFailed(reason: string): Promise<void>;
-    /**
-    * @param accepted Transpiled from bool
-    * @returns Transpiled from System.Threading.Tasks.Task
-    */
-    joinGameResponse(accepted: boolean): Promise<void>;
     /**
     * @param player Transpiled from liveorlive_server.Player
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -320,11 +310,6 @@ export type IConnectionResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     connectionFailed(reason: string): Promise<void>;
-    /**
-    * @param accepted Transpiled from bool
-    * @returns Transpiled from System.Threading.Tasks.Task
-    */
-    joinGameResponse(accepted: boolean): Promise<void>;
     /**
     * @param player Transpiled from liveorlive_server.Player
     * @returns Transpiled from System.Threading.Tasks.Task

@@ -13,9 +13,8 @@ import ChatMessages from "./ChatMessages";
 
 
 export function ChatSidebar() {
-    const dispatch = useAppDispatch();
-
     const serverConnection = useContext(ServerConnectionContext) as ServerConnection;
+    const dispatch = useAppDispatch();
 
     const { isMobile, open, openMobile } = useSidebar();
 
@@ -59,14 +58,14 @@ export function ChatSidebar() {
             // 4 lines of text
             chatMessageInputCurrent.style.height = `${Math.min(chatMessageInputCurrent.scrollHeight + 6, 125)}px`;
         }
-        function keypressListener(event: KeyboardEvent) {
+        function keydownListener(event: KeyboardEvent) {
             if (event.key === "Enter" && event.shiftKey === false) {
                 sendChatMessage();
                 event.preventDefault();
             }
         }
         chatMessageInput.current?.addEventListener("input", inputListener);
-        chatMessageInput.current?.addEventListener("keypress", keypressListener);
+        chatMessageInput.current?.addEventListener("keydown", keydownListener);
 
         const sub_getChatMessagesResponse = serverConnection.subscribe("getChatMessagesResponse", async (messages: ChatMessageType[]) => {
             dispatch(setChatMessages(messages));
@@ -82,7 +81,7 @@ export function ChatSidebar() {
             window.visualViewport?.removeEventListener("resize", resizeListener);
             if (chatMessageInputCurrent) {
                 chatMessageInputCurrent.removeEventListener("input", inputListener);
-                chatMessageInputCurrent.removeEventListener("keypress", keypressListener);
+                chatMessageInputCurrent.removeEventListener("keypress", keydownListener);
             }
 
             serverConnection.unsubscribe("getChatMessagesResponse", sub_getChatMessagesResponse);

@@ -111,8 +111,6 @@ export type Lobby = {
     host?: string;
     /** Transpiled from bool */
     gameStarted: boolean;
-    /** Transpiled from liveorlive_server.Chat */
-    chat: Chat;
 }
 
 /** Transpiled from liveorlive_server.Player */

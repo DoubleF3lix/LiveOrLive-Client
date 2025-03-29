@@ -29,7 +29,7 @@ export default function JoinPublicLobby({ validateAndSetConnectionInfo }: JoinPr
             <CardContent>
                 <div className="grid grid-cols-[auto_1fr] gap-4 items-center">
                     <LabelAndOTPGridRow label="Lobby Code:" OTPRef={lobbyCode} />
-                    <LabelAndTextInputGridRow label="Username:" placeholder="3-20 characters" textInputRef={username} />
+                    <LabelAndTextInputGridRow label="Username:" placeholder="2-20 characters" textInputRef={username} />
                 </div>
             </CardContent>
             <CardFooter>

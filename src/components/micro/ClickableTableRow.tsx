@@ -1,5 +1,6 @@
 import { TableRow } from "@/table";
 
+
 type ClickableTableRowArgs = {
     id: string;
     key?: string;

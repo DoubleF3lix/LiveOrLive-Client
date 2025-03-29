@@ -179,10 +179,6 @@ class IConnectionRequest_HubProxy implements IConnectionRequest {
     public constructor(private connection: HubConnection) {
     }
 
-    public readonly joinGameRequest = async (username: string): Promise<void> => {
-        return await this.connection.invoke("JoinGameRequest", username);
-    }
-
     public readonly setHost = async (username: string): Promise<void> => {
         return await this.connection.invoke("SetHost", username);
     }
@@ -307,7 +303,6 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __gameLogUpdate = (...args: [GameLogMessage]) => receiver.gameLogUpdate(...args);
         const __connectionSuccess = () => receiver.connectionSuccess();
         const __connectionFailed = (...args: [string]) => receiver.connectionFailed(...args);
-        const __joinGameResponse = (...args: [boolean]) => receiver.joinGameResponse(...args);
         const __playerJoined = (...args: [Player]) => receiver.playerJoined(...args);
         const __playerLeft = (...args: [string]) => receiver.playerLeft(...args);
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
@@ -339,7 +334,6 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         connection.on("GameLogUpdate", __gameLogUpdate);
         connection.on("ConnectionSuccess", __connectionSuccess);
         connection.on("ConnectionFailed", __connectionFailed);
-        connection.on("JoinGameResponse", __joinGameResponse);
         connection.on("PlayerJoined", __playerJoined);
         connection.on("PlayerLeft", __playerLeft);
         connection.on("HostChanged", __hostChanged);
@@ -372,7 +366,6 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
             { methodName: "GameLogUpdate", method: __gameLogUpdate },
             { methodName: "ConnectionSuccess", method: __connectionSuccess },
             { methodName: "ConnectionFailed", method: __connectionFailed },
-            { methodName: "JoinGameResponse", method: __joinGameResponse },
             { methodName: "PlayerJoined", method: __playerJoined },
             { methodName: "PlayerLeft", method: __playerLeft },
             { methodName: "HostChanged", method: __hostChanged },
@@ -466,7 +459,6 @@ class IConnectionResponse_Binder implements ReceiverRegister<IConnectionResponse
 
         const __connectionSuccess = () => receiver.connectionSuccess();
         const __connectionFailed = (...args: [string]) => receiver.connectionFailed(...args);
-        const __joinGameResponse = (...args: [boolean]) => receiver.joinGameResponse(...args);
         const __playerJoined = (...args: [Player]) => receiver.playerJoined(...args);
         const __playerLeft = (...args: [string]) => receiver.playerLeft(...args);
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
@@ -474,7 +466,6 @@ class IConnectionResponse_Binder implements ReceiverRegister<IConnectionResponse
 
         connection.on("ConnectionSuccess", __connectionSuccess);
         connection.on("ConnectionFailed", __connectionFailed);
-        connection.on("JoinGameResponse", __joinGameResponse);
         connection.on("PlayerJoined", __playerJoined);
         connection.on("PlayerLeft", __playerLeft);
         connection.on("HostChanged", __hostChanged);
@@ -483,7 +474,6 @@ class IConnectionResponse_Binder implements ReceiverRegister<IConnectionResponse
         const methodList: ReceiverMethod[] = [
             { methodName: "ConnectionSuccess", method: __connectionSuccess },
             { methodName: "ConnectionFailed", method: __connectionFailed },
-            { methodName: "JoinGameResponse", method: __joinGameResponse },
             { methodName: "PlayerJoined", method: __playerJoined },
             { methodName: "PlayerLeft", method: __playerLeft },
             { methodName: "HostChanged", method: __hostChanged },

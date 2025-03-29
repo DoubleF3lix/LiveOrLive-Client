@@ -30,7 +30,7 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
     private readonly genericReceiver: IGenericResponse;
     private readonly itemReceiver: IItemResponse;
 
-    subscriptions: Subscriptions;
+    private subscriptions: Subscriptions;
 
     open: boolean = false;
 
@@ -62,7 +62,6 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
         this.connectionReceiver = {
             connectionSuccess: async (): Promise<void> => this.sendSubscription("connectionSuccess"),
             connectionFailed: async (reason: string): Promise<void> => this.sendSubscription("connectionFailed", reason),
-            joinGameResponse: async (accepted: boolean): Promise<void> => this.sendSubscription("joinGameResponse", accepted),
             playerJoined: async (player: Player): Promise<void> => this.sendSubscription("playerJoined", player),
             playerLeft: async (username: string): Promise<void> => this.sendSubscription("playerLeft", username),
             hostChanged: async (previous: string, current: string, reason: string): Promise<void> => this.sendSubscription("hostChanged", previous, current, reason),
@@ -142,9 +141,6 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
     }
     getGameLogRequest(): Promise<void> {
         return this.gameLogHubProxy.getGameLogRequest();
-    }
-    joinGameRequest(username: string): Promise<void> {
-        return this.connectionHubProxy.joinGameRequest(username);
     }
     setHost(username: string): Promise<void> {
         return this.connectionHubProxy.setHost(username);

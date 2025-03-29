@@ -50,7 +50,7 @@ export default function JoinPublicLobbyCard({ validateAndSetConnectionInfo }: Jo
                 <div className="grid grid-cols-1 gap-4 mt-[-6px]">
                     <LobbySelector selectedLobbyIdRef={selectedLobbyId} lobbies={lobbies} className="col-span-1 mx-[-24px] md:overflow-auto" />
                     <div className="grid grid-cols-[auto_1fr] gap-4 items-center">
-                        <LabelAndTextInputGridRow label="Username:" placeholder="3-20 characters" textInputRef={username} />
+                        <LabelAndTextInputGridRow label="Username:" placeholder="2-20 characters" textInputRef={username} />
                     </div>
                 </div>
             </CardContent>

@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { TableBody } from "@/table";
 
+
 const SELECTED_COLOR = "!bg-table-row-active";
 
 type ClickableTableRowBodyArgs = {

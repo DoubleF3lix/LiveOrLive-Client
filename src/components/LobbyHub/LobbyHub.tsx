@@ -24,8 +24,8 @@ export default function LobbyHub({ setLobbyConnectionInfo: setLobbyConnectionInf
             toast.error("Username must be less than 20 characters");
             return;
         }
-        if (username.length < 3) {
-            toast.error("Username must be at least 3 characters");
+        if (username.length < 2) {
+            toast.error("Username must be at least 2 characters");
             return;
         }
 
