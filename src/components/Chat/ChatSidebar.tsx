@@ -1,6 +1,6 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, useSidebar } from "@/sidebar";
 import { SendHorizontal } from "lucide-react";
-import { FormEvent, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { addChatMessage, setChatMessages, setChatIsOpen } from "~/store/ChatSlice";
@@ -22,13 +22,13 @@ export function ChatSidebar() {
     const chatMessages = useSelector((state: IRootState) => (state.chatReducer.chatMessages));
     const chatIsOpen = useSelector((state: IRootState) => state.chatReducer.isOpen);
 
-    const [chatMessageInput, setChatMessageInput] = useState<string>("");
+    const chatMessageInput = useRef<HTMLTextAreaElement>(null);
 
-    function sendChatMessage(event: FormEvent) {
-        event.preventDefault();
-        if (chatMessageInput === "") return;
-        serverConnection.sendChatMessage(chatMessageInput);
-        setChatMessageInput("");
+    function sendChatMessage() {
+        if (!chatMessageInput.current || chatMessageInput.current.value === "") return;
+        serverConnection.sendChatMessage(chatMessageInput.current.value);
+        chatMessageInput.current.value = "";
+        chatMessageInput.current.style.height = "auto";
     }
 
     function scrollToPercentage(percentage: number = 1) {
@@ -39,6 +39,9 @@ export function ChatSidebar() {
     }
 
     useEffect(() => {
+        const chatMessageInputCurrent = chatMessageInput.current;
+
+        // Firefox Mobile doesn't change dvh when the on-screen keyboard goes up, so we have to do this nonsense to hack it
         function resizeListener() {
             // ref is always null for some reason, so this will have to do
             const sidebarContent = document.querySelector('[data-slot="sidebar-content"]');
@@ -48,9 +51,22 @@ export function ChatSidebar() {
                 scrollToPercentage(oldScrollPercentage);
             }
         }
-
-        // Firefox Mobile doesn't change dvh when the on-screen keyboard goes up, so we have to do this nonsense to hack it
         window.visualViewport?.addEventListener("resize", resizeListener);
+
+        function inputListener() {
+            if (!chatMessageInputCurrent) return;
+            chatMessageInputCurrent.style.height = "auto";
+            // 4 lines of text
+            chatMessageInputCurrent.style.height = `${Math.min(chatMessageInputCurrent.scrollHeight + 6, 125)}px`;
+        }
+        function keypressListener(event: KeyboardEvent) {
+            if (event.key === "Enter" && event.shiftKey === false) {
+                sendChatMessage();
+                event.preventDefault();
+            }
+        }
+        chatMessageInput.current?.addEventListener("input", inputListener);
+        chatMessageInput.current?.addEventListener("keypress", keypressListener);
 
         const sub_getChatMessagesResponse = serverConnection.subscribe("getChatMessagesResponse", async (messages: ChatMessageType[]) => {
             dispatch(setChatMessages(messages));
@@ -64,6 +80,10 @@ export function ChatSidebar() {
 
         return () => {
             window.visualViewport?.removeEventListener("resize", resizeListener);
+            if (chatMessageInputCurrent) {
+                chatMessageInputCurrent.removeEventListener("input", inputListener);
+                chatMessageInputCurrent.removeEventListener("keypress", keypressListener);
+            }
 
             serverConnection.unsubscribe("getChatMessagesResponse", sub_getChatMessagesResponse);
             serverConnection.unsubscribe("chatMessageSent", sub_chatMessageSent);
@@ -94,13 +114,12 @@ export function ChatSidebar() {
             </SidebarContent>
             <SidebarFooter>
                 <Separator />
-                <form className="flex">
-                    {/* <textarea value={chatMessageInput} onChange={e => setChatMessageInput(e.currentTarget.value)} rows={1} placeholder="Type a message..." className="grow min-w-0 border-2 border-input rounded-lg p-1 pl-2 resize-none h-auto" /> */}
-                    <input value={chatMessageInput} onChange={e => setChatMessageInput(e.currentTarget.value)} placeholder="Type a message..." className="grow min-w-0 border-2 border-input rounded-lg p-1 pl-2" />
-                    <button type="submit" onClick={sendChatMessage} className="bg-chat-send hover:bg-chat-send-hover content-center p-1 pl-2 rounded-xl aspect-square ml-2">
+                <div className="flex">
+                    <textarea ref={chatMessageInput} rows={1} placeholder="Type a message..." className="grow min-w-0 border-2 border-input rounded-lg p-1 pl-2 resize-none" />
+                    <button onClick={sendChatMessage} className="bg-chat-send hover:bg-chat-send-hover content-center p-1 pl-1.5 rounded-xl w-8 ml-2">
                         <SendHorizontal size={20} color="#ffffff" />
                     </button>
-                </form>
+                </div>
             </SidebarFooter>
         </Sidebar>
     </div>;

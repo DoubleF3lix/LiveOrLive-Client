@@ -8,7 +8,7 @@ Message deletion/moderation
 
 
 Wishlist:
-Markdown in chat
+Markdown in chat (install react-markdown and uncomment in ChatMessage to deploy)
 
 
 Sheet for Game Log
