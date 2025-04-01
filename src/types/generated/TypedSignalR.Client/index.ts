@@ -5,7 +5,7 @@
 import type { HubConnection, IStreamResult, Subject } from '@microsoft/signalr';
 import type { IChatRequest, IGameLogRequest, IConnectionRequest, IBaseGameRequest, IGenericRequest, IItemRequest, IHubServerResponse, IChatResponse, IGameLogResponse, IConnectionResponse, IBaseGameResponse, IGenericResponse, IItemResponse } from './liveorlive_server.HubPartials';
 import type { Item, BulletType } from '../liveorlive_server.Enums';
-import type { ChatMessage, GameLogMessage, Player, GameData } from '../liveorlive_server';
+import type { ChatMessage, GameLogMessage, Player, Lobby } from '../liveorlive_server';
 
 
 // components
@@ -204,8 +204,8 @@ class IBaseGameRequest_HubProxy implements IBaseGameRequest {
     public constructor(private connection: HubConnection) {
     }
 
-    public readonly gameDataRequest = async (): Promise<void> => {
-        return await this.connection.invoke("GameDataRequest");
+    public readonly getLobbyDataRequest = async (): Promise<void> => {
+        return await this.connection.invoke("GetLobbyDataRequest");
     }
 
     public readonly shootPlayer = async (target: string): Promise<void> => {
@@ -311,7 +311,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __newRoundStarted = (...args: [number, number]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);
-        const __gameDataResponse = (...args: [GameData]) => receiver.gameDataResponse(...args);
+        const __getLobbyDataResponse = (...args: [Lobby]) => receiver.getLobbyDataResponse(...args);
         const __playerShotAt = (...args: [string, BulletType, number]) => receiver.playerShotAt(...args);
         const __showAlert = (...args: [string]) => receiver.showAlert(...args);
         const __achievementUnlocked = (...args: [string, string]) => receiver.achievementUnlocked(...args);
@@ -342,7 +342,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         connection.on("NewRoundStarted", __newRoundStarted);
         connection.on("TurnStarted", __turnStarted);
         connection.on("TurnEnded", __turnEnded);
-        connection.on("GameDataResponse", __gameDataResponse);
+        connection.on("GetLobbyDataResponse", __getLobbyDataResponse);
         connection.on("PlayerShotAt", __playerShotAt);
         connection.on("ShowAlert", __showAlert);
         connection.on("AchievementUnlocked", __achievementUnlocked);
@@ -374,7 +374,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
             { methodName: "NewRoundStarted", method: __newRoundStarted },
             { methodName: "TurnStarted", method: __turnStarted },
             { methodName: "TurnEnded", method: __turnEnded },
-            { methodName: "GameDataResponse", method: __gameDataResponse },
+            { methodName: "GetLobbyDataResponse", method: __getLobbyDataResponse },
             { methodName: "PlayerShotAt", method: __playerShotAt },
             { methodName: "ShowAlert", method: __showAlert },
             { methodName: "AchievementUnlocked", method: __achievementUnlocked },
@@ -497,14 +497,14 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
         const __newRoundStarted = (...args: [number, number]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);
-        const __gameDataResponse = (...args: [GameData]) => receiver.gameDataResponse(...args);
+        const __getLobbyDataResponse = (...args: [Lobby]) => receiver.getLobbyDataResponse(...args);
         const __playerShotAt = (...args: [string, BulletType, number]) => receiver.playerShotAt(...args);
 
         connection.on("GameStarted", __gameStarted);
         connection.on("NewRoundStarted", __newRoundStarted);
         connection.on("TurnStarted", __turnStarted);
         connection.on("TurnEnded", __turnEnded);
-        connection.on("GameDataResponse", __gameDataResponse);
+        connection.on("GetLobbyDataResponse", __getLobbyDataResponse);
         connection.on("PlayerShotAt", __playerShotAt);
 
         const methodList: ReceiverMethod[] = [
@@ -512,7 +512,7 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
             { methodName: "NewRoundStarted", method: __newRoundStarted },
             { methodName: "TurnStarted", method: __turnStarted },
             { methodName: "TurnEnded", method: __turnEnded },
-            { methodName: "GameDataResponse", method: __gameDataResponse },
+            { methodName: "GetLobbyDataResponse", method: __getLobbyDataResponse },
             { methodName: "PlayerShotAt", method: __playerShotAt }
         ]
 

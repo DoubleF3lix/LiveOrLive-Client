@@ -1,14 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from 'react-redux'
 
-import selfDataReducer from "~/store/SelfDataSlice";
+import alertDialogQueueReducer from "~/store/AlertDialogQueueSlice";
 import chatReducer from "~/store/ChatSlice";
+import lobbyDataReducer from "~/store/LobbyDataSlice";
+import selfDataReducer from "~/store/SelfDataSlice";
 
 
 const store = configureStore({
     reducer: {
+        alertDialogQueueReducer,
+        chatReducer,
+        lobbyDataReducer,
         selfDataReducer,
-        chatReducer
     }
 });
 

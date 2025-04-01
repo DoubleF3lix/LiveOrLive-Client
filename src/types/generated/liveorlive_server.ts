@@ -81,8 +81,6 @@ export type GameData = {
     currentTurn: string;
     /** Transpiled from int */
     damageForShot: number;
-    /** Transpiled from bool */
-    quickshotEnabled: boolean;
 }
 
 /** Transpiled from liveorlive_server.GameLogMessage */

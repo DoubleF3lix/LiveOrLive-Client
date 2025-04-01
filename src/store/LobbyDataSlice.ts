@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Lobby } from "~/types/generated/liveorlive_server";
+import { Lobby, Player } from "~/types/generated/liveorlive_server";
 
 
-const initialSelfDataSliceState: Lobby = {
+const initialLobbyDataSliceState: Lobby = {
     id: "",
     name: "",
     hidden: false,
@@ -37,13 +37,19 @@ const initialSelfDataSliceState: Lobby = {
 
 export const lobbyDataSlice = createSlice({
     name: "lobbyData",
-    initialState: initialSelfDataSliceState,
+    initialState: initialLobbyDataSliceState,
     reducers: {
+        loadFromPacket: (_state, action: PayloadAction<Lobby>) => {
+            return action.payload;
+        },
+        addPlayer: (state, action: PayloadAction<Player>) => {
+            state.players.push(action.payload);
+        },
         setHost: (state, action: PayloadAction<string | undefined>) => {
             state.host = action.payload;
         }
     }
 });
 
-export const { setHost } = lobbyDataSlice.actions;
+export const { loadFromPacket, addPlayer, setHost } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;

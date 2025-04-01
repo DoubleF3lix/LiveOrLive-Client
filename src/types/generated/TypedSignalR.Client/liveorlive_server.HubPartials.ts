@@ -4,7 +4,7 @@
 // @ts-nocheck
 import type { IStreamResult, Subject } from '@microsoft/signalr';
 import type { Item, BulletType } from '../liveorlive_server.Enums';
-import type { ChatMessage, GameLogMessage, Player, GameData } from '../liveorlive_server';
+import type { ChatMessage, GameLogMessage, Player, Lobby } from '../liveorlive_server';
 
 export type IChatRequest = {
     /**
@@ -53,7 +53,7 @@ export type IBaseGameRequest = {
     /**
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    gameDataRequest(): Promise<void>;
+    getLobbyDataRequest(): Promise<void>;
     /**
     * @param target Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -160,8 +160,8 @@ export type IHubServerResponse = {
     */
     playerLeft(username: string): Promise<void>;
     /**
-    * @param previous Transpiled from string
-    * @param current Transpiled from string
+    * @param previous Transpiled from string?
+    * @param current Transpiled from string?
     * @param reason Transpiled from string?
     * @returns Transpiled from System.Threading.Tasks.Task
     */
@@ -192,10 +192,10 @@ export type IHubServerResponse = {
     */
     turnEnded(username: string): Promise<void>;
     /**
-    * @param gameData Transpiled from liveorlive_server.GameData
+    * @param lobbyData Transpiled from liveorlive_server.Lobby
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    gameDataResponse(gameData: GameData): Promise<void>;
+    getLobbyDataResponse(lobbyData: Lobby): Promise<void>;
     /**
     * @param target Transpiled from string
     * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
@@ -321,8 +321,8 @@ export type IConnectionResponse = {
     */
     playerLeft(username: string): Promise<void>;
     /**
-    * @param previous Transpiled from string
-    * @param current Transpiled from string
+    * @param previous Transpiled from string?
+    * @param current Transpiled from string?
     * @param reason Transpiled from string?
     * @returns Transpiled from System.Threading.Tasks.Task
     */
@@ -356,10 +356,10 @@ export type IBaseGameResponse = {
     */
     turnEnded(username: string): Promise<void>;
     /**
-    * @param gameData Transpiled from liveorlive_server.GameData
+    * @param lobbyData Transpiled from liveorlive_server.Lobby
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    gameDataResponse(gameData: GameData): Promise<void>;
+    getLobbyDataResponse(lobbyData: Lobby): Promise<void>;
     /**
     * @param target Transpiled from string
     * @param bulletType Transpiled from liveorlive_server.Enums.BulletType

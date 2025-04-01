@@ -1,7 +1,7 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { getHubProxyFactory, getReceiverRegister } from "~/types/generated/TypedSignalR.Client";
 import { IBaseGameRequest, IBaseGameResponse, IChatRequest, IChatResponse, IConnectionRequest, IConnectionResponse, IGameLogRequest, IGameLogResponse, IGenericRequest, IGenericResponse, IHubServerResponse, IItemRequest, IItemResponse } from "~/types/generated/TypedSignalR.Client/liveorlive_server.HubPartials";
-import { ChatMessage, GameLogMessage, Player, GameData } from "~/types/generated/liveorlive_server";
+import { ChatMessage, GameLogMessage, Player, Lobby } from "~/types/generated/liveorlive_server";
 import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
 import { BASE_URL } from "~/lib/const";
 
@@ -73,7 +73,7 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
             newRoundStarted: async (blankRoundCount: number, liveRoundCount: number): Promise<void> => this.sendSubscription("newRoundStarted", blankRoundCount, liveRoundCount),
             turnStarted: async (username: string): Promise<void> => this.sendSubscription("turnStarted", username),
             turnEnded: async (username: string): Promise<void> => this.sendSubscription("turnEnded", username),
-            gameDataResponse: async (gameData: GameData): Promise<void> => this.sendSubscription("gameDataResponse", gameData),
+            getLobbyDataResponse: async (lobbyData: Lobby): Promise<void> => this.sendSubscription("getLobbyDataResponse", lobbyData),
             playerShotAt: async (target: string, bulletType: BulletType, damage: number): Promise<void> => this.sendSubscription("playerShotAt", target, bulletType, damage)
         };
 
@@ -127,6 +127,10 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
         this.open = false;
     }
 
+    onDisconnect(callback: (error: Error | undefined) => void) { 
+        this.connection.onclose(callback);
+    }
+
     sendChatMessage(content: string): Promise<void> {
         return this.chatHubProxy.sendChatMessage(content);
     }
@@ -148,8 +152,8 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
     kickPlayer(username: string): Promise<void> {
         return this.connectionHubProxy.kickPlayer(username);
     }
-    gameDataRequest(): Promise<void> {
-        return this.baseGameHubProxy.gameDataRequest();
+    getLobbyDataRequest(): Promise<void> {
+        return this.baseGameHubProxy.getLobbyDataRequest();
     }
     shootPlayer(target: string): Promise<void> {
         return this.baseGameHubProxy.shootPlayer(target);

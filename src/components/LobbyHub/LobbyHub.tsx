@@ -41,9 +41,9 @@ export default function LobbyHub({ setLobbyConnectionInfo: setLobbyConnectionInf
     }
 
     return <>
-        <div className="flex flex-col justify-center items-center h-screen m-auto mb-auto">
-            <h1 className="font-bold text-center text-4xl mb-4 mt-[-2dvh] md:mb-8 ">Live or Live</h1>
-            <Tabs defaultValue="joinPublic" className="min-w-[40dvw] max-w-[96dvw] max-h-[70dvh] w-[96dvw] xl:w-min"> 
+        <div className="flex flex-col justify-center items-center h-screen m-auto">
+            <h1 className="font-bold text-center text-4xl mb-2 mt-[-2dvh] md:mb-8 ">Live or Live</h1>
+            <Tabs defaultValue="joinPublic" className="min-w-[40dvw] max-w-[96dvw] max-h-[80dvh] w-[96dvw] xl:w-min"> 
                 <TabsList className="w-full">
                     <TabsTrigger value="joinPublic">Join Public</TabsTrigger>
                     <TabsTrigger value="joinPrivate">Join Private</TabsTrigger>
