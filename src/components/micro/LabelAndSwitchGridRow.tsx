@@ -11,7 +11,7 @@ export default function LabelAndTextInputGridRow({ label, boolRef }: LabelAndSwi
     const [checked, setChecked] = useState<boolean>(boolRef.current); 
 
     return [
-        <label htmlFor={label} className="content-center mr-2">{label}</label>,
-        <Switch id={label} checked={checked} onCheckedChange={checked => { setChecked(checked); boolRef.current = checked; }}/>
+        <label key={`${label}_label`} htmlFor={label} className="content-center mr-2">{label}</label>,
+        <Switch key={`${label}_switch`} id={label} checked={checked} onCheckedChange={checked => { setChecked(checked); boolRef.current = checked; }}/>
     ];
 }

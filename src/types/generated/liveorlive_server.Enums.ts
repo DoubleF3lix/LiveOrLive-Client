@@ -14,10 +14,11 @@ export enum Item {
     RackChamber = 1,
     ExtraLife = 2,
     Pickpocket = 3,
-    Adrenaline = 4,
+    LifeGamble = 4,
     Invert = 5,
     ChamberCheck = 6,
     DoubleDamage = 7,
     Skip = 8,
+    Richochet = 9,
 }
 

@@ -43,6 +43,10 @@
   --switch-checked: oklch(70% 0.1776 243.53);
   --chat-send: oklch(70% 0.1776 243.53);
   --chat-send-hover: oklch(75% 0.1776 243.53);
+
+  --achievement-toast-primary: rgb(236, 209, 56);
+  --achievement-toast-light: #f0e68c;
+  --achievement-toast-shadow: #b68509;
 }
 
 .dark {
@@ -83,6 +87,10 @@
   --switch-checked: oklch(70% 0.1776 243.53);
   --chat-send: oklch(70% 0.1776 243.53);
   --chat-send-hover: oklch(75% 0.1776 243.53);
+
+  --achievement-toast-primary: rgb(236, 209, 56);
+  --achievement-toast-light: #f0e68c;
+  --achievement-toast-shadow: #b68509;
 }
 
 @theme inline {
@@ -129,6 +137,10 @@
   --color-switch-checked: var(--switch-checked);
   --color-chat-send: var(--chat-send);
   --color-chat-send-hover: var(--chat-send-hover);
+
+  --color-achievement-toast-primary: var(--achievement-toast-primary);
+  --color-achievement-toast-light: var(--achievement-toast-light);
+  --color-achievement-toast-shadow: var(--achievement-toast-shadow);
 }
 
 @layer base {

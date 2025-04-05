@@ -10,7 +10,7 @@ export default function LabelAndTextInputGridRow({ label, numberRef }: LabelAndS
     const [number, setNumber] = useState<number>(numberRef.current); 
 
     return [
-        <label htmlFor={label} className="content-center mr-2">{label}</label>,
-        <input size={1} type="number" value={number} onChange={e => { setNumber(e.currentTarget.valueAsNumber); numberRef.current = e.currentTarget.valueAsNumber; }} className="border-2 border-input rounded-lg p-1 text-center" /> 
+        <label key={`${label}_label`} htmlFor={label} className="content-center mr-2">{label}</label>,
+        <input key={`${label}_input`} size={1} type="number" value={number} onChange={e => { setNumber(e.currentTarget.valueAsNumber); numberRef.current = e.currentTarget.valueAsNumber; }} className="border-2 border-input rounded-lg p-1 text-center" /> 
     ];  
 }

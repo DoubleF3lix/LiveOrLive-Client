@@ -28,7 +28,7 @@ export default function AlertDialogQueue() {
                             window.location.reload();
                             break;
                     }
-                }}>Ok</AlertDialogAction>
+                }}>OK</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>;

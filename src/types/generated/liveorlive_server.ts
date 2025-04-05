@@ -21,52 +21,6 @@ export type ChatMessage = {
     timestamp: number;
 }
 
-/** Transpiled from liveorlive_server.Config */
-export type Config = {
-    /** Transpiled from bool */
-    private: boolean;
-    /** Transpiled from int */
-    maxPlayers: number;
-    /** Transpiled from int */
-    defaultLives: number;
-    /** Transpiled from int */
-    maxLives: number;
-    /** Transpiled from bool */
-    randomItemsPerRound: boolean;
-    /** Transpiled from int */
-    minItemsPerRound: number;
-    /** Transpiled from int */
-    maxItemsPerRound: number;
-    /** Transpiled from int */
-    maxItems: number;
-    /** Transpiled from int */
-    minBlankRounds: number;
-    /** Transpiled from int */
-    minLiveRounds: number;
-    /** Transpiled from int */
-    maxBlankRounds: number;
-    /** Transpiled from int */
-    maxLiveRounds: number;
-    /** Transpiled from bool */
-    allowLifeDonation: boolean;
-    /** Transpiled from bool */
-    allowPlayerRevival: boolean;
-    /** Transpiled from bool */
-    allowDoubleDamageStacking: boolean;
-    /** Transpiled from bool */
-    allowDoubleSkips: boolean;
-    /** Transpiled from bool */
-    allowExtraLifeWhenFull: boolean;
-    /** Transpiled from bool */
-    allowSelfSkip: boolean;
-    /** Transpiled from bool */
-    loseSkipAfterRound: boolean;
-    /** Transpiled from bool */
-    lootItemsOnKill: boolean;
-    /** Transpiled from bool */
-    copySkipOnKill: boolean;
-}
-
 /** Transpiled from liveorlive_server.GameData */
 export type GameData = {
     /** Transpiled from System.Collections.Generic.List<liveorlive_server.Player> */
@@ -101,8 +55,8 @@ export type Lobby = {
     hidden: boolean;
     /** Transpiled from long */
     creationTime: number;
-    /** Transpiled from liveorlive_server.Config */
-    config: Config;
+    /** Transpiled from liveorlive_server.Settings */
+    config: Settings;
     /** Transpiled from System.Collections.Generic.List<liveorlive_server.Player> */
     players: Player[];
     /** Transpiled from string? */
@@ -115,6 +69,8 @@ export type Lobby = {
 export type Player = {
     /** Transpiled from string */
     username: string;
+    /** Transpiled from string */
+    connectionId: string;
     /** Transpiled from bool */
     inGame: boolean;
     /** Transpiled from bool */
@@ -127,5 +83,79 @@ export type Player = {
     isSkipped: boolean;
     /** Transpiled from long */
     joinTime: number;
+}
+
+/** Transpiled from liveorlive_server.Settings */
+export type Settings = {
+    /** Transpiled from bool */
+    private: boolean;
+    /** Transpiled from int */
+    maxPlayers: number;
+    /** Transpiled from int */
+    minBlankRounds: number;
+    /** Transpiled from int */
+    minLiveRounds: number;
+    /** Transpiled from int */
+    maxBlankRounds: number;
+    /** Transpiled from int */
+    maxLiveRounds: number;
+    /** Transpiled from int */
+    defaultLives: number;
+    /** Transpiled from int */
+    maxLives: number;
+    /** Transpiled from bool */
+    randomItemsPerRound: boolean;
+    /** Transpiled from int */
+    minItemsPerRound: number;
+    /** Transpiled from int */
+    maxItemsPerRound: number;
+    /** Transpiled from int */
+    maxItems: number;
+    /** Transpiled from bool */
+    enableReverseTurnOrderItem: boolean;
+    /** Transpiled from bool */
+    enableRackChamberItem: boolean;
+    /** Transpiled from bool */
+    enableExtraLifeItem: boolean;
+    /** Transpiled from bool */
+    enablePickpocketItem: boolean;
+    /** Transpiled from bool */
+    enableLifeGambleItem: boolean;
+    /** Transpiled from bool */
+    enableInvertItem: boolean;
+    /** Transpiled from bool */
+    enableChamberCheckItem: boolean;
+    /** Transpiled from bool */
+    enableDoubleDamageItem: boolean;
+    /** Transpiled from bool */
+    enableSkipItem: boolean;
+    /** Transpiled from bool */
+    enableRicochetItem: boolean;
+    /** Transpiled from bool */
+    allowLifeDonation: boolean;
+    /** Transpiled from bool */
+    allowPlayerRevival: boolean;
+    /** Transpiled from bool */
+    allowDoubleDamageStacking: boolean;
+    /** Transpiled from bool */
+    allowSequentialSkips: boolean;
+    /** Transpiled from bool */
+    allowExtraLifeWhenFull: boolean;
+    /** Transpiled from bool */
+    allowLifeGambleExceedMax: boolean;
+    /** Transpiled from bool */
+    allowSelfSkip: boolean;
+    /** Transpiled from bool */
+    ricochetIgnoreSkippedPlayers: boolean;
+    /** Transpiled from bool */
+    loseSkipAfterRound: boolean;
+    /** Transpiled from bool */
+    copySkipOnKill: boolean;
+    /** Transpiled from bool */
+    lootItemsOnKill: boolean;
+    /** Transpiled from int */
+    maxLootItemsOnKill: number;
+    /** Transpiled from bool */
+    allowLootItemsExceedMax: boolean;
 }
 

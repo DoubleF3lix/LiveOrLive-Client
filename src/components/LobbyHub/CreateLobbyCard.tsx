@@ -8,13 +8,13 @@ import {
 } from "@/card"
 import { Button } from "@/button";
 import LabelAndTextInputGridRow from "~/components/micro/LabelAndTextInputGridRow";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Separator } from "@/separator";
 import { BASE_URL } from "~/lib/const";
 import LabelAndSwitchGridRow from "~/components/micro/LabelAndSwitchGridRow";
-import { ConfigRefs, ConfigRefsWithSeparators } from "~/types/ConfigRefs";
+import { SettingsRefs, SettingsRefsWithSeparators } from "~/types/SettingsRefs";
 import LabelAndNumberGridRow from "~/components/micro/LabelAndNumberGridRow";
-import { toCamelCase } from "~/lib/utils";
+import { fromCamelCase, toLowercaseKeys } from "~/lib/utils";
 import {
     Collapsible,
     CollapsibleContent,
@@ -22,7 +22,7 @@ import {
 } from "@/collapsible"
 import { ChevronsUpDown } from "lucide-react";
 import { toast } from "sonner";
-import { Config } from "~/types/generated/liveorlive_server";
+import { Settings } from "~/types/generated/liveorlive_server";
 
 
 type CreateLobbyCardArgs = {
@@ -33,50 +33,12 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
     const username = useRef<string>("");
     const lobbyName = useRef<string>("");
 
-    const config: ConfigRefsWithSeparators = {
-        // Game
-        private: useRef<boolean>(false),
-        maxPlayers: useRef<number>(8),
-
-        sep1: null,
-        // Lives
-        defaultLives: useRef<number>(3),
-        maxLives: useRef<number>(3),
-
-        sep2: null,
-        // Items
-        randomItemsPerRound: useRef<boolean>(false),
-        minItemsPerRound: useRef<number>(3),
-        maxItemsPerRound: useRef<number>(3),
-        maxItems: useRef<number>(4),
-
-        sep3: null,
-        // Chamber
-        minBlankRounds: useRef<number>(1),
-        minLiveRounds: useRef<number>(1),
-        maxBlankRounds: useRef<number>(4),
-        maxLiveRounds: useRef<number>(4),
-
-        sep4: null,
-        // Item use
-        allowLifeDonation: useRef<boolean>(true),
-        allowPlayerRevival: useRef<boolean>(true),
-        allowDoubleDamageStacking: useRef<boolean>(false),
-        allowDoubleSkips: useRef<boolean>(false),
-        allowExtraLifeWhenFull: useRef<boolean>(false),
-        allowSelfSkip: useRef<boolean>(false),
-
-        sep5: null,
-        // Events
-        loseSkipAfterRound: useRef<boolean>(true),
-        lootItemsOnKill: useRef<boolean>(false),
-        copySkipOnKill: useRef<boolean>(true)
-    };
+    const [settingsInitialized, setSettingsInitialized] = useState<boolean>(false);
 
     function createLobby() {
-        const filteredConfig = Object.keys(config).reduce((out: {[key: string]: boolean | number}, current: string) => {
+        const filteredSettings = Object.keys(settings).reduce((out: {[key: string]: boolean | number}, current: string) => {
             if (!current.startsWith("sep")) {
-                out[current] = (config as ConfigRefs)[current as keyof Config].current;
+                out[current] = (settings as SettingsRefs)[current as keyof Settings].current;
             }
             return out;
         }, {} as {[key: string]: boolean | number}); 
@@ -99,7 +61,7 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 username: username.current,
-                config: filteredConfig
+                config: filteredSettings
             })
         }).then(async response => {
             if (response.status === 200) {
@@ -108,6 +70,65 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
             }
         });
     }
+
+    const settings: SettingsRefsWithSeparators = {
+        private: useRef<boolean>(false),
+        maxPlayers: useRef<number>(0),
+        sepChamber: null,
+        minBlankRounds: useRef<number>(0),
+        minLiveRounds: useRef<number>(0),
+        maxBlankRounds: useRef<number>(0),
+        maxLiveRounds: useRef<number>(0),
+        sepLives: null,
+        defaultLives: useRef<number>(0),
+        maxLives: useRef<number>(0),
+        sepItemDist: null,
+        randomItemsPerRound: useRef<boolean>(false),
+        minItemsPerRound: useRef<number>(0),
+        maxItemsPerRound: useRef<number>(0),
+        maxItems: useRef<number>(0),
+        sepItemEnable: null,
+        enableReverseTurnOrderItem: useRef<boolean>(false),
+        enableRackChamberItem: useRef<boolean>(false),
+        enableExtraLifeItem: useRef<boolean>(false),
+        enablePickpocketItem: useRef<boolean>(false),
+        enableLifeGambleItem: useRef<boolean>(false),
+        enableInvertItem: useRef<boolean>(false),
+        enableChamberCheckItem: useRef<boolean>(false),
+        enableDoubleDamageItem: useRef<boolean>(false),
+        enableSkipItem: useRef<boolean>(false),
+        enableRicochetItem: useRef<boolean>(false),
+        sepGameplay: null,
+        allowLifeDonation: useRef<boolean>(false),
+        allowPlayerRevival: useRef<boolean>(false),
+        allowDoubleDamageStacking: useRef<boolean>(false),
+        allowSequentialSkips: useRef<boolean>(false),
+        allowExtraLifeWhenFull: useRef<boolean>(false),
+        allowLifeGambleExceedMax: useRef<boolean>(false),
+        allowSelfSkip: useRef<boolean>(false),
+        ricochetIgnoreSkippedPlayers: useRef<boolean>(false),
+        loseSkipAfterRound: useRef<boolean>(false),
+        copySkipOnKill: useRef<boolean>(false),
+        lootItemsOnKill: useRef<boolean>(false),
+        maxLootItemsOnKill: useRef<number>(0),
+        allowLootItemsExceedMax: useRef<boolean>(false)
+    };
+
+    useEffect(() => {
+        fetch(`${BASE_URL}/default-settings`, {
+            method: "GET"
+        }).then(async response => {
+            if (response.status === 200) {
+                const data = toLowercaseKeys(await response.json()) as Settings;
+                let key: keyof Settings;
+                for (key in data) {
+                    const value = data[key];
+                    settings[key].current = value;
+                }
+                setSettingsInitialized(true);
+            }
+        });
+    }, []);
 
     return <>
         <Card>
@@ -128,21 +149,21 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
                         </Button>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                        <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
-                            {Object.keys(config).map((configKey: string) => {
-                                if (configKey.startsWith("sep")) {
-                                    return <Separator key={configKey} className="col-span-2" />;
+                        {settingsInitialized && <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
+                            {Object.keys(settings).map((settingsKey: string) => {
+                                if (settingsKey.startsWith("sep")) {
+                                    return <Separator key={settingsKey} className="col-span-2" />;
                                 }
-                                const castedConfigKey = configKey as keyof ConfigRefs;
-                                const configType = config[castedConfigKey] as React.MutableRefObject<boolean | number>;
+                                const castedSettingsKey = settingsKey as keyof SettingsRefs;
+                                const configType = settings[castedSettingsKey] as React.MutableRefObject<boolean | number>;
                                 switch (typeof configType.current) {
                                     case "boolean":
-                                        return <LabelAndSwitchGridRow key={configKey} label={`${toCamelCase(configKey).replace("Enable ", "")}:`} boolRef={config[castedConfigKey] as React.MutableRefObject<boolean>} />;
+                                        return <LabelAndSwitchGridRow key={settingsKey} label={`${fromCamelCase(settingsKey)}:`} boolRef={settings[castedSettingsKey] as React.MutableRefObject<boolean>} />;
                                     case "number":
-                                        return <LabelAndNumberGridRow key={configKey} label={`${toCamelCase(configKey)}:`} numberRef={config[castedConfigKey] as React.MutableRefObject<number>} />;
+                                        return <LabelAndNumberGridRow key={settingsKey} label={`${fromCamelCase(settingsKey)}:`} numberRef={settings[castedSettingsKey] as React.MutableRefObject<number>} />;
                                 }
                             })}
-                        </div>
+                        </div>}
                     </CollapsibleContent>
                 </Collapsible>
             </CardContent>

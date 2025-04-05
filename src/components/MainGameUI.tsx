@@ -4,14 +4,13 @@ import { ServerConnection } from "~/lib/ServerConnection";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { Toaster } from "@/sonner";
-import { Button } from "@/button";
-import { toast } from "~/components/CustomToast";
 import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
 import { addPlayer, loadFromPacket, setHost } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "./AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
+import PlayerCard from "~/components/PlayerCard";
 
 
 export default function MainGameUI() {
@@ -85,20 +84,12 @@ export default function MainGameUI() {
             <h1 className="flex-grow text-center justify-center content-center text-2xl font-bold my-2">Live or Live</h1>
         </div>
         {/* Body */}
-        <div className="flex flex-grow m-1 p-4">
-            <div className="flex flex-col flex-grow">
+        <div className="flex flex-grow m-1 p-4 border-2 border-foreground">
+            <div className="flex flex-col w-full overflow-clip">
                 <p>{JSON.stringify(selfPlayer)}</p>
-                <p>{JSON.stringify(players)}</p>
-                <Button onClick={() => toast({
-                    type: "achievement",
-                    title: "Ultimate Victory",
-                    description: "With only two players left at one life each and a 1/1 chamber, kill your opponent and win the game without using any items",
-                    button: {
-                        label: "Close",
-                        onClick: () => { },
-                    }
-                })}>Show Toast</Button>
-                <Button onClick={() => serverConnection.kickPlayer("feef2")}>Kick</Button>
+                <div className="grid grid-cols-1 gap-1 sm:grid-cols-3 sm:gap-2 lg:grid-cols-4 lg:gap-4">
+                    {players.map(player => !player.isSpectator && <PlayerCard key={player.username + "_playerCard"} player={player} />)}
+                </div>
             </div>
         </div>
         {/* Admin-Only Footer */}
