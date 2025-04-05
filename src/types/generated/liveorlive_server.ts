@@ -56,7 +56,7 @@ export type Lobby = {
     /** Transpiled from long */
     creationTime: number;
     /** Transpiled from liveorlive_server.Settings */
-    config: Settings;
+    settings: Settings;
     /** Transpiled from System.Collections.Generic.List<liveorlive_server.Player> */
     players: Player[];
     /** Transpiled from string? */
@@ -146,11 +146,11 @@ export type Settings = {
     /** Transpiled from bool */
     allowSelfSkip: boolean;
     /** Transpiled from bool */
-    ricochetIgnoreSkippedPlayers: boolean;
-    /** Transpiled from bool */
     loseSkipAfterRound: boolean;
     /** Transpiled from bool */
     copySkipOnKill: boolean;
+    /** Transpiled from bool */
+    ricochetIgnoreSkippedPlayers: boolean;
     /** Transpiled from bool */
     lootItemsOnKill: boolean;
     /** Transpiled from int */

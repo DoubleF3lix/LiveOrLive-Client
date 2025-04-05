@@ -56,11 +56,12 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
             return;
         }
 
-        fetch(`${BASE_URL}/lobbies?username=${username.current}&name=${lobbyName.current}`, {
+        fetch(`${BASE_URL}/lobbies`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 username: username.current,
+                lobbyName: lobbyName.current,
                 config: filteredSettings
             })
         }).then(async response => {

@@ -11,6 +11,7 @@ import { Lobby, Player } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "./AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 import PlayerCard from "~/components/PlayerCard";
+import { useSidebar } from "@/sidebar";
 
 
 export default function MainGameUI() {
@@ -21,19 +22,26 @@ export default function MainGameUI() {
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
 
+    const { setOpen, setOpenMobile } = useSidebar();
+
     const selfPlayer = players.find(p => p.username === clientUsername);
     const isHost = clientUsername === lobbyHost;
 
     // Auto-reload window if the server dies, maybe comment out
-    serverConnection.onDisconnect(() => {
-        dispatch(showAlertDialog({
-            title: "Connection Lost",
-            description: "The server has disconnected. The page will now reload.",
-            onClick: "reloadWindow"
-        }));
+    serverConnection.onDisconnect((error) => {
+        if (error) {
+            dispatch(showAlertDialog({
+                title: "Connection Lost",
+                description: "The server has disconnected. The page will now reload.",
+                onClick: "reloadWindow"
+            }));
+        }
     });
 
     useEffect(() => {
+        setOpen(true);
+        setOpenMobile(false);
+
         const sub_getLobbyDataResponse = serverConnection.subscribe("getLobbyDataResponse", async (lobbyData: Lobby) => {
             console.log("getLobbyDataResponse", lobbyData);
             dispatch(loadFromPacket(lobbyData));
@@ -45,7 +53,7 @@ export default function MainGameUI() {
 
         const sub_hostChanged = serverConnection.subscribe("hostChanged", async (previous: string | undefined, current: string | undefined, reason: string | undefined) => {
             dispatch(setHost(current));
-            // TODO
+            // TODO badge on host
             console.log("Host Changed", previous, current, reason);
         });
 
@@ -104,5 +112,3 @@ export default function MainGameUI() {
         <Toaster duration={10000} visibleToasts={3} />
     </div>
 }
-
-// TODO ADD "Can Loot Dead Players"

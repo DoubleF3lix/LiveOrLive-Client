@@ -113,6 +113,13 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
             ...Object.keys(this.itemReceiver)
         ] as (keyof IHubServerResponse)[];
         this.subscriptions = Object.fromEntries(keys.map(key => [key, new Set<ResponseCallback>()])) as Subscriptions;
+
+        // window.addEventListener("beforeunload", () => {
+        //     console.log("Stopping")
+        //     this.stop();
+        // });
+
+        this.onDisconnect(this.stop);
     }
 
     async start() {

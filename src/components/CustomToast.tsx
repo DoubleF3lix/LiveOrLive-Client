@@ -3,8 +3,6 @@ import { toast as sonnerToast } from 'sonner';
 import { Toast } from '~/types/Toast';
 
 
-// TODO make type for non gilded achievement (use white from commit history) 
-// and plain black announcement achievement (basically inverted white, probably try normal though cause I forgot what that looked like)
 export function GildedAchievementToast(props: Omit<Toast, "type">) {
     const { title, description, button, id } = props;
 
