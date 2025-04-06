@@ -8,7 +8,8 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { ChatMessage as ChatMessageType } from "~/types/generated/liveorlive_server";
 import { Separator } from "@/separator";
-import ChatMessages from "./ChatMessages";
+import ChatMessages from "~/components/Chat/ChatMessages";
+import IconButton from "~/components/micro/IconButton";
 
 
 
@@ -88,7 +89,7 @@ export function ChatSidebar() {
             serverConnection.unsubscribe("getChatMessagesResponse", sub_getChatMessagesResponse);
             serverConnection.unsubscribe("chatMessageSent", sub_chatMessageSent);
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, serverConnection]);
 
     // Update open state depending on desktop/mobile
@@ -101,7 +102,7 @@ export function ChatSidebar() {
         if (chatIsOpen) {
             // For some reason, this doesn't trigger if this timeout isn't there
             setTimeout(() => {
-                scrollToPercentage(); 
+                scrollToPercentage();
                 resizeListener();
             }, 1);
         }
@@ -120,9 +121,9 @@ export function ChatSidebar() {
                 <Separator />
                 <div className="flex">
                     <textarea ref={chatMessageInput} rows={1} placeholder="Type a message..." className="grow min-w-0 border-2 border-input rounded-lg p-1 pl-2 resize-none" />
-                    <button onClick={sendChatMessage} className="bg-chat-send hover:bg-chat-send-hover content-center p-1 pl-1.5 rounded-xl w-8 ml-2">
+                    <IconButton onClick={sendChatMessage} className="bg-chat-send hover:bg-chat-send-hover/99 content-center p-1 pl-1.5 rounded-xl w-8 ml-2" overrideSpacing>
                         <SendHorizontal size={20} color="#ffffff" />
-                    </button>
+                    </IconButton>
                 </div>
             </SidebarFooter>
         </Sidebar>

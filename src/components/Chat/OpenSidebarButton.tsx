@@ -2,13 +2,18 @@ import { useSelector } from "react-redux";
 import { MessageCircle, MessageCircleMore } from "lucide-react";
 import { useSidebar } from "@/sidebar";
 import { IRootState } from "~/store/Store";
+import IconButton from "~/components/micro/IconButton";
 
 
-export default function OpenSidebarButton() {
+type OpenSidebarButtonArgs = {
+    className?: string;
+};
+
+export default function OpenSidebarButton({ className }: OpenSidebarButtonArgs) {
     const { toggleSidebar } = useSidebar();
     const hasUnread = useSelector((state: IRootState) => state.chatReducer.hasUnread);
 
-    return <div onClick={toggleSidebar} className="size-7 mt-3 ml-2 absolute" group-data-collapsible="icon">
+    return <IconButton onClick={toggleSidebar} className={className}>
         {hasUnread ? <MessageCircleMore /> : <MessageCircle />}
-    </div>;
+    </IconButton>
 }

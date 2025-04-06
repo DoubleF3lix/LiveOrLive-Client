@@ -1,16 +1,19 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { Toaster } from "@/sonner";
 import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
-import { addPlayer, loadFromPacket, setHost } from "~/store/LobbyDataSlice";
+import { addPlayer, loadFromPacket, removePlayer, setHost } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "./AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 import PlayerCard from "~/components/PlayerCard";
+import GameInfoSidebar from "~/components/GameInfoSidebar";
+import { Info } from "lucide-react";
+import IconButton from "~/components/micro/IconButton";
 
 
 export default function MainGameUI() {
@@ -20,6 +23,8 @@ export default function MainGameUI() {
     const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
+
+    const [gameInfoSidebarOpen, setGameInfoSidebarOpen] = useState<boolean>(true);
 
     const selfPlayer = players.find(p => p.username === clientUsername);
     const isHost = clientUsername === lobbyHost;
@@ -45,6 +50,10 @@ export default function MainGameUI() {
             dispatch(addPlayer(player));
         });
 
+        const sub_playerLeft = serverConnection.subscribe("playerLeft", async (username: string) => {
+            dispatch(removePlayer(username));
+        });
+
         const sub_hostChanged = serverConnection.subscribe("hostChanged", async (previous: string | undefined, current: string | undefined, reason: string | undefined) => {
             dispatch(setHost(current));
             console.log("Host Changed", previous, current, reason);
@@ -57,6 +66,8 @@ export default function MainGameUI() {
                     description: "You were kicked from the game",
                     onClick: "reloadWindowKicked"
                 }));
+            } else {
+                dispatch(removePlayer(username));
             }
         });
 
@@ -72,6 +83,7 @@ export default function MainGameUI() {
         return () => {
             serverConnection.unsubscribe("getLobbyDataResponse", sub_getLobbyDataResponse);
             serverConnection.unsubscribe("playerJoined", sub_playerJoined);
+            serverConnection.unsubscribe("playerLeft", sub_playerLeft);
             serverConnection.unsubscribe("hostChanged", sub_hostChanged);
             serverConnection.unsubscribe("playerKicked", sub_playerKicked);
             serverConnection.unsubscribe("actionFailed", sub_actionFailed);
@@ -80,16 +92,19 @@ export default function MainGameUI() {
 
     return <div className="flex flex-col h-dvh w-dvw p-2 overflow-x-auto">
         {/* Header */}
-        <div className="flex mb-0">
-            <OpenSidebarButton />
-            <h1 className="flex-grow text-center justify-center content-center text-2xl font-bold py-2 pb-3">Live or Live</h1>
+        <div className="flex mb-0 mt-3 justify-between pb-3">
+            <OpenSidebarButton className="ml-2" />
+            <h1 className="flex-grow text-center justify-center content-center text-2xl font-bold -mt-1">Live or Live</h1>
+            <IconButton onClick={() => setGameInfoSidebarOpen(true)} className="mr-2">
+                <Info />
+            </IconButton>
         </div>
         <Separator />
         {/* Body */}
         <div className="flex flex-col flex-grow m-1 p-2 lg:p-4 overflow-y-auto @container">
             <p className="text-wrap overflow-x-auto">{JSON.stringify(selfPlayer)}</p>
-            <div className="grid grid-cols-1 gap-1 @lg:grid-cols-2 @4xl:grid-cols-3 @7xl:grid-cols-4">
-                {players.map(player => !player.isSpectator && <PlayerCard key={player.username + "_playerCard"} player={player} isHost={player.username === lobbyHost} />)}
+            <div className="grid grid-cols-1 gap-1 @lg:grid-cols-2 @lg:gap-4 @4xl:grid-cols-3 @7xl:grid-cols-4 @7xl:gap-6">
+                {players.map(player => !player.isSpectator && <PlayerCard key={player.username + "_playerCard"} player={player} />)}
             </div>
         </div>
         {/* Admin-Only Footer */}
@@ -101,6 +116,7 @@ export default function MainGameUI() {
         </div>}
 
         <AlertDialogQueue />
+        <GameInfoSidebar open={gameInfoSidebarOpen} setOpen={setGameInfoSidebarOpen} />
         <Toaster duration={10000} visibleToasts={3} />
     </div>
 }

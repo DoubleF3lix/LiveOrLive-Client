@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { removeItemFromArray } from "~/lib/utils";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
 
 
@@ -7,7 +8,7 @@ const initialLobbyDataSliceState: Lobby = {
     name: "",
     hidden: false,
     creationTime: 0,
-    config: {
+    settings: {
         private: false,
         maxPlayers: 0,
         minBlankRounds: 0,
@@ -59,11 +60,17 @@ export const lobbyDataSlice = createSlice({
         addPlayer: (state, action: PayloadAction<Player>) => {
             state.players.push(action.payload);
         },
+        removePlayer: (state, action: PayloadAction<string>) => {
+            const playerToRemove = state.players.find(player => player.username === action.payload);
+            if (playerToRemove) {
+                state.players = removeItemFromArray(state.players, playerToRemove);
+            }
+        },
         setHost: (state, action: PayloadAction<string | undefined>) => {
             state.host = action.payload;
         }
     }
 });
 
-export const { loadFromPacket, addPlayer, setHost } = lobbyDataSlice.actions;
+export const { loadFromPacket, addPlayer, removePlayer, setHost } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;
