@@ -37,25 +37,26 @@ export function ChatSidebar() {
         }
     }
 
-    useEffect(() => {
-        const chatMessageInputCurrent = chatMessageInput.current;
-
-        // Firefox Mobile doesn't change dvh when the on-screen keyboard goes up, so we have to do this nonsense to hack it
-        function resizeListener() {
-            // ref is always null for some reason, so this will have to do
-            const sidebarContent = document.querySelector('[data-slot="sidebar-content"]');
-            if (sidebarContent) {
-                const oldScrollPercentage = sidebarContent.scrollTop / (sidebarContent.scrollHeight - sidebarContent.clientHeight);
-                document.documentElement.style.setProperty("--viewport-height", `${window.visualViewport?.height}px`);
-                scrollToPercentage(oldScrollPercentage);
-            }
+    // Firefox Mobile doesn't change dvh when the on-screen keyboard goes up, so we have to do this nonsense to hack it
+    function resizeListener() {
+        // ref is always null for some reason, so this will have to do
+        const sidebarContent = document.querySelector('[data-slot="sidebar-content"]');
+        if (sidebarContent) {
+            const oldScrollPercentage = sidebarContent.scrollTop / (sidebarContent.scrollHeight - sidebarContent.clientHeight);
+            document.documentElement.style.setProperty("--viewport-height", `${window.visualViewport?.height}px`);
+            scrollToPercentage(oldScrollPercentage);
         }
+    }
+
+    useEffect(() => {
         window.visualViewport?.addEventListener("resize", resizeListener);
 
+        const chatMessageInputCurrent = chatMessageInput.current;
+        // Needs to be in input so it shrinks if we hit something like CTRL+A -> Backspace
         function inputListener() {
             if (!chatMessageInputCurrent) return;
             chatMessageInputCurrent.style.height = "auto";
-            // 4 lines of text
+            // About 4 lines of text
             chatMessageInputCurrent.style.height = `${Math.min(chatMessageInputCurrent.scrollHeight + 6, 125)}px`;
         }
         function keydownListener(event: KeyboardEvent) {
@@ -87,18 +88,22 @@ export function ChatSidebar() {
             serverConnection.unsubscribe("getChatMessagesResponse", sub_getChatMessagesResponse);
             serverConnection.unsubscribe("chatMessageSent", sub_chatMessageSent);
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, serverConnection]);
 
     // Update open state depending on desktop/mobile
     useEffect(() => {
-        dispatch(setChatIsOpen(isMobile ? openMobile : open))
+        dispatch(setChatIsOpen(isMobile ? openMobile : open));
     }, [dispatch, isMobile, open, openMobile]);
 
     // Scroll down if there's a new message or we open the chat
     useEffect(() => {
         if (chatIsOpen) {
-            // For some reason, mobile won't scroll if this timeout isn't there (and why does 0ms time work?)
-            setTimeout(scrollToPercentage, 1);
+            // For some reason, this doesn't trigger if this timeout isn't there
+            setTimeout(() => {
+                scrollToPercentage(); 
+                resizeListener();
+            }, 1);
         }
     }, [chatMessages, chatIsOpen]);
 

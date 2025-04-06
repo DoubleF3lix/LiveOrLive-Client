@@ -81,6 +81,8 @@ export type Player = {
     items: Item[];
     /** Transpiled from bool */
     isSkipped: boolean;
+    /** Transpiled from bool */
+    isRicochet: boolean;
     /** Transpiled from long */
     joinTime: number;
 }

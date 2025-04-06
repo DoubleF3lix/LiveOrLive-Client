@@ -11,7 +11,6 @@ import { Lobby, Player } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "./AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 import PlayerCard from "~/components/PlayerCard";
-import { useSidebar } from "@/sidebar";
 
 
 export default function MainGameUI() {
@@ -21,8 +20,6 @@ export default function MainGameUI() {
     const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
-
-    const { setOpen, setOpenMobile } = useSidebar();
 
     const selfPlayer = players.find(p => p.username === clientUsername);
     const isHost = clientUsername === lobbyHost;
@@ -39,9 +36,6 @@ export default function MainGameUI() {
     });
 
     useEffect(() => {
-        setOpen(true);
-        setOpenMobile(false);
-
         const sub_getLobbyDataResponse = serverConnection.subscribe("getLobbyDataResponse", async (lobbyData: Lobby) => {
             console.log("getLobbyDataResponse", lobbyData);
             dispatch(loadFromPacket(lobbyData));
@@ -53,7 +47,6 @@ export default function MainGameUI() {
 
         const sub_hostChanged = serverConnection.subscribe("hostChanged", async (previous: string | undefined, current: string | undefined, reason: string | undefined) => {
             dispatch(setHost(current));
-            // TODO badge on host
             console.log("Host Changed", previous, current, reason);
         });
 
@@ -85,19 +78,18 @@ export default function MainGameUI() {
         };
     }, [dispatch, serverConnection]);
 
-    return <div className="flex flex-col h-dvh w-dvw p-2">
+    return <div className="flex flex-col h-dvh w-dvw p-2 overflow-x-auto">
         {/* Header */}
-        <div className="flex">
+        <div className="flex mb-0">
             <OpenSidebarButton />
-            <h1 className="flex-grow text-center justify-center content-center text-2xl font-bold my-2">Live or Live</h1>
+            <h1 className="flex-grow text-center justify-center content-center text-2xl font-bold py-2 pb-3">Live or Live</h1>
         </div>
+        <Separator />
         {/* Body */}
-        <div className="flex flex-grow m-1 p-4 border-2 border-foreground">
-            <div className="flex flex-col w-full overflow-clip">
-                <p>{JSON.stringify(selfPlayer)}</p>
-                <div className="grid grid-cols-1 gap-1 sm:grid-cols-3 sm:gap-2 lg:grid-cols-4 lg:gap-4">
-                    {players.map(player => !player.isSpectator && <PlayerCard key={player.username + "_playerCard"} player={player} />)}
-                </div>
+        <div className="flex flex-col flex-grow m-1 p-2 lg:p-4 overflow-y-auto @container">
+            <p className="text-wrap overflow-x-auto">{JSON.stringify(selfPlayer)}</p>
+            <div className="grid grid-cols-1 gap-1 @lg:grid-cols-2 @4xl:grid-cols-3 @7xl:grid-cols-4">
+                {players.map(player => !player.isSpectator && <PlayerCard key={player.username + "_playerCard"} player={player} isHost={player.username === lobbyHost} />)}
             </div>
         </div>
         {/* Admin-Only Footer */}
