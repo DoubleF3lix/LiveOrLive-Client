@@ -11,9 +11,11 @@ import { Lobby, Player } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "./AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 import PlayerCard from "~/components/PlayerCard";
-import GameInfoSidebar from "~/components/GameInfoSidebar";
+import GameInfoSidebar from "~/components/GameInfo/GameInfoSidebar";
 import { Info } from "lucide-react";
 import IconButton from "~/components/micro/IconButton";
+import TurnOrderBar from "~/components/TurnOrderBar";
+import { Button } from "@/button";
 
 
 export default function MainGameUI() {
@@ -24,9 +26,9 @@ export default function MainGameUI() {
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
 
-    const [gameInfoSidebarOpen, setGameInfoSidebarOpen] = useState<boolean>(true);
+    const [gameInfoSidebarOpen, setGameInfoSidebarOpen] = useState<boolean>(false);
 
-    const selfPlayer = players.find(p => p.username === clientUsername);
+    // const selfPlayer = players.find(p => p.username === clientUsername);
     const isHost = clientUsername === lobbyHost;
 
     // Auto-reload window if the server dies, maybe comment out
@@ -74,7 +76,8 @@ export default function MainGameUI() {
         const sub_actionFailed = serverConnection.subscribe("actionFailed", async (reason: string) => {
             dispatch(showAlertDialog({
                 title: "Action Failed",
-                description: reason
+                description: reason,
+                skippable: true
             }));
         });
 
@@ -101,17 +104,17 @@ export default function MainGameUI() {
         </div>
         <Separator />
         {/* Body */}
-        <div className="flex flex-col flex-grow m-1 p-2 lg:p-4 overflow-y-auto @container">
-            <p className="text-wrap overflow-x-auto">{JSON.stringify(selfPlayer)}</p>
+        <div className="flex flex-col flex-grow m-1 -mt-0 p-2 lg:p-4 overflow-y-auto @container">
+            <TurnOrderBar className="mb-1 lg:mb-2" />
             <div className="grid grid-cols-1 gap-1 @lg:grid-cols-2 @lg:gap-4 @4xl:grid-cols-3 @7xl:grid-cols-4 @7xl:gap-6">
                 {players.map(player => !player.isSpectator && <PlayerCard key={player.username + "_playerCard"} player={player} />)}
             </div>
         </div>
-        {/* Admin-Only Footer */}
-        {isHost && <div className="flex m-1">
-            <div className="flex flex-col flex-grow mt-auto">
-                <Separator />
-                <p className="mt-2 flex-grow text-center content-center text-2xl">{clientUsername}</p>
+        {/* Host-Only Footer */}
+        {isHost && <div className="flex flex-col mt-auto m-1">
+            <Separator />
+            <div className="flex mt-2">
+                <Button>Start Game</Button>
             </div>
         </div>}
 

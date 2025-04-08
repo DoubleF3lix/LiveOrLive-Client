@@ -63,14 +63,16 @@ export type Lobby = {
     host?: string;
     /** Transpiled from bool */
     gameStarted: boolean;
+    /** Transpiled from System.Collections.Generic.List<string> */
+    turnOrder: string[];
+    /** Transpiled from string? */
+    currentTurn?: string;
 }
 
 /** Transpiled from liveorlive_server.Player */
 export type Player = {
     /** Transpiled from string */
     username: string;
-    /** Transpiled from string */
-    connectionId: string;
     /** Transpiled from bool */
     inGame: boolean;
     /** Transpiled from bool */

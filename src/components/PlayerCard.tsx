@@ -18,7 +18,7 @@ export default function PlayerCard({ player }: PlayerCardArgs) {
                 <p className="text-xl font-bold">{player.username}</p>
                 <p className="italic">{player.lives} {player.lives === 1 ? "life" : "lives"}</p>
             </div>
-            <div className="flex flex-wrap gap-1 justify-end">
+            <div className="flex flex-wrap gap-1">
                 {player.isSkipped && <Badge className="bg-blue-500 font-bold h-5 text-foreground">{PLAYER_CARD_BADGE_ICONS ? <Ban color="#ffffff" /> : "Skipped"}</Badge>}
                 {player.isRicochet && <Badge className="bg-green-400 font-bold h-5 text-foreground">{PLAYER_CARD_BADGE_ICONS ? <Shield color="#ffffff" /> : "Ricochet"}</Badge>}
             </div>

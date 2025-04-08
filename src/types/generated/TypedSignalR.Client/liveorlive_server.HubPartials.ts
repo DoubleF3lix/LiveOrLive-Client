@@ -53,6 +53,10 @@ export type IBaseGameRequest = {
     /**
     * @returns Transpiled from System.Threading.Tasks.Task
     */
+    startGame(): Promise<void>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
     getLobbyDataRequest(): Promise<void>;
     /**
     * @param target Transpiled from string

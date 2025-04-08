@@ -62,7 +62,7 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
             body: JSON.stringify({
                 username: username.current,
                 lobbyName: lobbyName.current,
-                config: filteredSettings
+                settings: filteredSettings
             })
         }).then(async response => {
             if (response.status === 200) {

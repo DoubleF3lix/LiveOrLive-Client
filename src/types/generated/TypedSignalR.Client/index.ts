@@ -204,6 +204,10 @@ class IBaseGameRequest_HubProxy implements IBaseGameRequest {
     public constructor(private connection: HubConnection) {
     }
 
+    public readonly startGame = async (): Promise<void> => {
+        return await this.connection.invoke("StartGame");
+    }
+
     public readonly getLobbyDataRequest = async (): Promise<void> => {
         return await this.connection.invoke("GetLobbyDataRequest");
     }
