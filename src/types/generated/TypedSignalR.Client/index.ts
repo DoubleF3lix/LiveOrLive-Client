@@ -266,8 +266,8 @@ class IItemRequest_HubProxy implements IItemRequest {
         return await this.connection.invoke("UsePickpocketItem", target, item, itemTarget);
     }
 
-    public readonly useAdrenalineItem = async (): Promise<void> => {
-        return await this.connection.invoke("UseAdrenalineItem");
+    public readonly useLifeGambleItem = async (): Promise<void> => {
+        return await this.connection.invoke("UseLifeGambleItem");
     }
 
     public readonly useInvertItem = async (): Promise<void> => {
@@ -284,6 +284,10 @@ class IItemRequest_HubProxy implements IItemRequest {
 
     public readonly useSkipItem = async (target: string): Promise<void> => {
         return await this.connection.invoke("UseSkipItem", target);
+    }
+
+    public readonly useRicochetItem = async (target: string): Promise<void> => {
+        return await this.connection.invoke("UseRicochetItem", target);
     }
 }
 
@@ -323,12 +327,13 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __reverseTurnOrderItemUsed = () => receiver.reverseTurnOrderItemUsed();
         const __rackChamberItemUsed = () => receiver.rackChamberItemUsed();
         const __extraLifeItemUsed = (...args: [string]) => receiver.extraLifeItemUsed(...args);
-        const __pickpocketItemUsed = (...args: [string, Item]) => receiver.pickpocketItemUsed(...args);
-        const __adrenalineItemUsed = (...args: [number]) => receiver.adrenalineItemUsed(...args);
+        const __pickpocketItemUsed = (...args: [string, Item, string]) => receiver.pickpocketItemUsed(...args);
+        const __lifeGambleItemUsed = (...args: [number]) => receiver.lifeGambleItemUsed(...args);
         const __invertItemUsed = () => receiver.invertItemUsed();
         const __chamberCheckItemUsed = (...args: [BulletType]) => receiver.chamberCheckItemUsed(...args);
         const __doubleDamageItemUsed = () => receiver.doubleDamageItemUsed();
         const __skipItemUsed = (...args: [string]) => receiver.skipItemUsed(...args);
+        const __ricochetItemUsed = (...args: [string]) => receiver.ricochetItemUsed(...args);
 
         connection.on("GetChatMessagesResponse", __getChatMessagesResponse);
         connection.on("ChatMessageSent", __chatMessageSent);
@@ -355,11 +360,12 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         connection.on("RackChamberItemUsed", __rackChamberItemUsed);
         connection.on("ExtraLifeItemUsed", __extraLifeItemUsed);
         connection.on("PickpocketItemUsed", __pickpocketItemUsed);
-        connection.on("AdrenalineItemUsed", __adrenalineItemUsed);
+        connection.on("LifeGambleItemUsed", __lifeGambleItemUsed);
         connection.on("InvertItemUsed", __invertItemUsed);
         connection.on("ChamberCheckItemUsed", __chamberCheckItemUsed);
         connection.on("DoubleDamageItemUsed", __doubleDamageItemUsed);
         connection.on("SkipItemUsed", __skipItemUsed);
+        connection.on("RicochetItemUsed", __ricochetItemUsed);
 
         const methodList: ReceiverMethod[] = [
             { methodName: "GetChatMessagesResponse", method: __getChatMessagesResponse },
@@ -387,11 +393,12 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
             { methodName: "RackChamberItemUsed", method: __rackChamberItemUsed },
             { methodName: "ExtraLifeItemUsed", method: __extraLifeItemUsed },
             { methodName: "PickpocketItemUsed", method: __pickpocketItemUsed },
-            { methodName: "AdrenalineItemUsed", method: __adrenalineItemUsed },
+            { methodName: "LifeGambleItemUsed", method: __lifeGambleItemUsed },
             { methodName: "InvertItemUsed", method: __invertItemUsed },
             { methodName: "ChamberCheckItemUsed", method: __chamberCheckItemUsed },
             { methodName: "DoubleDamageItemUsed", method: __doubleDamageItemUsed },
-            { methodName: "SkipItemUsed", method: __skipItemUsed }
+            { methodName: "SkipItemUsed", method: __skipItemUsed },
+            { methodName: "RicochetItemUsed", method: __ricochetItemUsed }
         ]
 
         return new ReceiverMethodSubscription(connection, methodList);
@@ -563,33 +570,36 @@ class IItemResponse_Binder implements ReceiverRegister<IItemResponse> {
         const __reverseTurnOrderItemUsed = () => receiver.reverseTurnOrderItemUsed();
         const __rackChamberItemUsed = () => receiver.rackChamberItemUsed();
         const __extraLifeItemUsed = (...args: [string]) => receiver.extraLifeItemUsed(...args);
-        const __pickpocketItemUsed = (...args: [string, Item]) => receiver.pickpocketItemUsed(...args);
-        const __adrenalineItemUsed = (...args: [number]) => receiver.adrenalineItemUsed(...args);
+        const __pickpocketItemUsed = (...args: [string, Item, string]) => receiver.pickpocketItemUsed(...args);
+        const __lifeGambleItemUsed = (...args: [number]) => receiver.lifeGambleItemUsed(...args);
         const __invertItemUsed = () => receiver.invertItemUsed();
         const __chamberCheckItemUsed = (...args: [BulletType]) => receiver.chamberCheckItemUsed(...args);
         const __doubleDamageItemUsed = () => receiver.doubleDamageItemUsed();
         const __skipItemUsed = (...args: [string]) => receiver.skipItemUsed(...args);
+        const __ricochetItemUsed = (...args: [string]) => receiver.ricochetItemUsed(...args);
 
         connection.on("ReverseTurnOrderItemUsed", __reverseTurnOrderItemUsed);
         connection.on("RackChamberItemUsed", __rackChamberItemUsed);
         connection.on("ExtraLifeItemUsed", __extraLifeItemUsed);
         connection.on("PickpocketItemUsed", __pickpocketItemUsed);
-        connection.on("AdrenalineItemUsed", __adrenalineItemUsed);
+        connection.on("LifeGambleItemUsed", __lifeGambleItemUsed);
         connection.on("InvertItemUsed", __invertItemUsed);
         connection.on("ChamberCheckItemUsed", __chamberCheckItemUsed);
         connection.on("DoubleDamageItemUsed", __doubleDamageItemUsed);
         connection.on("SkipItemUsed", __skipItemUsed);
+        connection.on("RicochetItemUsed", __ricochetItemUsed);
 
         const methodList: ReceiverMethod[] = [
             { methodName: "ReverseTurnOrderItemUsed", method: __reverseTurnOrderItemUsed },
             { methodName: "RackChamberItemUsed", method: __rackChamberItemUsed },
             { methodName: "ExtraLifeItemUsed", method: __extraLifeItemUsed },
             { methodName: "PickpocketItemUsed", method: __pickpocketItemUsed },
-            { methodName: "AdrenalineItemUsed", method: __adrenalineItemUsed },
+            { methodName: "LifeGambleItemUsed", method: __lifeGambleItemUsed },
             { methodName: "InvertItemUsed", method: __invertItemUsed },
             { methodName: "ChamberCheckItemUsed", method: __chamberCheckItemUsed },
             { methodName: "DoubleDamageItemUsed", method: __doubleDamageItemUsed },
-            { methodName: "SkipItemUsed", method: __skipItemUsed }
+            { methodName: "SkipItemUsed", method: __skipItemUsed },
+            { methodName: "RicochetItemUsed", method: __ricochetItemUsed }
         ]
 
         return new ReceiverMethodSubscription(connection, methodList);

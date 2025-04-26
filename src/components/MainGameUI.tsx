@@ -5,7 +5,7 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { Toaster } from "@/sonner";
 import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
-import { addPlayer, loadFromPacket, removePlayer, setHost } from "~/store/LobbyDataSlice";
+import { playerJoined, loadFromPacket, playerLeft, setHost } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "./AlertDialogQueue";
@@ -16,6 +16,7 @@ import { Info } from "lucide-react";
 import IconButton from "~/components/micro/IconButton";
 import TurnOrderBar from "~/components/TurnOrderBar";
 import { Button } from "@/button";
+import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
 
 
 export default function MainGameUI() {
@@ -23,15 +24,15 @@ export default function MainGameUI() {
     const dispatch = useAppDispatch();
 
     const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
+    const gameStarted = useSelector((state: IRootState) => state.lobbyDataReducer.gameStarted);
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
 
     const [gameInfoSidebarOpen, setGameInfoSidebarOpen] = useState<boolean>(false);
 
-    // const selfPlayer = players.find(p => p.username === clientUsername);
     const isHost = clientUsername === lobbyHost;
+    const nonSpectatorPlayers = players.filter(player => !player.isSpectator);
 
-    // Auto-reload window if the server dies, maybe comment out
     serverConnection.onDisconnect((error) => {
         if (error) {
             dispatch(showAlertDialog({
@@ -43,17 +44,12 @@ export default function MainGameUI() {
     });
 
     useEffect(() => {
-        const sub_getLobbyDataResponse = serverConnection.subscribe("getLobbyDataResponse", async (lobbyData: Lobby) => {
-            console.log("getLobbyDataResponse", lobbyData);
-            dispatch(loadFromPacket(lobbyData));
-        });
-
         const sub_playerJoined = serverConnection.subscribe("playerJoined", async (player: Player) => {
-            dispatch(addPlayer(player));
+            dispatch(playerJoined(player));
         });
 
         const sub_playerLeft = serverConnection.subscribe("playerLeft", async (username: string) => {
-            dispatch(removePlayer(username));
+            dispatch(playerLeft(username));
         });
 
         const sub_hostChanged = serverConnection.subscribe("hostChanged", async (previous: string | undefined, current: string | undefined, reason: string | undefined) => {
@@ -69,8 +65,41 @@ export default function MainGameUI() {
                     onClick: "reloadWindowKicked"
                 }));
             } else {
-                dispatch(removePlayer(username));
+                dispatch(playerLeft(username));
             }
+        });
+
+        const sub_gameStarted = serverConnection.subscribe("gameStarted", async () => {
+            console.log("gameStarted");
+        });
+
+        const sub_newRoundStarted = serverConnection.subscribe("newRoundStarted", async (blankRoundCount: number, liveRoundCount: number) => {
+            console.log("newRoundStarted", blankRoundCount, liveRoundCount);
+        });
+
+        const sub_turnStarted = serverConnection.subscribe("turnStarted", async (username: string) => {
+            console.log("turnStarted", username);
+        });
+
+        const sub_turnEnded = serverConnection.subscribe("turnEnded", async (username: string) => {
+            console.log("turnEnded", username);
+        });
+
+        const sub_getLobbyDataResponse = serverConnection.subscribe("getLobbyDataResponse", async (lobbyData: Lobby) => {
+            console.log("getLobbyDataResponse", lobbyData);
+            dispatch(loadFromPacket(lobbyData));
+        });
+
+        const sub_playerShotAt = serverConnection.subscribe("playerShotAt", async (username: string, bulletType: BulletType, damage: number) => {
+            console.log("playerShotAt", username, bulletType, damage);
+        });
+
+        const sub_showAlert = serverConnection.subscribe("showAlert", async (message: string) => {
+            console.log("showAlertDialog", message);
+        });
+
+        const sub_achievementUnlocked = serverConnection.subscribe("achievementUnlocked", async (username: string, achievement: string) => {
+            console.log("achievementUnlocked", username, achievement);
         });
 
         const sub_actionFailed = serverConnection.subscribe("actionFailed", async (reason: string) => {
@@ -81,15 +110,72 @@ export default function MainGameUI() {
             }));
         });
 
+        const sub_reverseTurnOrderItemUsed = serverConnection.subscribe("reverseTurnOrderItemUsed", async () => {   
+            console.log("reverseTurnOrderItemUsed");
+        });
+
+        const sub_rackChamberItemUsed = serverConnection.subscribe("rackChamberItemUsed", async () => {   
+            console.log("rackChamberItemUsed");
+        });
+
+        const sub_extraLifeItemUsed = serverConnection.subscribe("extraLifeItemUsed", async (target: string) => {   
+            console.log("extraLifeItemUsed", target);
+        });
+
+        const sub_pickpocketItemUsed = serverConnection.subscribe("pickpocketItemUsed", async (target: string, item: Item, itemTarget: string | undefined) => {   
+            console.log("pickpocketItemUsed", target, item, itemTarget);
+        });
+
+        const sub_lifeGambleItemUsed = serverConnection.subscribe("lifeGambleItemUsed", async (lifeChange: number) => {   
+            console.log("lifeGambleItemUsed", lifeChange);
+        });
+
+        const sub_invertItemUsed = serverConnection.subscribe("invertItemUsed", async () => {   
+            console.log("invertItemUsed");
+        });
+
+        const sub_chamberCheckItemUsed = serverConnection.subscribe("chamberCheckItemUsed", async (bulletType: BulletType) => {   
+            console.log("chamberCheckItemUsed", bulletType);
+        });
+
+        const sub_doubleDamageItemUsed = serverConnection.subscribe("doubleDamageItemUsed", async () => {   
+            console.log("doubleDamageItemUsed");
+        });
+
+        const sub_skipItemUsed = serverConnection.subscribe("skipItemUsed", async (target: string) => {   
+            console.log("skipItemUsed", target);
+        });
+
+        const sub_ricochetItemUsed = serverConnection.subscribe("ricochetItemUsed", async (target: string | undefined) => {   
+            console.log("ricochetItemUsed", target);
+        });
+
         serverConnection.getLobbyDataRequest();
 
         return () => {
-            serverConnection.unsubscribe("getLobbyDataResponse", sub_getLobbyDataResponse);
             serverConnection.unsubscribe("playerJoined", sub_playerJoined);
             serverConnection.unsubscribe("playerLeft", sub_playerLeft);
             serverConnection.unsubscribe("hostChanged", sub_hostChanged);
             serverConnection.unsubscribe("playerKicked", sub_playerKicked);
+            serverConnection.unsubscribe("gameStarted", sub_gameStarted);
+            serverConnection.unsubscribe("newRoundStarted", sub_newRoundStarted);
+            serverConnection.unsubscribe("turnStarted", sub_turnStarted);
+            serverConnection.unsubscribe("turnEnded", sub_turnEnded);
+            serverConnection.unsubscribe("getLobbyDataResponse", sub_getLobbyDataResponse);
+            serverConnection.unsubscribe("playerShotAt", sub_playerShotAt);
+            serverConnection.unsubscribe("showAlert", sub_showAlert);
+            serverConnection.unsubscribe("achievementUnlocked", sub_achievementUnlocked);
             serverConnection.unsubscribe("actionFailed", sub_actionFailed);
+            serverConnection.unsubscribe("reverseTurnOrderItemUsed", sub_reverseTurnOrderItemUsed);   
+            serverConnection.unsubscribe("rackChamberItemUsed", sub_rackChamberItemUsed);   
+            serverConnection.unsubscribe("extraLifeItemUsed", sub_extraLifeItemUsed);   
+            serverConnection.unsubscribe("pickpocketItemUsed", sub_pickpocketItemUsed);   
+            serverConnection.unsubscribe("lifeGambleItemUsed", sub_lifeGambleItemUsed);   
+            serverConnection.unsubscribe("invertItemUsed", sub_invertItemUsed);   
+            serverConnection.unsubscribe("chamberCheckItemUsed", sub_chamberCheckItemUsed);   
+            serverConnection.unsubscribe("doubleDamageItemUsed", sub_doubleDamageItemUsed);   
+            serverConnection.unsubscribe("skipItemUsed", sub_skipItemUsed);   
+            serverConnection.unsubscribe("ricochetItemUsed", sub_ricochetItemUsed);
         };
     }, [dispatch, serverConnection]);
 
@@ -104,17 +190,27 @@ export default function MainGameUI() {
         </div>
         <Separator />
         {/* Body */}
-        <div className="flex flex-col flex-grow m-1 -mt-0 p-2 lg:p-4 overflow-y-auto @container">
-            <TurnOrderBar className="mb-1 lg:mb-2" />
-            <div className="grid grid-cols-1 gap-1 @lg:grid-cols-2 @lg:gap-4 @4xl:grid-cols-3 @7xl:grid-cols-4 @7xl:gap-6">
-                {players.map(player => !player.isSpectator && <PlayerCard key={player.username + "_playerCard"} player={player} />)}
+        {gameStarted ? <>
+            <div className="flex flex-col flex-grow m-1 -mt-1 p-2 lg:p-4 overflow-y-auto @container">
+                {gameStarted && <TurnOrderBar className="mb-1 lg:mb-2" />}
+                <div className="grid grid-cols-1 gap-1 @lg:grid-cols-2 @lg:gap-4 @4xl:grid-cols-3 @7xl:grid-cols-4 @7xl:gap-6">
+                    {nonSpectatorPlayers.map(player => <PlayerCard key={player.username + "_playerCard"} player={player} />)}
+                </div>
             </div>
-        </div>
+        </> : <>
+            {/* I don't know why I need these duplicate properties but it does not center if a single one is missing */}
+            <div className="flex flex-grow">
+                <div className="flex flex-col flex-grow items-center justify-center">
+                    <p className="text-2xl font-bold">Waiting for host to start the game...</p>
+                    <p className="text-xl font-bold">{nonSpectatorPlayers.length} player{nonSpectatorPlayers.length !== 1 ? "s" : ""} waiting</p>
+                </div>
+            </div>
+        </>}
         {/* Host-Only Footer */}
         {isHost && <div className="flex flex-col mt-auto m-1">
             <Separator />
             <div className="flex mt-2">
-                <Button>Start Game</Button>
+                <Button onClick={() => serverConnection.startGame()}>Start Game</Button>
             </div>
         </div>}
 

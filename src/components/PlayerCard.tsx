@@ -23,11 +23,13 @@ export default function PlayerCard({ player }: PlayerCardArgs) {
                 {player.isRicochet && <Badge className="bg-green-400 font-bold h-5 text-foreground">{PLAYER_CARD_BADGE_ICONS ? <Shield color="#ffffff" /> : "Ricochet"}</Badge>}
             </div>
         </div>
-        <Separator className="my-1" />
-        <p>Items:</p>
-        <ul className="list-disc list-inside">
-            {condenseItemList(player.items).map((item, index) => <li key={index + "_playerItem"}>{item}</li>)}
-        </ul>
+        {player.items.length > 0 && <>
+            <Separator className="my-1" />
+            <p>Items:</p>
+            <ul className="list-disc list-inside">
+                {condenseItemList(player.items).map((item, index) => <li key={index + "_playerItem"}>{item}</li>)}
+            </ul>
+        </>}
         <div className="mt-auto">
             <Button className="mt-2 h-8 w-full">Shoot</Button>
         </div>

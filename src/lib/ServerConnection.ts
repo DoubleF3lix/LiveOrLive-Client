@@ -87,12 +87,13 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
             reverseTurnOrderItemUsed: async (): Promise<void> => this.sendSubscription("reverseTurnOrderItemUsed"),
             rackChamberItemUsed: async (): Promise<void> => this.sendSubscription("rackChamberItemUsed"),
             extraLifeItemUsed: async (target: string): Promise<void> => this.sendSubscription("extraLifeItemUsed", target),
-            pickpocketItemUsed: async (target: string, item: Item): Promise<void> => this.sendSubscription("pickpocketItemUsed", target, item),
-            adrenalineItemUsed: async (lifeChange: number): Promise<void> => this.sendSubscription("adrenalineItemUsed", lifeChange),
+            pickpocketItemUsed: async (target: string, item: Item, itemTarget: string): Promise<void> => this.sendSubscription("pickpocketItemUsed", target, item, itemTarget),
+            lifeGambleItemUsed: async (lifeChange: number): Promise<void> => this.sendSubscription("lifeGambleItemUsed", lifeChange),
             invertItemUsed: async (): Promise<void> => this.sendSubscription("invertItemUsed"),
             chamberCheckItemUsed: async (bulletType: BulletType): Promise<void> => this.sendSubscription("chamberCheckItemUsed", bulletType),
             doubleDamageItemUsed: async (): Promise<void> => this.sendSubscription("doubleDamageItemUsed"),
-            skipItemUsed: async (target: string): Promise<void> => this.sendSubscription("skipItemUsed", target)
+            skipItemUsed: async (target: string): Promise<void> => this.sendSubscription("skipItemUsed", target),
+            ricochetItemUsed: async (target: string): Promise<void> => this.sendSubscription("ricochetItemUsed", target)
         };
 
         // Set up the receivers for subscriptions
@@ -154,6 +155,9 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
     kickPlayer(username: string): Promise<void> {
         return this.connectionHubProxy.kickPlayer(username);
     }
+    startGame(): Promise<void> {
+        return this.baseGameHubProxy.startGame();
+    }
     getLobbyDataRequest(): Promise<void> {
         return this.baseGameHubProxy.getLobbyDataRequest();
     }
@@ -172,8 +176,8 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
     usePickpocketItem(target: string, item: Item, itemTarget: string): Promise<void> {
         return this.itemHubProxy.usePickpocketItem(target, item, itemTarget);
     }
-    useAdrenalineItem(): Promise<void> {
-        return this.itemHubProxy.useAdrenalineItem();
+    useLifeGambleItem(): Promise<void> {
+        return this.itemHubProxy.useLifeGambleItem();
     }
     useInvertItem(): Promise<void> {
         return this.itemHubProxy.useInvertItem();
@@ -186,6 +190,9 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
     }
     useSkipItem(target: string): Promise<void> {
         return this.itemHubProxy.useSkipItem(target);
+    }
+    useRicochetItem(target: string): Promise<void> {
+        return this.itemHubProxy.useRicochetItem(target);
     }
 
     subscribe<K extends keyof IHubServerResponse>(type: K, callback: IHubServerResponse[K]): IHubServerResponse[K] {

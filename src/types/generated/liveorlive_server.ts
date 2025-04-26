@@ -31,10 +31,16 @@ export type GameData = {
     gameStarted: boolean;
     /** Transpiled from string */
     gameID: string;
-    /** Transpiled from string */
-    currentTurn: string;
+    /** Transpiled from string? */
+    currentTurn?: string;
     /** Transpiled from int */
     damageForShot: number;
+}
+
+/** Transpiled from liveorlive_server.GameLog */
+export type GameLog = {
+    /** Transpiled from System.Collections.Generic.List<liveorlive_server.GameLogMessage> */
+    messages: GameLogMessage[];
 }
 
 /** Transpiled from liveorlive_server.GameLogMessage */
@@ -52,7 +58,7 @@ export type Lobby = {
     /** Transpiled from string */
     name: string;
     /** Transpiled from bool */
-    hidden: boolean;
+    private: boolean;
     /** Transpiled from long */
     creationTime: number;
     /** Transpiled from liveorlive_server.Settings */
@@ -108,6 +114,10 @@ export type Settings = {
     /** Transpiled from int */
     maxLives: number;
     /** Transpiled from bool */
+    allowExtraLifeWhenFull: boolean;
+    /** Transpiled from bool */
+    allowLifeGambleExceedMax: boolean;
+    /** Transpiled from bool */
     randomItemsPerRound: boolean;
     /** Transpiled from int */
     minItemsPerRound: number;
@@ -115,6 +125,12 @@ export type Settings = {
     maxItemsPerRound: number;
     /** Transpiled from int */
     maxItems: number;
+    /** Transpiled from bool */
+    lootItemsOnKill: boolean;
+    /** Transpiled from int */
+    maxLootItemsOnKill: number;
+    /** Transpiled from bool */
+    allowLootItemsExceedMax: boolean;
     /** Transpiled from bool */
     enableReverseTurnOrderItem: boolean;
     /** Transpiled from bool */
@@ -144,22 +160,30 @@ export type Settings = {
     /** Transpiled from bool */
     allowSequentialSkips: boolean;
     /** Transpiled from bool */
-    allowExtraLifeWhenFull: boolean;
-    /** Transpiled from bool */
-    allowLifeGambleExceedMax: boolean;
-    /** Transpiled from bool */
     allowSelfSkip: boolean;
+    /** Transpiled from bool */
+    showRicochets: boolean;
+    /** Transpiled from bool */
+    showRicochetsCounter: boolean;
+    /** Transpiled from bool */
+    disableDealReverseWhenTwoPlayers: boolean;
     /** Transpiled from bool */
     loseSkipAfterRound: boolean;
     /** Transpiled from bool */
+    ricochetIgnoreSkippedPlayers: boolean;
+    /** Transpiled from int */
+    suddenDeathActivationPoint: number;
+    /** Transpiled from bool */
+    secondWind: boolean;
+    /** Transpiled from bool */
     copySkipOnKill: boolean;
     /** Transpiled from bool */
-    ricochetIgnoreSkippedPlayers: boolean;
+    allowLootingDead: boolean;
     /** Transpiled from bool */
-    lootItemsOnKill: boolean;
-    /** Transpiled from int */
-    maxLootItemsOnKill: number;
+    refreshDeadPlayerItems: boolean;
     /** Transpiled from bool */
-    allowLootItemsExceedMax: boolean;
+    clearDeadPlayerItemsAfterRound: boolean;
+    /** Transpiled from System.Collections.Generic.Dictionary<int, int> */
+    lifeGambleWeights: Partial<Record<number, number>>;
 }
 

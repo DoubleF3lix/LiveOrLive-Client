@@ -92,7 +92,7 @@ export type IItemRequest = {
     /**
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    useAdrenalineItem(): Promise<void>;
+    useLifeGambleItem(): Promise<void>;
     /**
     * @returns Transpiled from System.Threading.Tasks.Task
     */
@@ -110,6 +110,11 @@ export type IItemRequest = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     useSkipItem(target: string): Promise<void>;
+    /**
+    * @param target Transpiled from string
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    useRicochetItem(target: string): Promise<void>;
 }
 
 export type IHubServerResponse = {
@@ -135,7 +140,7 @@ export type IHubServerResponse = {
     */
     chatMessageEdited(messageId: string, content: string): Promise<void>;
     /**
-    * @param messages Transpiled from liveorlive_server.GameLogMessage[]
+    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.GameLogMessage>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getGameLogResponse(messages: GameLogMessage[]): Promise<void>;
@@ -239,14 +244,15 @@ export type IHubServerResponse = {
     /**
     * @param target Transpiled from string
     * @param item Transpiled from liveorlive_server.Enums.Item
+    * @param itemTarget Transpiled from string?
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    pickpocketItemUsed(target: string, item: Item): Promise<void>;
+    pickpocketItemUsed(target: string, item: Item, itemTarget: string): Promise<void>;
     /**
     * @param lifeChange Transpiled from int
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    adrenalineItemUsed(lifeChange: number): Promise<void>;
+    lifeGambleItemUsed(lifeChange: number): Promise<void>;
     /**
     * @returns Transpiled from System.Threading.Tasks.Task
     */
@@ -265,6 +271,11 @@ export type IHubServerResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     skipItemUsed(target: string): Promise<void>;
+    /**
+    * @param target Transpiled from string?
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    ricochetItemUsed(target: string): Promise<void>;
 }
 
 export type IChatResponse = {
@@ -293,7 +304,7 @@ export type IChatResponse = {
 
 export type IGameLogResponse = {
     /**
-    * @param messages Transpiled from liveorlive_server.GameLogMessage[]
+    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.GameLogMessage>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getGameLogResponse(messages: GameLogMessage[]): Promise<void>;
@@ -409,14 +420,15 @@ export type IItemResponse = {
     /**
     * @param target Transpiled from string
     * @param item Transpiled from liveorlive_server.Enums.Item
+    * @param itemTarget Transpiled from string?
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    pickpocketItemUsed(target: string, item: Item): Promise<void>;
+    pickpocketItemUsed(target: string, item: Item, itemTarget: string): Promise<void>;
     /**
     * @param lifeChange Transpiled from int
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    adrenalineItemUsed(lifeChange: number): Promise<void>;
+    lifeGambleItemUsed(lifeChange: number): Promise<void>;
     /**
     * @returns Transpiled from System.Threading.Tasks.Task
     */
@@ -435,5 +447,10 @@ export type IItemResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     skipItemUsed(target: string): Promise<void>;
+    /**
+    * @param target Transpiled from string?
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    ricochetItemUsed(target: string): Promise<void>;
 }
 

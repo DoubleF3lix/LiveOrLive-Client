@@ -86,3 +86,5 @@ export function showToast(toast: Omit<Toast, "id">) {
         return sonnerToast(toast.title, { description: toast.description, action: { label: toast.button.label, onClick: toast.button.onClick } });
     }
 }
+
+export const keysOf = Object.keys as <T>(o: T) => Extract<keyof T, string | number>[];

@@ -3,8 +3,11 @@ import { Button } from "@/button";
 import { IRootState } from "~/store/Store";
 import { useSelector } from "react-redux";
 import { Separator } from "@/separator";
-import { CircleHelp} from "lucide-react";
+import { CircleHelp } from "lucide-react";
 import PlayerDropdownDisplay from "./PlayerDropdownDisplay";
+import { Popover, PopoverContent } from "@/popover";
+import { PopoverTrigger } from "@radix-ui/react-popover";
+import SettingsDisplay from "~/components/SettingsDisplay";
 
 
 type GameInfoSidebarArgs = {
@@ -14,6 +17,7 @@ type GameInfoSidebarArgs = {
 
 export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) {
     const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
+    const lobbyId = useSelector((state: IRootState) => state.lobbyDataReducer.id);
     const lobbyName = useSelector((state: IRootState) => state.lobbyDataReducer.name);
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const allPlayers = useSelector((state: IRootState) => state.lobbyDataReducer.players)
@@ -29,15 +33,24 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
         <SheetContent side="right" onCloseButtonClick={closeSidebar} onInteractOutside={closeSidebar}>
             <SheetHeader>
                 <SheetTitle>{lobbyName}</SheetTitle>
-                <SheetDescription>Players: {players.length}/{settings.maxPlayers}</SheetDescription>
+                <SheetDescription>
+                    Room Code: {lobbyId}
+                    <br />
+                    Players: {players.length}/{settings.maxPlayers}
+                </SheetDescription>
                 <Separator className="my-2" />
             </SheetHeader>
             <div className="flex flex-col px-4 -mt-8 overflow-y-auto">
                 <div className="flex justify-between">
                     <p>Players:</p>
-                    {/* TODO onclick show help */}
-                    {isHost && <CircleHelp className="stroke-muted-foreground" />}
-                    {/* <span className="text-muted-foreground text-sm">Click a username to open admin controls</span> */}
+                    {isHost && <Popover>
+                        <PopoverTrigger>
+                            <CircleHelp className="stroke-muted-foreground" />
+                        </PopoverTrigger>
+                        <PopoverContent className="mr-2 max-w-60 p-3">
+                            <p className="italic text-muted-foreground">Click on a username below for host-only actions</p>
+                        </PopoverContent>
+                    </Popover>}
                 </div>
                 <ul className="list-disc list-inside pl-2">
                     {players.map(player => <PlayerDropdownDisplay key={`${player.username}_playerDropdownDisplay`} player={player} />)}
@@ -48,10 +61,18 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
                     {spectators.map(player => <PlayerDropdownDisplay key={`${player.username}_playerDropdownDisplay`} player={player} />)}
                 </ul>
                 <Separator className="my-2" />
-                <p>Settings:</p>
 
+                <p className="mb-2">Lobby Settings:</p>
+                <SettingsDisplay settings={settings} editable={false} className="overflow-y-auto pr-2" />
+                <Separator className="my-2" />
+
+                <p className="mb-2">Game Log:</p>
+                <textarea className="border-2 border-input rounded-lg p-1 px-2 resize-none grow" rows={4} disabled={true}
+                    value={``}
+                    placeholder="No game log available" />
             </div>
             <SheetFooter>
+                <Separator className="-mt-4 mb-2" />
                 <Button onClick={closeSidebar}>Close</Button>
             </SheetFooter>
         </SheetContent>

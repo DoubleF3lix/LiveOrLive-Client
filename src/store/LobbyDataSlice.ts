@@ -6,7 +6,7 @@ import { Lobby, Player } from "~/types/generated/liveorlive_server";
 const initialLobbyDataSliceState: Lobby = {
     id: "",
     name: "",
-    hidden: false,
+    private: false,
     creationTime: 0,
     settings: {
         private: false,
@@ -43,7 +43,16 @@ const initialLobbyDataSliceState: Lobby = {
         copySkipOnKill: false,
         lootItemsOnKill: false,
         maxLootItemsOnKill: 0,
-        allowLootItemsExceedMax: false
+        allowLootItemsExceedMax: false,
+        showRicochets: false,
+        showRicochetsCounter: false,
+        disableDealReverseWhenTwoPlayers: false,
+        suddenDeathActivationPoint: 0,
+        secondWind: false,
+        allowLootingDead: false,
+        refreshDeadPlayerItems: false,
+        clearDeadPlayerItemsAfterRound: false,
+        lifeGambleWeights: {}
     },
     players: [],
     host: undefined,
@@ -59,13 +68,17 @@ export const lobbyDataSlice = createSlice({
         loadFromPacket: (_state, action: PayloadAction<Lobby>) => {
             return action.payload;
         },
-        addPlayer: (state, action: PayloadAction<Player>) => {
+        playerJoined: (state, action: PayloadAction<Player>) => {
             state.players.push(action.payload);
         },
-        removePlayer: (state, action: PayloadAction<string>) => {
+        playerLeft: (state, action: PayloadAction<string>) => {
             const playerToRemove = state.players.find(player => player.username === action.payload);
             if (playerToRemove) {
-                state.players = removeItemFromArray(state.players, playerToRemove);
+                if (state.gameStarted) {
+                    playerToRemove.inGame = false;
+                } else {
+                    state.players = removeItemFromArray(state.players, playerToRemove);
+                }
             }
         },
         setHost: (state, action: PayloadAction<string | undefined>) => {
@@ -74,5 +87,5 @@ export const lobbyDataSlice = createSlice({
     }
 });
 
-export const { loadFromPacket, addPlayer, removePlayer, setHost } = lobbyDataSlice.actions;
+export const { loadFromPacket, playerJoined, playerLeft, setHost } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;
