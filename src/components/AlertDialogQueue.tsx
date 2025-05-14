@@ -4,9 +4,13 @@ import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescript
 import { dequeueAlertDialog, emptyAlertDialogQueue } from "~/store/AlertDialogQueueSlice";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/dialog";
 import { Button } from "@/button";
+import { ServerConnectionContext } from "~/store/ServerConnectionContext";
+import { ServerConnection } from "~/lib/ServerConnection";
+import { useContext } from "react";
 
 
 export default function AlertDialogQueue() {
+    const serverConnection = useContext(ServerConnectionContext) as ServerConnection;
     const dispatch = useAppDispatch();
 
     const queue = useSelector((state: IRootState) => state.alertDialogQueueReducer.queue);
@@ -30,6 +34,12 @@ export default function AlertDialogQueue() {
                             // Hide the connection lost alert
                             dispatch(emptyAlertDialogQueue());
                             window.location.reload();
+                            break;
+                        case "transferHost":
+                            serverConnection.setHost(queue[0].arg as string);
+                            break;
+                        case "kickPlayer":
+                            serverConnection.kickPlayer(queue[0].arg as string);
                             break;
                     }
                 }}>OK</Button>

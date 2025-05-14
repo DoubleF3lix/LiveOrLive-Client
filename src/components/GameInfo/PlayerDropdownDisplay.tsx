@@ -3,11 +3,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { CircleAlert, Sparkles } from "lucide-react";
 import { PLAYER_CARD_BADGE_ICONS } from "~/lib/const";
 import { useSelector } from "react-redux";
-import { IRootState } from "~/store/Store";
-import { useContext } from "react";
-import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { ServerConnection } from "~/lib/ServerConnection";
+import { IRootState, useAppDispatch } from "~/store/Store";
 import { Badge } from "@/badge";
+import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
+import React from "react";
 
 
 type PlayerDropdownDisplayArgs = {
@@ -15,21 +14,37 @@ type PlayerDropdownDisplayArgs = {
 };
 
 export default function PlayerDropdownDisplay({ player }: PlayerDropdownDisplayArgs) {
-    const serverConnection = useContext(ServerConnectionContext) as ServerConnection;
+    const dispatch = useAppDispatch();
 
     const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
 
     const isHost = clientUsername === lobbyHost;
 
+    // Actual server call is handled in confirmation
     function promptTransferHost(username: string) {
-        // TODO make DialogQueue for skippable ones
-        serverConnection.setHost(username)
+        setTimeout(() => {
+            dispatch(showAlertDialog({
+                title: "Confirm",
+                description: `Are you sure you want to transfer host to ${username}?`, 
+                onClick: "transferHost",
+                skippable: true,
+                arg: username
+            }));
+        }, 175);
     }
 
     function promptKickPlayer(username: string) {
-        // TODO make DialogQueue for skippable ones
-        serverConnection.kickPlayer(username)
+        // TODO overhaul dialogs to make them more dynamic, probably don't need them in the store
+        setTimeout(() => {
+            dispatch(showAlertDialog({
+                title: "Confirm",
+                description: `Are you sure you want to kick ${username}?`, 
+                onClick: "kickPlayer",
+                skippable: true,
+                arg: username
+            }));
+        }, 175);
     }
 
     return <li>

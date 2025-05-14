@@ -22,6 +22,7 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const allPlayers = useSelector((state: IRootState) => state.lobbyDataReducer.players)
     const settings = useSelector((state: IRootState) => state.lobbyDataReducer.settings);
+    const queueLength = useSelector((state: IRootState) => state.alertDialogQueueReducer.queue.length);
 
     const isHost = clientUsername === lobbyHost;
     const players = allPlayers.filter(player => !player.isSpectator);
@@ -30,7 +31,7 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
     const closeSidebar = () => setOpen(false);
 
     return <Sheet open={open}>
-        <SheetContent side="right" onCloseButtonClick={closeSidebar} onInteractOutside={closeSidebar}>
+        <SheetContent side="right" onCloseButtonClick={closeSidebar} onInteractOutside={queueLength === 0 ? closeSidebar : undefined}>
             <SheetHeader>
                 <SheetTitle>{lobbyName}</SheetTitle>
                 <SheetDescription>
@@ -42,7 +43,7 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
             </SheetHeader>
             <div className="flex flex-col px-4 -mt-8 overflow-y-auto">
                 <div className="flex justify-between">
-                    <p>Players:</p>
+                    <p>Players: </p>
                     {isHost && <Popover>
                         <PopoverTrigger>
                             <CircleHelp className="stroke-muted-foreground" />
@@ -56,10 +57,12 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
                     {players.map(player => <PlayerDropdownDisplay key={`${player.username}_playerDropdownDisplay`} player={player} />)}
                 </ul>
 
-                <p>Spectators:</p>
-                <ul className="list-disc list-inside pl-2">
-                    {spectators.map(player => <PlayerDropdownDisplay key={`${player.username}_playerDropdownDisplay`} player={player} />)}
-                </ul>
+                {spectators.length > 0 && <>
+                    <p>Spectators:</p>
+                    <ul className="list-disc list-inside pl-2">
+                        {spectators.map(player => <PlayerDropdownDisplay key={`${player.username}_playerDropdownDisplay`} player={player} />)}
+                    </ul>
+                </>}
                 <Separator className="my-2" />
 
                 <p className="mb-2">Lobby Settings:</p>

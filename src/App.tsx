@@ -9,11 +9,11 @@ export default function App() {
     const [lobbyConnectionInfo, setLobbyConnectionInfo] = useState<string[]>([]);
 
     return <>
-        {lobbyConnectionInfo.length === 0 ? 
-            <LobbyHub setLobbyConnectionInfo={setLobbyConnectionInfo} /> : 
-            <Provider store={store}>
+        <Provider store={store}>
+            {lobbyConnectionInfo.length === 0 ? 
+                <LobbyHub setLobbyConnectionInfo={setLobbyConnectionInfo} /> :
                 <ContextWrapper lobbyId={lobbyConnectionInfo[0]} username={lobbyConnectionInfo[1]} />
-            </Provider>
-        }
+            }
+        </Provider>
     </>;
 }

@@ -31,8 +31,8 @@ export type GameData = {
     gameStarted: boolean;
     /** Transpiled from string */
     gameID: string;
-    /** Transpiled from string? */
-    currentTurn?: string;
+    /** Transpiled from liveorlive_server.Player */
+    currentTurn: Player;
     /** Transpiled from int */
     damageForShot: number;
 }

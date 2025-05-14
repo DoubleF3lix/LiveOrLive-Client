@@ -83,9 +83,18 @@ export const lobbyDataSlice = createSlice({
         },
         setHost: (state, action: PayloadAction<string | undefined>) => {
             state.host = action.payload;
+        },
+        gameStarted: (state) => {
+            state.gameStarted = true;
+        },
+        turnStarted: (state, action: PayloadAction<string>) => {
+            state.currentTurn = action.payload;
+        },
+        turnEnded: (state) => {
+            state.currentTurn = undefined;
         }
     }
 });
 
-export const { loadFromPacket, playerJoined, playerLeft, setHost } = lobbyDataSlice.actions;
+export const { loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, turnStarted, turnEnded } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;
