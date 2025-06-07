@@ -11,7 +11,7 @@ export default function TurnOrderBar({ className }: { className?: string }) {
         <Breadcrumb className="overflow-x-auto">
             <BreadcrumbList className="flex-nowrap">
                 {turnOrder && turnOrder.map((username, index) => <>
-                    <BreadcrumbItem className="text-base">{username === currentTurn ? <strong>{username}</strong> : username}</BreadcrumbItem>
+                    <BreadcrumbItem className="text-base" key={`${username}_turnOrder`}>{username === currentTurn ? <strong>{username}</strong> : username}</BreadcrumbItem>
                     {index !== (turnOrder.length - 1) && <BreadcrumbSeparator />}
                 </>)}
             </BreadcrumbList>

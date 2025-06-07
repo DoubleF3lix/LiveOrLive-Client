@@ -5,6 +5,11 @@ import { Button } from "@/button";
 import { Ban, Shield } from "lucide-react";
 import { Separator } from "@/separator";
 import { PLAYER_CARD_BADGE_ICONS } from "~/lib/const";
+import { useSelector } from "react-redux";
+import { IRootState } from "~/store/Store";
+import { useContext } from "react";
+import { ServerConnectionContext } from "~/store/ServerConnectionContext";
+import { ServerConnection } from "~/lib/ServerConnection";
 
 
 type PlayerCardArgs = {
@@ -12,6 +17,17 @@ type PlayerCardArgs = {
 };
 
 export default function PlayerCard({ player }: PlayerCardArgs) {
+    const serverConnection = useContext(ServerConnectionContext) as ServerConnection;
+
+    const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
+    const currentTurn = useSelector((state: IRootState) => state.lobbyDataReducer.currentTurn);
+
+    const isOurTurn = clientUsername === currentTurn;
+
+    function shootPlayer(username: string) {
+        serverConnection.shootPlayer(username);
+    }
+
     return <div className="flex flex-col border-foreground border-3 rounded-sm my-2 p-2 md:px-4 md:py-3">
         <div className="flex justify-between">
             <div className="flex flex-col shrink-0">
@@ -31,7 +47,7 @@ export default function PlayerCard({ player }: PlayerCardArgs) {
             </ul>
         </>}
         <div className="mt-auto">
-            <Button className="mt-2 h-8 w-full">Shoot</Button>
+            <Button className="mt-2 h-8 w-full" disabled={!isOurTurn} onClick={() => shootPlayer(player.username)}>Shoot</Button>
         </div>
     </div>;
 }

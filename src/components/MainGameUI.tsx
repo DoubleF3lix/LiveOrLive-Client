@@ -5,7 +5,7 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { Toaster } from "@/sonner";
 import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
-import { playerJoined, loadFromPacket, playerLeft, setHost, gameStarted, turnStarted, turnEnded } from "~/store/LobbyDataSlice";
+import { playerJoined, loadFromPacket, playerLeft, setHost, gameStarted, turnStarted, turnEnded, playerShotAt } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "./AlertDialogQueue";
@@ -94,7 +94,7 @@ export default function MainGameUI() {
         });
 
         const sub_playerShotAt = serverConnection.subscribe("playerShotAt", async (username: string, bulletType: BulletType, damage: number) => {
-            console.log("playerShotAt", username, bulletType, damage);
+            dispatch(playerShotAt({username: username, bulletType: bulletType, damage: damage}));
         });
 
         const sub_showAlert = serverConnection.subscribe("showAlert", async (message: string) => {

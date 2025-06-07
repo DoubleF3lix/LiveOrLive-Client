@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 
 import alertDialogQueueReducer from "~/store/AlertDialogQueueSlice";
 import chatReducer from "~/store/ChatSlice";
+import gameLogReducer from "~/store/GameLogSlice";
 import lobbyDataReducer from "~/store/LobbyDataSlice";
 import selfDataReducer from "~/store/SelfDataSlice";
 
@@ -11,6 +12,7 @@ const store = configureStore({
     reducer: {
         alertDialogQueueReducer,
         chatReducer,
+        gameLogReducer,
         lobbyDataReducer,
         selfDataReducer,
     }

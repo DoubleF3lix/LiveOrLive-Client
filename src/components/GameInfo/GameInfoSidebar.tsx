@@ -1,6 +1,6 @@
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/sheet";
 import { Button } from "@/button";
-import { IRootState } from "~/store/Store";
+import { IRootState, useAppDispatch } from "~/store/Store";
 import { useSelector } from "react-redux";
 import { Separator } from "@/separator";
 import { CircleHelp } from "lucide-react";
@@ -8,6 +8,11 @@ import PlayerDropdownDisplay from "./PlayerDropdownDisplay";
 import { Popover, PopoverContent } from "@/popover";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import SettingsDisplay from "~/components/SettingsDisplay";
+import { useContext, useEffect } from "react";
+import { ServerConnectionContext } from "~/store/ServerConnectionContext";
+import { ServerConnection } from "~/lib/ServerConnection";
+import { GameLogMessage } from "~/types/generated/liveorlive_server";
+import { addGameLogMessage, setGameLogMessages } from "~/store/GameLogSlice";
 
 
 type GameInfoSidebarArgs = {
@@ -15,7 +20,14 @@ type GameInfoSidebarArgs = {
     setOpen: (open: boolean) => void;
 };
 
+function timestampToFormatString(timestamp: number): string {
+    return new Date(timestamp * 1000).toLocaleTimeString(undefined, { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
 export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) {
+    const serverConnection = useContext(ServerConnectionContext) as ServerConnection;
+    const dispatch = useAppDispatch();
+
     const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
     const lobbyId = useSelector((state: IRootState) => state.lobbyDataReducer.id);
     const lobbyName = useSelector((state: IRootState) => state.lobbyDataReducer.name);
@@ -23,12 +35,30 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
     const allPlayers = useSelector((state: IRootState) => state.lobbyDataReducer.players)
     const settings = useSelector((state: IRootState) => state.lobbyDataReducer.settings);
     const queueLength = useSelector((state: IRootState) => state.alertDialogQueueReducer.queue.length);
+    const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
 
     const isHost = clientUsername === lobbyHost;
     const players = allPlayers.filter(player => !player.isSpectator);
     const spectators = allPlayers.filter(player => player.isSpectator);
 
     const closeSidebar = () => setOpen(false);
+
+    useEffect(() => {
+        const sub_getGameLogResponse = serverConnection.subscribe("getGameLogResponse", async (messages: GameLogMessage[]) => {
+            dispatch(setGameLogMessages(messages));
+        });
+
+        const sub_gameLogUpdate = serverConnection.subscribe("gameLogUpdate", async (message: GameLogMessage) => {
+            dispatch(addGameLogMessage(message));
+        });
+
+        serverConnection.getGameLogRequest();
+
+        return () => {
+            serverConnection.unsubscribe("getGameLogResponse", sub_getGameLogResponse);
+            serverConnection.unsubscribe("gameLogUpdate", sub_gameLogUpdate);
+        };
+    }, [dispatch, serverConnection]);
 
     return <Sheet open={open}>
         <SheetContent side="right" onCloseButtonClick={closeSidebar} onInteractOutside={queueLength === 0 ? closeSidebar : undefined}>
@@ -70,8 +100,8 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
                 <Separator className="my-2" />
 
                 <p className="mb-2">Game Log:</p>
-                <textarea className="border-2 border-input rounded-lg p-1 px-2 resize-none grow" rows={4} disabled={true}
-                    value={``}
+                <textarea className="border-2 border-input rounded-lg p-1 px-2 resize-none grow text-xs font-mono" rows={6} disabled={true}
+                    value={gameLogMessages.map(message => `[${timestampToFormatString(message.timestamp)}]: ${message.message}`).join("\n")}
                     placeholder="No game log available" />
             </div>
             <SheetFooter>

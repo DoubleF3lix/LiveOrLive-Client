@@ -92,9 +92,15 @@ export const lobbyDataSlice = createSlice({
         },
         turnEnded: (state) => {
             state.currentTurn = undefined;
+        },
+        playerShotAt: (state, action: PayloadAction<{username: string, bulletType: number, damage: number}>) => {
+            const targetIndex = state.players.findIndex(player => player.username === action.payload.username);
+            if (targetIndex !== -1) {
+                state.players[targetIndex].lives = Math.max(0, state.players[targetIndex].lives - action.payload.damage);
+            }
         }
     }
 });
 
-export const { loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, turnStarted, turnEnded } = lobbyDataSlice.actions;
+export const { loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, turnStarted, turnEnded, playerShotAt } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;
