@@ -58,7 +58,8 @@ const initialLobbyDataSliceState: Lobby = {
     host: undefined,
     gameStarted: false,
     turnOrder: [],
-    currentTurn: undefined
+    currentTurn: undefined,
+    ammoLeftInChamber: 0
 };
 
 export const lobbyDataSlice = createSlice({

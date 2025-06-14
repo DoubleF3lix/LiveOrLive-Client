@@ -5,7 +5,8 @@
 import type { HubConnection, IStreamResult, Subject } from '@microsoft/signalr';
 import type { IChatRequest, IGameLogRequest, IConnectionRequest, IBaseGameRequest, IGenericRequest, IItemRequest, IHubServerResponse, IChatResponse, IGameLogResponse, IConnectionResponse, IBaseGameResponse, IGenericResponse, IItemResponse } from './liveorlive_server.HubPartials';
 import type { Item, BulletType } from '../liveorlive_server.Enums';
-import type { ChatMessage, GameLogMessage, Player, Lobby } from '../liveorlive_server';
+import type { ChatMessage, GameLogMessage } from '../liveorlive_server.Models';
+import type { Player, Lobby } from '../liveorlive_server';
 
 
 // components
@@ -316,7 +317,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
         const __playerKicked = (...args: [string]) => receiver.playerKicked(...args);
         const __gameStarted = () => receiver.gameStarted();
-        const __gameEnded = (...args: [string])=> receiver.gameEnded(...args);
+        const __gameEnded = (...args: [string]) => receiver.gameEnded(...args);
         const __newRoundStarted = (...args: [number, number]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);

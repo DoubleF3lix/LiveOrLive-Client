@@ -77,11 +77,12 @@ export default function MainGameUI() {
             dispatch(gameStarted());
         });
 
-        const sub_gameEnded = serverConnection.subscribe("gameEnded", async (winner: string) => {
+        const sub_gameEnded = serverConnection.subscribe("gameEnded", async (winner: string | null) => {
             // dispatch(gameEnded()) is called by the dialog
+            console.log(winner);
             dispatch(showAlertDialog({
                 title: "Game Over",
-                description: `The winner is ${winner}!`,
+                description: winner ? `The winner is ${winner}!` : "No winner could be determined",
                 skippable: false,
                 onClick: "gameEnded"
             }));

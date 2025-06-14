@@ -4,7 +4,8 @@
 // @ts-nocheck
 import type { IStreamResult, Subject } from '@microsoft/signalr';
 import type { Item, BulletType } from '../liveorlive_server.Enums';
-import type { ChatMessage, GameLogMessage, Player, Lobby } from '../liveorlive_server';
+import type { ChatMessage, GameLogMessage } from '../liveorlive_server.Models';
+import type { Player, Lobby } from '../liveorlive_server';
 
 export type IChatRequest = {
     /**
@@ -119,12 +120,12 @@ export type IItemRequest = {
 
 export type IHubServerResponse = {
     /**
-    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.ChatMessage>
+    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.Models.ChatMessage>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getChatMessagesResponse(messages: ChatMessage[]): Promise<void>;
     /**
-    * @param message Transpiled from liveorlive_server.ChatMessage
+    * @param message Transpiled from liveorlive_server.Models.ChatMessage
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     chatMessageSent(message: ChatMessage): Promise<void>;
@@ -140,12 +141,12 @@ export type IHubServerResponse = {
     */
     chatMessageEdited(messageId: string, content: string): Promise<void>;
     /**
-    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.GameLogMessage>
+    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.Models.GameLogMessage>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getGameLogResponse(messages: GameLogMessage[]): Promise<void>;
     /**
-    * @param message Transpiled from liveorlive_server.GameLogMessage
+    * @param message Transpiled from liveorlive_server.Models.GameLogMessage
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     gameLogUpdate(message: GameLogMessage): Promise<void>;
@@ -184,6 +185,10 @@ export type IHubServerResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     gameStarted(): Promise<void>;
+    /**
+    * @param winner Transpiled from string?
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
     gameEnded(winner: string): Promise<void>;
     /**
     * @param blankRoundCount Transpiled from int
@@ -281,12 +286,12 @@ export type IHubServerResponse = {
 
 export type IChatResponse = {
     /**
-    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.ChatMessage>
+    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.Models.ChatMessage>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getChatMessagesResponse(messages: ChatMessage[]): Promise<void>;
     /**
-    * @param message Transpiled from liveorlive_server.ChatMessage
+    * @param message Transpiled from liveorlive_server.Models.ChatMessage
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     chatMessageSent(message: ChatMessage): Promise<void>;
@@ -305,12 +310,12 @@ export type IChatResponse = {
 
 export type IGameLogResponse = {
     /**
-    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.GameLogMessage>
+    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.Models.GameLogMessage>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getGameLogResponse(messages: GameLogMessage[]): Promise<void>;
     /**
-    * @param message Transpiled from liveorlive_server.GameLogMessage
+    * @param message Transpiled from liveorlive_server.Models.GameLogMessage
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     gameLogUpdate(message: GameLogMessage): Promise<void>;
@@ -355,6 +360,10 @@ export type IBaseGameResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     gameStarted(): Promise<void>;
+    /**
+    * @param winner Transpiled from string?
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
     gameEnded(winner: string): Promise<void>;
     /**
     * @param blankRoundCount Transpiled from int
