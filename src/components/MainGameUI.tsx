@@ -5,7 +5,7 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { Toaster } from "@/sonner";
 import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
-import { playerJoined, loadFromPacket, playerLeft, setHost, gameStarted, turnStarted, turnEnded, playerShotAt } from "~/store/LobbyDataSlice";
+import { playerJoined, loadFromPacket, playerLeft, setHost, gameStarted, turnStarted, turnEnded, playerShotAt, addItemsFromRoundStart } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "./AlertDialogQueue";
@@ -17,6 +17,8 @@ import IconButton from "~/components/micro/IconButton";
 import TurnOrderBar from "~/components/TurnOrderBar";
 import { Button } from "@/button";
 import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
+import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
+import { setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
 
 
 export default function MainGameUI() {
@@ -88,8 +90,10 @@ export default function MainGameUI() {
             }));
         });
 
-        const sub_newRoundStarted = serverConnection.subscribe("newRoundStarted", async (blankRoundCount: number, liveRoundCount: number) => {
-            console.log("newRoundStarted", blankRoundCount, liveRoundCount);
+        const sub_newRoundStarted = serverConnection.subscribe("newRoundStarted", async (result: NewRoundResult) => {
+            dispatch(addItemsFromRoundStart(result.dealtItems));
+            dispatch(setLiveRoundsCount(result.liveRounds));
+            dispatch(setBlankRoundsCount(result.blankRounds));
         });
 
         const sub_turnStarted = serverConnection.subscribe("turnStarted", async (username: string) => {

@@ -6,6 +6,7 @@ import type { IStreamResult, Subject } from '@microsoft/signalr';
 import type { Item, BulletType } from '../liveorlive_server.Enums';
 import type { ChatMessage, GameLogMessage } from '../liveorlive_server.Models';
 import type { Player, Lobby } from '../liveorlive_server';
+import type { NewRoundResult } from '../liveorlive_server.Models.Results';
 
 export type IChatRequest = {
     /**
@@ -191,11 +192,10 @@ export type IHubServerResponse = {
     */
     gameEnded(winner: string): Promise<void>;
     /**
-    * @param blankRoundCount Transpiled from int
-    * @param liveRoundCount Transpiled from int
+    * @param result Transpiled from liveorlive_server.Models.Results.NewRoundResult
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    newRoundStarted(blankRoundCount: number, liveRoundCount: number): Promise<void>;
+    newRoundStarted(result: NewRoundResult): Promise<void>;
     /**
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -366,11 +366,10 @@ export type IBaseGameResponse = {
     */
     gameEnded(winner: string): Promise<void>;
     /**
-    * @param blankRoundCount Transpiled from int
-    * @param liveRoundCount Transpiled from int
+    * @param result Transpiled from liveorlive_server.Models.Results.NewRoundResult
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    newRoundStarted(blankRoundCount: number, liveRoundCount: number): Promise<void>;
+    newRoundStarted(result: NewRoundResult): Promise<void>;
     /**
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task

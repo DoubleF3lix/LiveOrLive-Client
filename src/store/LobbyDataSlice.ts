@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { removeItemFromArray } from "~/lib/utils";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
+import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
 
 
 const initialLobbyDataSliceState: Lobby = {
@@ -91,6 +92,15 @@ export const lobbyDataSlice = createSlice({
         gameEnded: (state) => {
             state.gameStarted = false;
         },
+        addItemsFromRoundStart: (state, action: PayloadAction<NewRoundResult["dealtItems"]>) => {
+            // Add the items to each player
+            for (const [username, itemSet] of Object.entries(action.payload)) {
+                if (itemSet) {
+                    const targetIndex = state.players.findIndex(player => player.username === username);
+                    state.players[targetIndex].items = [...state.players[targetIndex].items, ...itemSet];
+                }
+            }
+        },
         turnStarted: (state, action: PayloadAction<string>) => {
             state.currentTurn = action.payload;
         },
@@ -106,5 +116,5 @@ export const lobbyDataSlice = createSlice({
     }
 });
 
-export const { loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, gameEnded, turnStarted, turnEnded, playerShotAt } = lobbyDataSlice.actions;
+export const { loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, gameEnded, addItemsFromRoundStart, turnStarted, turnEnded, playerShotAt } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;

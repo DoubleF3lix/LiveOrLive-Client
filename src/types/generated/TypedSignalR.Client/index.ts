@@ -7,6 +7,7 @@ import type { IChatRequest, IGameLogRequest, IConnectionRequest, IBaseGameReques
 import type { Item, BulletType } from '../liveorlive_server.Enums';
 import type { ChatMessage, GameLogMessage } from '../liveorlive_server.Models';
 import type { Player, Lobby } from '../liveorlive_server';
+import type { NewRoundResult } from '../liveorlive_server.Models.Results';
 
 
 // components
@@ -318,7 +319,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __playerKicked = (...args: [string]) => receiver.playerKicked(...args);
         const __gameStarted = () => receiver.gameStarted();
         const __gameEnded = (...args: [string]) => receiver.gameEnded(...args);
-        const __newRoundStarted = (...args: [number, number]) => receiver.newRoundStarted(...args);
+        const __newRoundStarted = (...args: [NewRoundResult]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);
         const __getLobbyDataResponse = (...args: [Lobby]) => receiver.getLobbyDataResponse(...args);
@@ -510,7 +511,7 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
 
         const __gameStarted = () => receiver.gameStarted();
         const __gameEnded = (...args: [string]) => receiver.gameEnded(...args);
-        const __newRoundStarted = (...args: [number, number]) => receiver.newRoundStarted(...args);
+        const __newRoundStarted = (...args: [NewRoundResult]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);
         const __getLobbyDataResponse = (...args: [Lobby]) => receiver.getLobbyDataResponse(...args);

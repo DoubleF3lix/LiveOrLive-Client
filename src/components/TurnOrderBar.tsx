@@ -12,7 +12,7 @@ export default function TurnOrderBar({ className }: { className?: string }) {
             <BreadcrumbList className="flex-nowrap">
                 {turnOrder && turnOrder.map((username, index) => <>
                     <BreadcrumbItem className="text-base" key={`${username}_turnOrder`}>{username === currentTurn ? <strong>{username}</strong> : username}</BreadcrumbItem>
-                    {index !== (turnOrder.length - 1) && <BreadcrumbSeparator />}
+                    {index !== (turnOrder.length - 1) && <BreadcrumbSeparator key={`${username}_turnOrderSeparator`} />}
                 </>)}
             </BreadcrumbList>
         </Breadcrumb>
