@@ -316,6 +316,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
         const __playerKicked = (...args: [string]) => receiver.playerKicked(...args);
         const __gameStarted = () => receiver.gameStarted();
+        const __gameEnded = (...args: [string])=> receiver.gameEnded(...args);
         const __newRoundStarted = (...args: [number, number]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);
@@ -348,6 +349,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         connection.on("HostChanged", __hostChanged);
         connection.on("PlayerKicked", __playerKicked);
         connection.on("GameStarted", __gameStarted);
+        connection.on("GameEnded", __gameEnded);
         connection.on("NewRoundStarted", __newRoundStarted);
         connection.on("TurnStarted", __turnStarted);
         connection.on("TurnEnded", __turnEnded);
@@ -381,6 +383,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
             { methodName: "HostChanged", method: __hostChanged },
             { methodName: "PlayerKicked", method: __playerKicked },
             { methodName: "GameStarted", method: __gameStarted },
+            { methodName: "GameEnded", method: __gameEnded },
             { methodName: "NewRoundStarted", method: __newRoundStarted },
             { methodName: "TurnStarted", method: __turnStarted },
             { methodName: "TurnEnded", method: __turnEnded },
@@ -505,6 +508,7 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
     public readonly register = (connection: HubConnection, receiver: IBaseGameResponse): Disposable => {
 
         const __gameStarted = () => receiver.gameStarted();
+        const __gameEnded = (...args: [string]) => receiver.gameEnded(...args);
         const __newRoundStarted = (...args: [number, number]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);
@@ -512,6 +516,7 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
         const __playerShotAt = (...args: [string, BulletType, number]) => receiver.playerShotAt(...args);
 
         connection.on("GameStarted", __gameStarted);
+        connection.on("GameEnded", __gameEnded);
         connection.on("NewRoundStarted", __newRoundStarted);
         connection.on("TurnStarted", __turnStarted);
         connection.on("TurnEnded", __turnEnded);
@@ -520,6 +525,7 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
 
         const methodList: ReceiverMethod[] = [
             { methodName: "GameStarted", method: __gameStarted },
+            { methodName: "GameEnded", method: __gameEnded },
             { methodName: "NewRoundStarted", method: __newRoundStarted },
             { methodName: "TurnStarted", method: __turnStarted },
             { methodName: "TurnEnded", method: __turnEnded },

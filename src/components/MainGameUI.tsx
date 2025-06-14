@@ -77,6 +77,16 @@ export default function MainGameUI() {
             dispatch(gameStarted());
         });
 
+        const sub_gameEnded = serverConnection.subscribe("gameEnded", async (winner: string) => {
+            // dispatch(gameEnded()) is called by the dialog
+            dispatch(showAlertDialog({
+                title: "Game Over",
+                description: `The winner is ${winner}!`,
+                skippable: false,
+                onClick: "gameEnded"
+            }));
+        });
+
         const sub_newRoundStarted = serverConnection.subscribe("newRoundStarted", async (blankRoundCount: number, liveRoundCount: number) => {
             console.log("newRoundStarted", blankRoundCount, liveRoundCount);
         });
@@ -165,6 +175,7 @@ export default function MainGameUI() {
             serverConnection.unsubscribe("hostChanged", sub_hostChanged);
             serverConnection.unsubscribe("playerKicked", sub_playerKicked);
             serverConnection.unsubscribe("gameStarted", sub_gameStarted);
+            serverConnection.unsubscribe("gameEnded", sub_gameEnded);
             serverConnection.unsubscribe("newRoundStarted", sub_newRoundStarted);
             serverConnection.unsubscribe("turnStarted", sub_turnStarted);
             serverConnection.unsubscribe("turnEnded", sub_turnEnded);

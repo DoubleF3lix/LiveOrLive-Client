@@ -87,6 +87,9 @@ export const lobbyDataSlice = createSlice({
         gameStarted: (state) => {
             state.gameStarted = true;
         },
+        gameEnded: (state) => {
+            state.gameStarted = false;
+        },
         turnStarted: (state, action: PayloadAction<string>) => {
             state.currentTurn = action.payload;
         },
@@ -102,5 +105,5 @@ export const lobbyDataSlice = createSlice({
     }
 });
 
-export const { loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, turnStarted, turnEnded, playerShotAt } = lobbyDataSlice.actions;
+export const { loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, gameEnded, turnStarted, turnEnded, playerShotAt } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;

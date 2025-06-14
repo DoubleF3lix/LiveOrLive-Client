@@ -70,6 +70,7 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
 
         this.baseGameReceiver = {
             gameStarted: async (): Promise<void> => this.sendSubscription("gameStarted"),
+            gameEnded: async (winner: string): Promise<void> => this.sendSubscription("gameEnded", winner),
             newRoundStarted: async (blankRoundCount: number, liveRoundCount: number): Promise<void> => this.sendSubscription("newRoundStarted", blankRoundCount, liveRoundCount),
             turnStarted: async (username: string): Promise<void> => this.sendSubscription("turnStarted", username),
             turnEnded: async (username: string): Promise<void> => this.sendSubscription("turnEnded", username),

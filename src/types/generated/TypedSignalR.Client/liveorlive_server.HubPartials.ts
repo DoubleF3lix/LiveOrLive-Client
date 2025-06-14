@@ -184,6 +184,7 @@ export type IHubServerResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     gameStarted(): Promise<void>;
+    gameEnded(winner: string): Promise<void>;
     /**
     * @param blankRoundCount Transpiled from int
     * @param liveRoundCount Transpiled from int
@@ -354,6 +355,7 @@ export type IBaseGameResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     gameStarted(): Promise<void>;
+    gameEnded(winner: string): Promise<void>;
     /**
     * @param blankRoundCount Transpiled from int
     * @param liveRoundCount Transpiled from int
