@@ -1,6 +1,7 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from "@/breadcrumb";
 import { useSelector } from "react-redux";
 import { IRootState } from "~/store/Store";
+import { Fragment } from "react";
 
 
 export default function TurnOrderBar({ className }: { className?: string }) {
@@ -10,10 +11,10 @@ export default function TurnOrderBar({ className }: { className?: string }) {
     return <div className={`flex ${className} mx-auto`}>
         <Breadcrumb className="overflow-x-auto">
             <BreadcrumbList className="flex-nowrap">
-                {turnOrder && turnOrder.map((username, index) => <>
-                    <BreadcrumbItem className="text-base" key={`${username}_turnOrder`}>{username === currentTurn ? <strong>{username}</strong> : username}</BreadcrumbItem>
-                    {index !== (turnOrder.length - 1) && <BreadcrumbSeparator key={`${username}_turnOrderSeparator`} />}
-                </>)}
+                {turnOrder && turnOrder.map((username, index) => <Fragment key={`${username}_turnOrder`}>
+                    <BreadcrumbItem className="text-base">{username === currentTurn ? <strong>{username}</strong> : username}</BreadcrumbItem>
+                    {index !== (turnOrder.length - 1) && <BreadcrumbSeparator />}
+                </Fragment>)}
             </BreadcrumbList>
         </Breadcrumb>
     </div>;
