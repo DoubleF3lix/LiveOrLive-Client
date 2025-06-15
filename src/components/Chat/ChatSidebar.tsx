@@ -6,7 +6,7 @@ import { ServerConnection } from "~/lib/ServerConnection";
 import { addChatMessage, setChatMessages, setChatIsOpen } from "~/store/ChatSlice";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
-import { ChatMessage as ChatMessageType } from "~/types/generated/liveorlive_server";
+import { ChatMessage as ChatMessageType } from "~/types/generated/liveorlive_server.Models";
 import { Separator } from "@/separator";
 import ChatMessages from "~/components/Chat/ChatMessages";
 import IconButton from "~/components/micro/IconButton";

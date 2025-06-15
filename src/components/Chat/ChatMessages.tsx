@@ -1,4 +1,4 @@
-import { ChatMessage as ChatMessageType } from "~/types/generated/liveorlive_server";
+import { ChatMessage as ChatMessageType } from "~/types/generated/liveorlive_server.Models";
 import ChatMessage from "~/components/Chat/ChatMessage";
 
 

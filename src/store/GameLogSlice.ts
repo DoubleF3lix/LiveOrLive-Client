@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { GameLogMessage } from "~/types/generated/liveorlive_server";
+import { GameLogMessage } from "~/types/generated/liveorlive_server.Models";
 
 
 type GameLogSliceType = {

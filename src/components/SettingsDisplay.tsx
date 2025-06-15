@@ -2,7 +2,7 @@ import LabelAndSwitchGridRow from "~/components/micro/LabelAndSwitchGridRow";
 import LabelAndNumberGridRow from "~/components/micro/LabelAndNumberGridRow";
 import { Separator } from "@/separator";
 import { SettingsRefs } from "~/types/SettingsRefs";
-import { Settings } from "~/types/generated/liveorlive_server";
+import { Settings } from "~/types/generated/liveorlive_server.Models";
 
 
 type SettingsDisplayArgs = {

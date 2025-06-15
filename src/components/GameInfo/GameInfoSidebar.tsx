@@ -11,7 +11,7 @@ import SettingsDisplay from "~/components/SettingsDisplay";
 import { useContext, useEffect } from "react";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { ServerConnection } from "~/lib/ServerConnection";
-import { GameLogMessage } from "~/types/generated/liveorlive_server";
+import { GameLogMessage } from "~/types/generated/liveorlive_server.Models";
 import { addGameLogMessage, setGameLogMessages } from "~/store/GameLogSlice";
 
 

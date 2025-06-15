@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import LabelAndTextInputGridRow from "~/components/micro/LabelAndTextInputGridRow";
 import { BASE_URL } from "~/lib/const";
 import { toLowercaseKeys } from "~/lib/utils";
-import { Settings } from "~/types/generated/liveorlive_server";
+import { Settings } from "~/types/generated/liveorlive_server.Models";
 import { SettingsRefs } from "~/types/SettingsRefs";
 import EditLifeGambleWeightsModal from "./EditLifeGambleWeightsModal";
 import SettingsDisplay from "~/components/SettingsDisplay";

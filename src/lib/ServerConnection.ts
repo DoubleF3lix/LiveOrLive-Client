@@ -1,9 +1,11 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { getHubProxyFactory, getReceiverRegister } from "~/types/generated/TypedSignalR.Client";
 import { IBaseGameRequest, IBaseGameResponse, IChatRequest, IChatResponse, IConnectionRequest, IConnectionResponse, IGameLogRequest, IGameLogResponse, IGenericRequest, IGenericResponse, IHubServerResponse, IItemRequest, IItemResponse } from "~/types/generated/TypedSignalR.Client/liveorlive_server.HubPartials";
-import { ChatMessage, GameLogMessage, Player, Lobby } from "~/types/generated/liveorlive_server";
+import { Player, Lobby } from "~/types/generated/liveorlive_server";
+import { ChatMessage, GameLogMessage } from "~/types/generated/liveorlive_server.Models";
 import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
 import { BASE_URL } from "~/lib/const";
+import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
 
 
 type ResponseCallback<K extends keyof IHubServerResponse = keyof IHubServerResponse> = IHubServerResponse[K];
@@ -71,7 +73,7 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
         this.baseGameReceiver = {
             gameStarted: async (): Promise<void> => this.sendSubscription("gameStarted"),
             gameEnded: async (winner: string): Promise<void> => this.sendSubscription("gameEnded", winner),
-            newRoundStarted: async (blankRoundCount: number, liveRoundCount: number): Promise<void> => this.sendSubscription("newRoundStarted", blankRoundCount, liveRoundCount),
+            newRoundStarted: async (result: NewRoundResult): Promise<void> => this.sendSubscription("newRoundStarted", result),
             turnStarted: async (username: string): Promise<void> => this.sendSubscription("turnStarted", username),
             turnEnded: async (username: string): Promise<void> => this.sendSubscription("turnEnded", username),
             getLobbyDataResponse: async (lobbyData: Lobby): Promise<void> => this.sendSubscription("getLobbyDataResponse", lobbyData),
