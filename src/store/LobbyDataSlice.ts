@@ -89,6 +89,9 @@ export const lobbyDataSlice = createSlice({
         gameStarted: (state) => {
             state.gameStarted = true;
         },
+        setTurnOrder: (state, action: PayloadAction<string[]>) => {
+            state.turnOrder = action.payload;
+        },
         gameEnded: (state) => {
             state.gameStarted = false;
         },
@@ -116,5 +119,5 @@ export const lobbyDataSlice = createSlice({
     }
 });
 
-export const { loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, gameEnded, addItemsFromRoundStart, turnStarted, turnEnded, playerShotAt } = lobbyDataSlice.actions;
+export const { loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, setTurnOrder, gameEnded, addItemsFromRoundStart, turnStarted, turnEnded, playerShotAt } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;

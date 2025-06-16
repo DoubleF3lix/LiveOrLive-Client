@@ -5,7 +5,7 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { Toaster } from "@/sonner";
 import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
-import { playerJoined, loadFromPacket, playerLeft, setHost, gameStarted, turnStarted, turnEnded, playerShotAt, addItemsFromRoundStart } from "~/store/LobbyDataSlice";
+import { playerJoined, loadFromPacket, playerLeft, setHost, gameStarted, turnStarted, turnEnded, playerShotAt, addItemsFromRoundStart, setTurnOrder } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "./AlertDialogQueue";
@@ -75,8 +75,9 @@ export default function MainGameUI() {
             }
         });
 
-        const sub_gameStarted = serverConnection.subscribe("gameStarted", async () => {
+        const sub_gameStarted = serverConnection.subscribe("gameStarted", async (turnOrder: string[]) => {
             dispatch(gameStarted());
+            dispatch(setTurnOrder(turnOrder));
         });
 
         const sub_gameEnded = serverConnection.subscribe("gameEnded", async (winner: string | null) => {

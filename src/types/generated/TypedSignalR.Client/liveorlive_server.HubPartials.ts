@@ -183,9 +183,10 @@ export type IHubServerResponse = {
     */
     playerKicked(username: string): Promise<void>;
     /**
+    * @param turnOrder Transpiled from System.Collections.Generic.List<string>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    gameStarted(): Promise<void>;
+    gameStarted(turnOrder: string[]): Promise<void>;
     /**
     * @param winner Transpiled from string?
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -357,9 +358,10 @@ export type IConnectionResponse = {
 
 export type IBaseGameResponse = {
     /**
+    * @param turnOrder Transpiled from System.Collections.Generic.List<string>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    gameStarted(): Promise<void>;
+    gameStarted(turnOrder: string[]): Promise<void>;
     /**
     * @param winner Transpiled from string?
     * @returns Transpiled from System.Threading.Tasks.Task

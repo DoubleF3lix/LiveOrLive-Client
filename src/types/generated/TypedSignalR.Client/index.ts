@@ -317,7 +317,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __playerLeft = (...args: [string]) => receiver.playerLeft(...args);
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
         const __playerKicked = (...args: [string]) => receiver.playerKicked(...args);
-        const __gameStarted = () => receiver.gameStarted();
+        const __gameStarted = (...args: [string[]]) => receiver.gameStarted(...args);
         const __gameEnded = (...args: [string]) => receiver.gameEnded(...args);
         const __newRoundStarted = (...args: [NewRoundResult]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
@@ -509,7 +509,7 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
 
     public readonly register = (connection: HubConnection, receiver: IBaseGameResponse): Disposable => {
 
-        const __gameStarted = () => receiver.gameStarted();
+        const __gameStarted = (...args: [string[]]) => receiver.gameStarted(...args);
         const __gameEnded = (...args: [string]) => receiver.gameEnded(...args);
         const __newRoundStarted = (...args: [NewRoundResult]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
