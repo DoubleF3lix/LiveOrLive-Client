@@ -6,6 +6,12 @@ import { GildedAchievementToast, NormalAchievementToast } from "~/components/Cus
 import { Item } from "~/types/generated/liveorlive_server.Enums";
 
 
+type CondensedItemDetail = {
+    id: Item;
+    count: number;
+    displayString: string;
+};
+
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
@@ -16,15 +22,19 @@ export function fromCamelCase(str: string) {
         .replace(/^./, (match) => match.toUpperCase());
 }
 
-export function condenseItemList(items: Item[]): string[] {
+export function condenseItemList(items: Item[]): CondensedItemDetail[] {
     const itemCounts = new Map<Item, number>();
     for (const item of items) {
         itemCounts.set(item, (itemCounts.get(item) || 0) + 1);
     }
 
-    const output: string[] = [];
+    const output: CondensedItemDetail[] = [];
     for (const [item, count] of itemCounts) {
-        output.push(`${fromCamelCase(Item[item])}${count > 1 ? ` (x${count})` : ``}`);
+        output.push({
+            id: item,
+            count: count, 
+            displayString: `${fromCamelCase(Item[item])}${count > 1 ? ` (x${count})` : ``}`
+        });
     }
     return output;
 }
@@ -39,6 +49,10 @@ export function removeItemFromArray<T>(array: T[], item: T): T[] {
         ...array.slice(0, index),
         ...array.slice(index + 1)
     ];
+}
+
+export function moveToFrontOfArray<T>(array: T[], item: T): T[] {
+    return [item, ...array.filter(x => x !== item)]; 
 }
 
 // Needed when parsing JSON into our types (JSON may be uppercase, types are lowercase)

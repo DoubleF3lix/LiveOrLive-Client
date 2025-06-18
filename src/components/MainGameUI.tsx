@@ -12,13 +12,14 @@ import AlertDialogQueue from "./AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 import PlayerCard from "~/components/PlayerCard";
 import GameInfoSidebar from "~/components/GameInfo/GameInfoSidebar";
-import { Info } from "lucide-react";
+import { ChevronUp, Circle, CircleDashed, Info } from "lucide-react";
 import IconButton from "~/components/micro/IconButton";
 import TurnOrderBar from "~/components/TurnOrderBar";
 import { Button } from "@/button";
 import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
 import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
 import { setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
+import UseItemDialog from "./UseItemDialog";
 
 
 export default function MainGameUI() {
@@ -29,8 +30,11 @@ export default function MainGameUI() {
     const isGameStarted = useSelector((state: IRootState) => state.lobbyDataReducer.gameStarted);
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
+    const liveRounds = useSelector((state: IRootState) => state.roundDataReducer.liveRounds);
+    const blankRounds = useSelector((state: IRootState) => state.roundDataReducer.blankRounds);
 
     const [gameInfoSidebarOpen, setGameInfoSidebarOpen] = useState<boolean>(false);
+    const [useItemDialogOpen , setUseItemDialogOpen] = useState<boolean>(false);
 
     const isHost = clientUsername === lobbyHost;
     const nonSpectatorPlayers = players.filter(player => !player.isSpectator);
@@ -109,7 +113,7 @@ export default function MainGameUI() {
         });
 
         const sub_playerShotAt = serverConnection.subscribe("playerShotAt", async (username: string, bulletType: BulletType, damage: number) => {
-            dispatch(playerShotAt({username: username, bulletType: bulletType, damage: damage}));
+            dispatch(playerShotAt({ username: username, bulletType: bulletType, damage: damage }));
         });
 
         const sub_showAlert = serverConnection.subscribe("showAlert", async (message: string) => {
@@ -204,10 +208,26 @@ export default function MainGameUI() {
 
     return <div className="flex flex-col h-dvh w-dvw p-2 overflow-x-auto">
         {/* Header */}
-        <div className="flex mb-0 mt-3 justify-between pb-3">
-            <OpenSidebarButton className="ml-2" />
-            <h1 className="flex-grow text-center justify-center content-center text-2xl font-bold -mt-1">Live or Live</h1>
-            <IconButton onClick={() => setGameInfoSidebarOpen(true)} className="mr-2">
+        <div className="flex mb-0 justify-between py-3">
+            <OpenSidebarButton className="ml-2 self-start" />
+            {isGameStarted ?
+                <div className="flex flex-col">
+                    <div className="flex justify-center gap-x-12">
+                        {/* flex justify-center items-center relative */}
+                        <div className="flex flex-col">
+                            <Circle fill="#fff" />
+                            {/* text-center absolute font-bold mb-0.5 text-sm text-accent */}
+                            <p className="text-center">{liveRounds}</p>
+                        </div>
+                        <div className="flex flex-col">
+                            <CircleDashed />
+                            <p className="text-center">{blankRounds}</p>
+                        </div>
+                    </div>
+                </div> 
+                : <h1 className="flex-grow text-center justify-center content-center text-2xl font-bold -mt-1">Live or Live</h1>
+            }
+            <IconButton onClick={() => setGameInfoSidebarOpen(true)} className="mr-2 self-start">
                 <Info />
             </IconButton>
         </div>
@@ -220,6 +240,12 @@ export default function MainGameUI() {
                     {nonSpectatorPlayers.map(player => <PlayerCard key={player.username + "_playerCard"} player={player} />)}
                 </div>
             </div>
+            {/* TODO make float over card section and not its own piece */}
+            <div onClick={() => {setUseItemDialogOpen(true)}} className={`rounded-lg bg-foreground hover:bg-muted-foreground ml-auto mb-4 mr-2 h-12 w-12 lg:mb-12 lg:mr-12 lg:h-16 lg:w-16`}> 
+                <ChevronUp size={32} color="#000" className="m-auto h-full" />
+            </div>
+            <Separator className="mt-auto" />
+            <p className="text-center align-center pt-1 text-sm lg:pt-2 lg:pb-1 lg:text-base">PLACEHOLDER: Felix shot Skylinerw with a live round for 2 damage.</p>
         </> : <>
             {/* I don't know why I need these duplicate properties but it does not center if a single one is missing */}
             <div className="flex flex-grow">
@@ -235,6 +261,7 @@ export default function MainGameUI() {
             </div>
         </>}
 
+        <UseItemDialog open={useItemDialogOpen} setOpen={setUseItemDialogOpen} />
         <GameInfoSidebar open={gameInfoSidebarOpen} setOpen={setGameInfoSidebarOpen} />
         <AlertDialogQueue />
         <Toaster duration={10000} visibleToasts={3} />

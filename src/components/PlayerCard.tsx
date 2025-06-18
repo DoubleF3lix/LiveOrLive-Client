@@ -43,11 +43,11 @@ export default function PlayerCard({ player }: PlayerCardArgs) {
             <Separator className="my-1" />
             <p>Items:</p>
             <ul className="list-disc list-inside">
-                {condenseItemList(player.items).map((item, index) => <li key={index + "_playerItem"}>{item}</li>)}
+                {condenseItemList(player.items).map((item, index) => <li key={index + "_playerItem"}>{item.displayString}</li>)}
             </ul>
         </>}
         <div className="mt-auto">
-            <Button className="mt-2 h-8 w-full" disabled={!isOurTurn} onClick={() => shootPlayer(player.username)}>Shoot</Button>
+            <Button className="mt-2 h-8 w-full" disabled={!isOurTurn} onClick={() => shootPlayer(player.username)}>{player.username === clientUsername ? "Shoot Yourself" : "Shoot"}</Button> 
         </div>
     </div>;
 }
