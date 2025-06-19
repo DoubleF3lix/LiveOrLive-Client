@@ -19,6 +19,6 @@ export enum Item {
     ChamberCheck = 6,
     DoubleDamage = 7,
     Skip = 8,
-    Richochet = 9,
+    Ricochet = 9,
 }
 

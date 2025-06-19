@@ -3,22 +3,26 @@ import { Select, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectV
 
 type SelectBoxArgs = {
     label: string;
+    optionsHeader: string;
     placeholder: string;
     children: React.ReactNode;
     onValueChange: (value: string) => void;
     defaultValue?: string;
 };
 
-export default function SelectBox({ label, placeholder, children, onValueChange, defaultValue }: SelectBoxArgs) {
-    return <Select onValueChange={onValueChange} defaultValue={defaultValue}>
-        <SelectTrigger className="w-full">
-            <SelectValue placeholder={placeholder}/>
-        </SelectTrigger>
-        <SelectContent className="w-full">
-            <SelectGroup>
-                <SelectLabel>{label}</SelectLabel>
-                {children}
-            </SelectGroup>
-        </SelectContent>
-    </Select>;
+export default function SelectBox({ label, optionsHeader, placeholder, children, onValueChange, defaultValue }: SelectBoxArgs) {
+    return [
+        <label className="shrink">{label}</label>,
+        <Select onValueChange={onValueChange} defaultValue={defaultValue}>
+            <SelectTrigger className="w-full">
+                <SelectValue placeholder={placeholder}/>
+            </SelectTrigger>
+            <SelectContent className="w-full">
+                <SelectGroup>
+                    <SelectLabel>{optionsHeader}</SelectLabel>
+                    {children}
+                </SelectGroup>
+            </SelectContent>
+        </Select>
+    ];
 }

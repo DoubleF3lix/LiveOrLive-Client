@@ -20,7 +20,7 @@ import { BASE_URL } from "~/lib/const";
 import { toLowercaseKeys } from "~/lib/utils";
 import { Settings } from "~/types/generated/liveorlive_server.Models";
 import { SettingsRefs } from "~/types/SettingsRefs";
-import EditLifeGambleWeightsModal from "./EditLifeGambleWeightsModal";
+import EditLifeGambleWeightsModal from "~/components/LobbyHub/EditLifeGambleWeightsModal";
 import SettingsDisplay from "~/components/SettingsDisplay";
 
 

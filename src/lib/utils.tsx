@@ -55,6 +55,10 @@ export function moveToFrontOfArray<T>(array: T[], item: T): T[] {
     return [item, ...array.filter(x => x !== item)]; 
 }
 
+export function moveToBackOfArray<T>(array: T[], item: T): T[] {
+    return [...array.filter(x => x !== item), item]; 
+}
+
 // Needed when parsing JSON into our types (JSON may be uppercase, types are lowercase)
 // ChatGPT totally generated this BTW
 export function toLowercaseKeys(obj: object): object {

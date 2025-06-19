@@ -1,14 +1,18 @@
 import { useContext, useState } from "react";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
-import { IRootState, useAppDispatch } from "~/store/Store";
+import { IRootState } from "~/store/Store";
 import { useSelector } from "react-redux";
-import { condenseItemList, moveToFrontOfArray } from "~/lib/utils";
-import SelectBox from "./micro/SelectBox";
+import { condenseItemList, moveToBackOfArray, moveToFrontOfArray } from "~/lib/utils";
+import SelectBox from "~/components/micro/SelectBox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/dialog";
 import { Button } from "@/button";
 import { SelectItem } from "@/select";
 import { Item } from "~/types/generated/liveorlive_server.Enums";
+import UseExtraLife from "~/components/UseItem/UseExtraLife";
+import UsePickpocket from "~/components/UseItem/UsePickpocket";
+import UseSkip from "~/components/UseItem/UseSkip";
+import UseRicochet from "~/components/UseItem/UseRicochet";
 
 
 type UseItemDialogArgs = {
@@ -18,78 +22,142 @@ type UseItemDialogArgs = {
 
 export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
     const serverConnection = useContext(ServerConnectionContext) as ServerConnection;
-    const dispatch = useAppDispatch();
 
-    const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
-    const playerItems = useSelector((state: IRootState) => state.lobbyDataReducer.players.find(player => player.username === clientUsername)?.items);
-    const condensedPlayerItems = condenseItemList(playerItems ?? []);
+    const [error, setError] = useState<string>("");
 
-    const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
-    const nonSpectatorPlayers = players.filter(player => !player.isSpectator);
-    const nonSpectatorPlayersUsernames = nonSpectatorPlayers.map(player => player.username);
-    const nonSpectatorPlayersUsernamesSelfFirst = moveToFrontOfArray(nonSpectatorPlayersUsernames, clientUsername);
-    const otherPlayers = nonSpectatorPlayers.filter(player => player.username !== clientUsername);
+    const selfUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
+    const allPlayers = useSelector((state: IRootState) => state.lobbyDataReducer.players);
 
-    const [selectedItem, setSelectedItem] = useState<number>(-1);
-    const [targetPlayerUsername, setTargetPlayerUsername] = useState<string>("");
+    const selfItems = allPlayers.find(player => player.username === selfUsername)?.items;
+    const condensedSelfItems = condenseItemList(selfItems ?? []);
+    
+    const players = allPlayers.filter(player => !player.isSpectator);
+    const playerUsernames = players.map(player => player.username);
+    const playerUsernamesSelfFirst = moveToFrontOfArray(playerUsernames, selfUsername);
+    const playerUsernamesSelfLast = moveToBackOfArray(playerUsernames, selfUsername);
+    const otherPlayers = players.filter(player => player.username !== selfUsername);
+
+    const [selectedItem, setSelectedItem] = useState<Item | -1>(-1);
+    const [targetUsername, setTargetUsername] = useState<string>("");
+    const [selectedItemToSteal, setSelectedItemToSteal] = useState<Item | -1>(-1);
+    const [stolenItemTargetUsername, setStolenItemTargetUsername] = useState<string>("");
+
+    function resetFields() {
+        setSelectedItem(-1);
+        setTargetUsername("");
+        setSelectedItemToSteal(-1);
+        setStolenItemTargetUsername("");
+    }
 
     function close() {
-        setSelectedItem(-1);
         setOpen(false);
+        // I don't like seeing the error go away before it fades out
+        setTimeout(() => {
+            resetFields(); 
+            setError("");
+        }, 100);
     }
 
-    function setSelectedItemCast(value: string) {
-        setSelectedItem(parseInt(value));
+    function useItem() {
+        // Some quick client side validation
+        if (selectedItem === -1) {
+            setError("Please select an item.");
+            return;
+        }
+        if ((selectedItem === Item.ExtraLife || selectedItem === Item.Pickpocket || selectedItem === Item.Skip || selectedItem === Item.Ricochet) && targetUsername === "") {
+            setError("Please select a target.");
+            return;        
+        }
+        if (selectedItem === Item.Pickpocket) {
+            if (selectedItemToSteal === -1) {
+                setError("Please select an item to steal.");
+                return;
+            }
+            if ((selectedItemToSteal === Item.ExtraLife || selectedItemToSteal === Item.Skip || selectedItemToSteal === Item.Ricochet) && stolenItemTargetUsername === "") {
+                setError("Please select a target for the item you're stealing.");
+                return;
+            }
+        }
+        
+        switch (selectedItem as Item) {
+            case Item.ReverseTurnOrder:
+                serverConnection.useReverseTurnOrderItem();
+                break;
+            case Item.RackChamber:
+                serverConnection.useRackChamberItem();
+                break;
+            case Item.ExtraLife:
+                serverConnection.useExtraLifeItem(targetUsername);
+                break;
+            case Item.Pickpocket:
+                serverConnection.usePickpocketItem(targetUsername, selectedItemToSteal as Item, stolenItemTargetUsername);
+                break;
+            case Item.LifeGamble:
+                serverConnection.useLifeGambleItem();
+                break;
+            case Item.Invert:
+                serverConnection.useInvertItem();
+                break;
+            case Item.ChamberCheck:
+                serverConnection.useChamberCheckItem();
+                break;
+            case Item.DoubleDamage:
+                serverConnection.useDoubleDamageItem();
+                break;
+            case Item.Skip:
+                serverConnection.useSkipItem(targetUsername);
+                break;
+            case Item.Ricochet:
+                serverConnection.useRicochetItem(targetUsername);
+                break;
+        }
     }
 
-    return playerItems && <Dialog open={open}>
+    return selfItems && <Dialog open={open}>
         <DialogContent onInteractOutside={close} onCloseButtonClick={close}>
             <DialogHeader>
                 <DialogTitle>Use Item</DialogTitle>
-                <DialogDescription></DialogDescription>
+                <DialogDescription>{error}</DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 items-center lg:gap-x-8">
-                <label>Item:</label>
-                <SelectBox label="Items" placeholder="Select an item" onValueChange={setSelectedItemCast}>
-                    {condensedPlayerItems.map(item => <SelectItem key={item.id + "useItemSelectItem"} value={item.id.toString()}>{item.displayString}</SelectItem>)}
+                <SelectBox label="Item:" optionsHeader="Items" placeholder="Select an item" onValueChange={(value: string) => { resetFields(); setSelectedItem(parseInt(value)); }}>
+                    {condensedSelfItems.map(item => <SelectItem key={item.id + "useItemSelectItem"} value={item.id.toString()}>{item.displayString}</SelectItem>)}
                 </SelectBox>
 
                 {/* Move preset select boxes to components, include labels */}
-                {selectedItem === Item.ExtraLife && <>
-                    <label>Use On:</label>
-                    <SelectBox label="Targets" placeholder="Select a target" onValueChange={setTargetPlayerUsername} defaultValue={clientUsername}>
-                        {nonSpectatorPlayersUsernamesSelfFirst.map(playerUsername => <SelectItem key={playerUsername + "useItemSelectLifeTarget"} value={playerUsername}>
-                            {playerUsername === clientUsername ? "Yourself" : playerUsername}
-                        </SelectItem>)} 
-                    </SelectBox>
-                </>}
+                {selectedItem === Item.ExtraLife && <UseExtraLife 
+                    playerUsernamesSelfFirst={playerUsernamesSelfFirst} 
+                    targetUsername={targetUsername}
+                    setTargetUsername={setTargetUsername} 
+                />}
 
-                {selectedItem === Item.Pickpocket && <>
-                    <label>Steal From:</label>
-                    <SelectBox label="Targets" placeholder="Select a target" onValueChange={setTargetPlayerUsername} defaultValue={clientUsername}>
-                        {nonSpectatorPlayersUsernamesSelfFirst.map(playerUsername => <SelectItem key={playerUsername + "useItemSelectLifeTarget"} value={playerUsername}>
-                            {playerUsername === clientUsername ? "Yourself" : playerUsername}
-                        </SelectItem>)} 
-                    </SelectBox>
+                {selectedItem === Item.Pickpocket && <UsePickpocket 
+                    playerUsernamesSelfFirst={playerUsernamesSelfFirst}         // Passed to UseStolenItem (for Extra Life and Ricochet)
+                    playerUsernamesSelfLast={playerUsernamesSelfLast}           // Passed to UseStolenItem (for Skip)
+                    otherPlayers={otherPlayers}                                 // Used to compute valid pickpocket targets (has to have at least one non-pickpocket item)
+                    targetUsername={targetUsername}                             // The player we're stealing from
+                    setTargetUsername={setTargetUsername}
+                    selectedItemToSteal={selectedItemToSteal}                   // The item we're stealing from the above player
+                    setSelectedItemToSteal={setSelectedItemToSteal}
+                    stolenItemTargetUsername={stolenItemTargetUsername}         // The player we're using the stolen item on. May be null.
+                    setStolenItemTargetUsername={setStolenItemTargetUsername} 
+                />}
 
-                    <label>Steal Item:</label>
-                    <SelectBox label="Targets" placeholder="Select an item to steal" onValueChange={setTargetPlayerUsername} defaultValue={clientUsername}>
-                        {nonSpectatorPlayersUsernamesSelfFirst.map(playerUsername => <SelectItem key={playerUsername + "useItemSelectLifeTarget"} value={playerUsername}>
-                            {playerUsername === clientUsername ? "Yourself" : playerUsername}
-                        </SelectItem>)} 
-                    </SelectBox>
+                {selectedItem === Item.Skip && <UseSkip 
+                    playerUsernamesSelfLast={playerUsernamesSelfLast}
+                    targetUsername={targetUsername} 
+                    setTargetUsername={setTargetUsername} 
+                />}
 
-                    <label>Use Item On:</label>
-                    <SelectBox label="Targets" placeholder="Select another target" onValueChange={setTargetPlayerUsername} defaultValue={clientUsername}>
-                        {nonSpectatorPlayersUsernamesSelfFirst.map(playerUsername => <SelectItem key={playerUsername + "useItemSelectLifeTarget"} value={playerUsername}>
-                            {playerUsername === clientUsername ? "Yourself" : playerUsername}
-                        </SelectItem>)} 
-                    </SelectBox>
-                </>}
+                {selectedItem === Item.Ricochet && <UseRicochet 
+                    playerUsernamesSelfFirst={playerUsernamesSelfFirst} 
+                    targetUsername={targetUsername}
+                    setTargetUsername={setTargetUsername} 
+                />}
             </div>
             <DialogFooter>
                 <Button variant="secondary" onClick={close}>Cancel</Button>
-                <Button onClick={close}>Use</Button>
+                <Button onClick={useItem}>Use</Button>
             </DialogFooter>
         </DialogContent>
     </Dialog>;

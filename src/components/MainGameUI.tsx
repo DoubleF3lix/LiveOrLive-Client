@@ -8,7 +8,7 @@ import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
 import { playerJoined, loadFromPacket, playerLeft, setHost, gameStarted, turnStarted, turnEnded, playerShotAt, addItemsFromRoundStart, setTurnOrder } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
-import AlertDialogQueue from "./AlertDialogQueue";
+import AlertDialogQueue from "~/components/AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 import PlayerCard from "~/components/PlayerCard";
 import GameInfoSidebar from "~/components/GameInfo/GameInfoSidebar";
@@ -19,7 +19,7 @@ import { Button } from "@/button";
 import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
 import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
 import { setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
-import UseItemDialog from "./UseItemDialog";
+import UseItemDialog from "~/components/UseItemDialog";
 
 
 export default function MainGameUI() {
@@ -204,7 +204,7 @@ export default function MainGameUI() {
             serverConnection.unsubscribe("skipItemUsed", sub_skipItemUsed);
             serverConnection.unsubscribe("ricochetItemUsed", sub_ricochetItemUsed);
         };
-    }, [dispatch, serverConnection]);
+    }, [clientUsername, dispatch, serverConnection]);
 
     return <div className="flex flex-col h-dvh w-dvw p-2 overflow-x-auto">
         {/* Header */}

@@ -4,7 +4,7 @@ import { IRootState, useAppDispatch } from "~/store/Store";
 import { useSelector } from "react-redux";
 import { Separator } from "@/separator";
 import { CircleHelp } from "lucide-react";
-import PlayerDropdownDisplay from "./PlayerDropdownDisplay";
+import PlayerDropdownDisplay from "~/components/GameInfo/PlayerDropdownDisplay";
 import { Popover, PopoverContent } from "@/popover";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import SettingsDisplay from "~/components/SettingsDisplay";
