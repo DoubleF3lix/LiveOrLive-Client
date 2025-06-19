@@ -8,5 +8,5 @@ type UseExtraLifeArgs = {
 };
 
 export default function UseExtraLife({ playerUsernamesSelfFirst, targetUsername, setTargetUsername }: UseExtraLifeArgs) {
-    return <UseTargetedItem label="Use On:" optionsHeader="Targets" placeholder="Select a target" keySuffix="_useItemSelectLifeTarget" usernames={playerUsernamesSelfFirst} targetUsername={targetUsername} setTargetUsername={setTargetUsername} />;    
+    return <UseTargetedItem keySuffix="_useItemSelectLifeTarget" usernames={playerUsernamesSelfFirst} targetUsername={targetUsername} setTargetUsername={setTargetUsername} />;    
 }
