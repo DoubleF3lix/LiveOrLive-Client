@@ -328,7 +328,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __achievementUnlocked = (...args: [string, string]) => receiver.achievementUnlocked(...args);
         const __actionFailed = (...args: [string]) => receiver.actionFailed(...args);
         const __reverseTurnOrderItemUsed = () => receiver.reverseTurnOrderItemUsed();
-        const __rackChamberItemUsed = () => receiver.rackChamberItemUsed();
+        const __rackChamberItemUsed = (...args: [BulletType]) => receiver.rackChamberItemUsed(...args);
         const __extraLifeItemUsed = (...args: [string]) => receiver.extraLifeItemUsed(...args);
         const __pickpocketItemUsed = (...args: [string, Item, string]) => receiver.pickpocketItemUsed(...args);
         const __lifeGambleItemUsed = (...args: [number]) => receiver.lifeGambleItemUsed(...args);
@@ -576,7 +576,7 @@ class IItemResponse_Binder implements ReceiverRegister<IItemResponse> {
     public readonly register = (connection: HubConnection, receiver: IItemResponse): Disposable => {
 
         const __reverseTurnOrderItemUsed = () => receiver.reverseTurnOrderItemUsed();
-        const __rackChamberItemUsed = () => receiver.rackChamberItemUsed();
+        const __rackChamberItemUsed = (...args: [BulletType]) => receiver.rackChamberItemUsed(...args);
         const __extraLifeItemUsed = (...args: [string]) => receiver.extraLifeItemUsed(...args);
         const __pickpocketItemUsed = (...args: [string, Item, string]) => receiver.pickpocketItemUsed(...args);
         const __lifeGambleItemUsed = (...args: [number]) => receiver.lifeGambleItemUsed(...args);

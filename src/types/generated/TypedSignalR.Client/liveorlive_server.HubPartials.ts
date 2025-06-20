@@ -240,9 +240,10 @@ export type IHubServerResponse = {
     */
     reverseTurnOrderItemUsed(): Promise<void>;
     /**
+    * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    rackChamberItemUsed(): Promise<void>;
+    rackChamberItemUsed(bulletType: BulletType): Promise<void>;
     /**
     * @param target Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -421,9 +422,10 @@ export type IItemResponse = {
     */
     reverseTurnOrderItemUsed(): Promise<void>;
     /**
+    * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    rackChamberItemUsed(): Promise<void>;
+    rackChamberItemUsed(bulletType: BulletType): Promise<void>;
     /**
     * @param target Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
