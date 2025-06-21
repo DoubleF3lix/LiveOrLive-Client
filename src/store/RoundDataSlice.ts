@@ -5,12 +5,14 @@ type RoundDataSliceType = {
     liveRounds: number;
     blankRounds: number;
     roundsFired: number;
+    turnOrderReversed: boolean;
 };
 
 const initialLobbyDataSliceState: RoundDataSliceType = {
     liveRounds: 0,
     blankRounds: 0,
-    roundsFired: 0
+    roundsFired: 0,
+    turnOrderReversed: false
 }
 
 export const lobbyDataSlice = createSlice({
@@ -22,9 +24,12 @@ export const lobbyDataSlice = createSlice({
         },
         setBlankRoundsCount: (state, action: PayloadAction<number>) => {
             state.blankRounds = action.payload;
+        },
+        reverseTurnOrder: (state) => {
+            state.turnOrderReversed = !state.turnOrderReversed;
         }
     }
 });
 
-export const { setLiveRoundsCount, setBlankRoundsCount } = lobbyDataSlice.actions;
+export const { setLiveRoundsCount, setBlankRoundsCount, reverseTurnOrder } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;

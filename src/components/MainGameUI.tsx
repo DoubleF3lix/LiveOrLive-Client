@@ -25,7 +25,7 @@ import TurnOrderBar from "~/components/TurnOrderBar";
 import { Button } from "@/button";
 import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
 import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
-import { setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
+import { reverseTurnOrder, setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
 import UseItemDialog from "~/components/UseItemDialog";
 
 
@@ -147,6 +147,7 @@ export default function MainGameUI() {
 
         const sub_reverseTurnOrderItemUsed = serverConnection.subscribe("reverseTurnOrderItemUsed", async (itemSourceUsername: string) => {
             dispatch(reverseTurnOrderItemUsed({ itemSourceUsername: itemSourceUsername }));
+            dispatch(reverseTurnOrder());
         });
 
         const sub_rackChamberItemUsed = serverConnection.subscribe("rackChamberItemUsed", async (bulletType: BulletType, itemSourceUsername: string) => {
