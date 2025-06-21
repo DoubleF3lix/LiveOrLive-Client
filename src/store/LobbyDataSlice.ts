@@ -107,6 +107,10 @@ export const lobbyDataSlice = createSlice({
         },
         turnStarted: (state, action: PayloadAction<string>) => {
             state.currentTurn = action.payload;
+            const playerIndex = state.players.findIndex(player => player.username === action.payload);
+            if (playerIndex !== -1) {
+                state.players[playerIndex].isSkipped = false;
+            }
         },
         turnEnded: (state) => {
             state.currentTurn = undefined;
@@ -137,6 +141,11 @@ export const lobbyDataSlice = createSlice({
             state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.Pickpocket);
         },
         lifeGambleItemUsed: (state, action: PayloadAction<{lifeChange: number, itemSourceUsername: string}>) => {
+            const targetIndex = state.players.findIndex(player => player.username === state.currentTurn);
+            if (targetIndex !== -1) {
+                state.players[targetIndex].lives += action.payload.lifeChange;
+            }
+
             state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.LifeGamble);
         },
         invertItemUsed: (state, action: PayloadAction<{itemSourceUsername: string}>) => {

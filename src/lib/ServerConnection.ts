@@ -4,7 +4,7 @@ import { IBaseGameRequest, IBaseGameResponse, IChatRequest, IChatResponse, IConn
 import { Player, Lobby } from "~/types/generated/liveorlive_server";
 import { ChatMessage, GameLogMessage } from "~/types/generated/liveorlive_server.Models";
 import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
-import { BASE_URL } from "~/lib/const";
+import { BASE_URL, SERVER_TIMEOUT } from "~/lib/const";
 import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
 
 
@@ -41,6 +41,8 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
             .withUrl(`${BASE_URL}?lobbyId=${lobbyId}&username=${username}`)
             .configureLogging(LogLevel.Warning)
             .build();
+
+        this.connection.serverTimeoutInMilliseconds = SERVER_TIMEOUT;
 
         this.chatHubProxy = getHubProxyFactory("IChatRequest").createHubProxy(this.connection);
         this.gameLogHubProxy = getHubProxyFactory("IGameLogRequest").createHubProxy(this.connection);

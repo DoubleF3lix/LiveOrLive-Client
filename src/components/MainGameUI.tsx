@@ -5,13 +5,13 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { Toaster } from "@/sonner";
 import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
-import { 
-    playerJoined, loadFromPacket, playerLeft, setHost, gameStarted, 
-    turnStarted, turnEnded, playerShotAt, addItemsFromRoundStart, 
-    setTurnOrder, reverseTurnOrderItemUsed, rackChamberItemUsed, 
-    extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed, 
-    invertItemUsed, chamberCheckItemUsed, doubleDamageItemUsed, 
-    skipItemUsed, ricochetItemUsed 
+import {
+    playerJoined, loadFromPacket, playerLeft, setHost, gameStarted,
+    turnStarted, turnEnded, playerShotAt, addItemsFromRoundStart,
+    setTurnOrder, reverseTurnOrderItemUsed, rackChamberItemUsed,
+    extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed,
+    invertItemUsed, chamberCheckItemUsed, doubleDamageItemUsed,
+    skipItemUsed, ricochetItemUsed
 } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
@@ -39,14 +39,16 @@ export default function MainGameUI() {
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
     const liveRounds = useSelector((state: IRootState) => state.roundDataReducer.liveRounds);
     const blankRounds = useSelector((state: IRootState) => state.roundDataReducer.blankRounds);
-
     const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
 
+    const currentTurn = useSelector((state: IRootState) => state.lobbyDataReducer.currentTurn);
+
     const [gameInfoSidebarOpen, setGameInfoSidebarOpen] = useState<boolean>(false);
-    const [useItemDialogOpen , setUseItemDialogOpen] = useState<boolean>(false);
+    const [useItemDialogOpen, setUseItemDialogOpen] = useState<boolean>(false);
 
     const isHost = clientUsername === lobbyHost;
     const nonSpectatorPlayers = players.filter(player => !player.isSpectator);
+    const isOurTurn = clientUsername === currentTurn;
 
     serverConnection.onDisconnect((error) => {
         if (error) {
@@ -71,9 +73,8 @@ export default function MainGameUI() {
             dispatch(playerLeft(username));
         });
 
-        const sub_hostChanged = serverConnection.subscribe("hostChanged", async (previous: string | undefined, current: string | undefined, reason: string | undefined) => {
+        const sub_hostChanged = serverConnection.subscribe("hostChanged", async (_, current: string | undefined) => {
             dispatch(setHost(current));
-            console.log("Host Changed", previous, current, reason);
         });
 
         const sub_playerKicked = serverConnection.subscribe("playerKicked", async (username: string) => {
@@ -170,10 +171,6 @@ export default function MainGameUI() {
             dispatch(invertItemUsed({ itemSourceUsername: itemSourceUsername }));
         });
 
-        const sub_chamberCheckItemUsed = serverConnection.subscribe("chamberCheckItemUsed", async (bulletType: BulletType, itemSourceUsername: string) => {
-            dispatch(chamberCheckItemUsed({ bulletType: bulletType, itemSourceUsername: itemSourceUsername }));
-        });
-
         const sub_doubleDamageItemUsed = serverConnection.subscribe("doubleDamageItemUsed", async (itemSourceUsername: string) => {
             dispatch(doubleDamageItemUsed({ itemSourceUsername: itemSourceUsername }));
         });
@@ -209,12 +206,29 @@ export default function MainGameUI() {
             serverConnection.unsubscribe("pickpocketItemUsed", sub_pickpocketItemUsed);
             serverConnection.unsubscribe("lifeGambleItemUsed", sub_lifeGambleItemUsed);
             serverConnection.unsubscribe("invertItemUsed", sub_invertItemUsed);
-            serverConnection.unsubscribe("chamberCheckItemUsed", sub_chamberCheckItemUsed);
             serverConnection.unsubscribe("doubleDamageItemUsed", sub_doubleDamageItemUsed);
             serverConnection.unsubscribe("skipItemUsed", sub_skipItemUsed);
             serverConnection.unsubscribe("ricochetItemUsed", sub_ricochetItemUsed);
         };
     }, [clientUsername, dispatch, serverConnection]);
+
+    // Separate effect so we don't need to reinitialize every subscription just for this one packet, because isOurTurn (and currentTurn) go stale otherwise
+    useEffect(() => {
+        const sub_chamberCheckItemUsed = serverConnection.subscribe("chamberCheckItemUsed", async (bulletType: BulletType, itemSourceUsername: string) => {
+            dispatch(chamberCheckItemUsed({ bulletType: bulletType, itemSourceUsername: itemSourceUsername }));
+            if (isOurTurn) {
+                dispatch(showAlertDialog({
+                    title: "Chamber Check Result",
+                    description: `It's a ${bulletType === BulletType.Blank ? "blank" : "live"} round!`,
+                    skippable: true
+                }));
+            }
+        });
+
+        return () => {
+            serverConnection.unsubscribe("chamberCheckItemUsed", sub_chamberCheckItemUsed);
+        };
+    }, [currentTurn, dispatch, isOurTurn, serverConnection]);
 
     return <div className="flex flex-col h-dvh w-dvw p-2 overflow-x-auto">
         {/* Header */}
@@ -234,7 +248,7 @@ export default function MainGameUI() {
                             <p className="text-center">{blankRounds}</p>
                         </div>
                     </div>
-                </div> 
+                </div>
                 : <h1 className="flex-grow text-center justify-center content-center text-2xl font-bold -mt-1">Live or Live</h1>
             }
             <IconButton onClick={() => setGameInfoSidebarOpen(true)} className="mr-2 self-start">
@@ -251,7 +265,7 @@ export default function MainGameUI() {
                 </div>
             </div>
             {/* TODO make float over card section and not its own piece */}
-            <div onClick={() => {setUseItemDialogOpen(true)}} className={`rounded-lg bg-foreground hover:bg-muted-foreground ml-auto mb-4 mr-2 h-12 w-12 lg:mb-12 lg:mr-12 lg:h-16 lg:w-16`}> 
+            <div onClick={() => { setUseItemDialogOpen(true) }} className={`rounded-lg bg-foreground hover:bg-muted-foreground ml-auto mb-4 mr-2 h-12 w-12 lg:mb-12 lg:mr-12 lg:h-16 lg:w-16`}>
                 <ChevronUp size={32} color="#000" className="m-auto h-full" />
             </div>
             <Separator className="mt-auto" />
@@ -261,6 +275,7 @@ export default function MainGameUI() {
                 {gameLogMessages.slice(-2)[0]?.message} <br />
                 {gameLogMessages.slice(-1)[0]?.message} <br />
             </p>
+            <p>{String(currentTurn)}</p>
         </> : <>
             {/* I don't know why I need these duplicate properties but it does not center if a single one is missing */}
             <div className="flex flex-grow">
