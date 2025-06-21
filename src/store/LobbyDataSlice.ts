@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { removeItemFromArray } from "~/lib/utils";
+import { removeGameItemFromPlayer, removeItemFromArray } from "~/lib/utils";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
+import { Item } from "~/types/generated/liveorlive_server.Enums";
 import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
 
 
@@ -115,9 +116,56 @@ export const lobbyDataSlice = createSlice({
             if (targetIndex !== -1) {
                 state.players[targetIndex].lives = Math.max(0, state.players[targetIndex].lives - action.payload.damage);
             }
+        },
+        reverseTurnOrderItemUsed: (state, action: PayloadAction<{itemSourceUsername: string}>) => {
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.ReverseTurnOrder);
+        },
+        rackChamberItemUsed: (state, action: PayloadAction<{bulletType: number, itemSourceUsername: string}>) => {
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.RackChamber);
+        },
+        extraLifeItemUsed: (state, action: PayloadAction<{target: string, itemSourceUsername: string}>) => {
+            const targetIndex = state.players.findIndex(player => player.username === action.payload.target);
+            if (targetIndex !== -1) {
+                state.players[targetIndex].lives += 1;
+                // state.players[targetIndex].lives = Math.min(state.players[targetIndex].lives + 1, state.settings.maxLives);
+            }
+
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.ExtraLife);
+        },
+        pickpocketItemUsed: (state, action: PayloadAction<{target: string, item: Item, itemTarget: string | undefined, itemSourceUsername: string}>) => {
+            // The itemSourceUsername is always currentTurn, but for consistency we pass it anyway
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.Pickpocket);
+        },
+        lifeGambleItemUsed: (state, action: PayloadAction<{lifeChange: number, itemSourceUsername: string}>) => {
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.LifeGamble);
+        },
+        invertItemUsed: (state, action: PayloadAction<{itemSourceUsername: string}>) => {
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.Invert);
+        },
+        chamberCheckItemUsed: (state, action: PayloadAction<{bulletType: number, itemSourceUsername: string}>) => {
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.ChamberCheck);
+        },
+        doubleDamageItemUsed: (state, action: PayloadAction<{itemSourceUsername: string}>) => {
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.DoubleDamage);
+        },
+        skipItemUsed: (state, action: PayloadAction<{target: string, itemSourceUsername: string}>) => {
+            const targetIndex = state.players.findIndex(player => player.username === action.payload.target);
+            if (targetIndex !== -1) {
+                state.players[targetIndex].isSkipped = true;
+            }
+
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.Skip);
+        },
+        ricochetItemUsed: (state, action: PayloadAction<{target: string, itemSourceUsername: string}>) => {
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.Ricochet);
         }
     }
 });
 
-export const { loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, setTurnOrder, gameEnded, addItemsFromRoundStart, turnStarted, turnEnded, playerShotAt } = lobbyDataSlice.actions;
+export const { 
+    loadFromPacket, playerJoined, playerLeft, setHost, gameStarted, setTurnOrder, gameEnded, 
+    addItemsFromRoundStart, turnStarted, turnEnded, playerShotAt, reverseTurnOrderItemUsed, 
+    rackChamberItemUsed, extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed, invertItemUsed, 
+    chamberCheckItemUsed, doubleDamageItemUsed, skipItemUsed, ricochetItemUsed 
+} = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;

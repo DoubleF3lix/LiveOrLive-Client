@@ -236,54 +236,64 @@ export type IHubServerResponse = {
     */
     actionFailed(reason: string): Promise<void>;
     /**
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    reverseTurnOrderItemUsed(): Promise<void>;
+    reverseTurnOrderItemUsed(itemSourceUsername: string): Promise<void>;
     /**
     * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    rackChamberItemUsed(bulletType: BulletType): Promise<void>;
+    rackChamberItemUsed(bulletType: BulletType, itemSourceUsername: string): Promise<void>;
     /**
     * @param target Transpiled from string
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    extraLifeItemUsed(target: string): Promise<void>;
+    extraLifeItemUsed(target: string, itemSourceUsername: string): Promise<void>;
     /**
     * @param target Transpiled from string
     * @param item Transpiled from liveorlive_server.Enums.Item
     * @param itemTarget Transpiled from string?
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    pickpocketItemUsed(target: string, item: Item, itemTarget: string): Promise<void>;
+    pickpocketItemUsed(target: string, item: Item, itemTarget: string, itemSourceUsername: string): Promise<void>;
     /**
     * @param lifeChange Transpiled from int
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    lifeGambleItemUsed(lifeChange: number): Promise<void>;
+    lifeGambleItemUsed(lifeChange: number, itemSourceUsername: string): Promise<void>;
     /**
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    invertItemUsed(): Promise<void>;
+    invertItemUsed(itemSourceUsername: string): Promise<void>;
     /**
     * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    chamberCheckItemUsed(bulletType: BulletType): Promise<void>;
+    chamberCheckItemUsed(bulletType: BulletType, itemSourceUsername: string): Promise<void>;
     /**
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    doubleDamageItemUsed(): Promise<void>;
+    doubleDamageItemUsed(itemSourceUsername: string): Promise<void>;
     /**
     * @param target Transpiled from string
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    skipItemUsed(target: string): Promise<void>;
+    skipItemUsed(target: string, itemSourceUsername: string): Promise<void>;
     /**
     * @param target Transpiled from string?
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    ricochetItemUsed(target: string): Promise<void>;
+    ricochetItemUsed(target: string, itemSourceUsername: string): Promise<void>;
 }
 
 export type IChatResponse = {
@@ -418,53 +428,63 @@ export type IGenericResponse = {
 
 export type IItemResponse = {
     /**
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    reverseTurnOrderItemUsed(): Promise<void>;
+    reverseTurnOrderItemUsed(itemSourceUsername: string): Promise<void>;
     /**
     * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    rackChamberItemUsed(bulletType: BulletType): Promise<void>;
+    rackChamberItemUsed(bulletType: BulletType, itemSourceUsername: string): Promise<void>;
     /**
     * @param target Transpiled from string
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    extraLifeItemUsed(target: string): Promise<void>;
+    extraLifeItemUsed(target: string, itemSourceUsername: string): Promise<void>;
     /**
     * @param target Transpiled from string
     * @param item Transpiled from liveorlive_server.Enums.Item
     * @param itemTarget Transpiled from string?
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    pickpocketItemUsed(target: string, item: Item, itemTarget: string): Promise<void>;
+    pickpocketItemUsed(target: string, item: Item, itemTarget: string, itemSourceUsername: string): Promise<void>;
     /**
     * @param lifeChange Transpiled from int
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    lifeGambleItemUsed(lifeChange: number): Promise<void>;
+    lifeGambleItemUsed(lifeChange: number, itemSourceUsername: string): Promise<void>;
     /**
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    invertItemUsed(): Promise<void>;
+    invertItemUsed(itemSourceUsername: string): Promise<void>;
     /**
     * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    chamberCheckItemUsed(bulletType: BulletType): Promise<void>;
+    chamberCheckItemUsed(bulletType: BulletType, itemSourceUsername: string): Promise<void>;
     /**
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    doubleDamageItemUsed(): Promise<void>;
+    doubleDamageItemUsed(itemSourceUsername: string): Promise<void>;
     /**
     * @param target Transpiled from string
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    skipItemUsed(target: string): Promise<void>;
+    skipItemUsed(target: string, itemSourceUsername: string): Promise<void>;
     /**
     * @param target Transpiled from string?
+    * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    ricochetItemUsed(target: string): Promise<void>;
+    ricochetItemUsed(target: string, itemSourceUsername: string): Promise<void>;
 }
 

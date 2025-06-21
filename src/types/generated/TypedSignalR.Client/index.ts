@@ -327,16 +327,16 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __showAlert = (...args: [string]) => receiver.showAlert(...args);
         const __achievementUnlocked = (...args: [string, string]) => receiver.achievementUnlocked(...args);
         const __actionFailed = (...args: [string]) => receiver.actionFailed(...args);
-        const __reverseTurnOrderItemUsed = () => receiver.reverseTurnOrderItemUsed();
-        const __rackChamberItemUsed = (...args: [BulletType]) => receiver.rackChamberItemUsed(...args);
-        const __extraLifeItemUsed = (...args: [string]) => receiver.extraLifeItemUsed(...args);
-        const __pickpocketItemUsed = (...args: [string, Item, string]) => receiver.pickpocketItemUsed(...args);
-        const __lifeGambleItemUsed = (...args: [number]) => receiver.lifeGambleItemUsed(...args);
-        const __invertItemUsed = () => receiver.invertItemUsed();
-        const __chamberCheckItemUsed = (...args: [BulletType]) => receiver.chamberCheckItemUsed(...args);
-        const __doubleDamageItemUsed = () => receiver.doubleDamageItemUsed();
-        const __skipItemUsed = (...args: [string]) => receiver.skipItemUsed(...args);
-        const __ricochetItemUsed = (...args: [string]) => receiver.ricochetItemUsed(...args);
+        const __reverseTurnOrderItemUsed = (...args: [string]) => receiver.reverseTurnOrderItemUsed(...args);
+        const __rackChamberItemUsed = (...args: [BulletType, string]) => receiver.rackChamberItemUsed(...args);
+        const __extraLifeItemUsed = (...args: [string, string]) => receiver.extraLifeItemUsed(...args);
+        const __pickpocketItemUsed = (...args: [string, Item, string, string]) => receiver.pickpocketItemUsed(...args);
+        const __lifeGambleItemUsed = (...args: [number, string]) => receiver.lifeGambleItemUsed(...args);
+        const __invertItemUsed = (...args: [string]) => receiver.invertItemUsed(...args);
+        const __chamberCheckItemUsed = (...args: [BulletType, string]) => receiver.chamberCheckItemUsed(...args);
+        const __doubleDamageItemUsed = (...args: [string]) => receiver.doubleDamageItemUsed(...args);
+        const __skipItemUsed = (...args: [string, string]) => receiver.skipItemUsed(...args);
+        const __ricochetItemUsed = (...args: [string, string]) => receiver.ricochetItemUsed(...args);
 
         connection.on("GetChatMessagesResponse", __getChatMessagesResponse);
         connection.on("ChatMessageSent", __chatMessageSent);
@@ -575,16 +575,16 @@ class IItemResponse_Binder implements ReceiverRegister<IItemResponse> {
 
     public readonly register = (connection: HubConnection, receiver: IItemResponse): Disposable => {
 
-        const __reverseTurnOrderItemUsed = () => receiver.reverseTurnOrderItemUsed();
-        const __rackChamberItemUsed = (...args: [BulletType]) => receiver.rackChamberItemUsed(...args);
-        const __extraLifeItemUsed = (...args: [string]) => receiver.extraLifeItemUsed(...args);
-        const __pickpocketItemUsed = (...args: [string, Item, string]) => receiver.pickpocketItemUsed(...args);
-        const __lifeGambleItemUsed = (...args: [number]) => receiver.lifeGambleItemUsed(...args);
-        const __invertItemUsed = () => receiver.invertItemUsed();
-        const __chamberCheckItemUsed = (...args: [BulletType]) => receiver.chamberCheckItemUsed(...args);
-        const __doubleDamageItemUsed = () => receiver.doubleDamageItemUsed();
-        const __skipItemUsed = (...args: [string]) => receiver.skipItemUsed(...args);
-        const __ricochetItemUsed = (...args: [string]) => receiver.ricochetItemUsed(...args);
+        const __reverseTurnOrderItemUsed = (...args: [string]) => receiver.reverseTurnOrderItemUsed(...args);
+        const __rackChamberItemUsed = (...args: [BulletType, string]) => receiver.rackChamberItemUsed(...args);
+        const __extraLifeItemUsed = (...args: [string, string]) => receiver.extraLifeItemUsed(...args);
+        const __pickpocketItemUsed = (...args: [string, Item, string, string]) => receiver.pickpocketItemUsed(...args);
+        const __lifeGambleItemUsed = (...args: [number, string]) => receiver.lifeGambleItemUsed(...args);
+        const __invertItemUsed = (...args: [string]) => receiver.invertItemUsed(...args);
+        const __chamberCheckItemUsed = (...args: [BulletType, string]) => receiver.chamberCheckItemUsed(...args);
+        const __doubleDamageItemUsed = (...args: [string]) => receiver.doubleDamageItemUsed(...args);
+        const __skipItemUsed = (...args: [string, string]) => receiver.skipItemUsed(...args);
+        const __ricochetItemUsed = (...args: [string, string]) => receiver.ricochetItemUsed(...args);
 
         connection.on("ReverseTurnOrderItemUsed", __reverseTurnOrderItemUsed);
         connection.on("RackChamberItemUsed", __rackChamberItemUsed);

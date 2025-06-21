@@ -5,7 +5,14 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { Toaster } from "@/sonner";
 import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
-import { playerJoined, loadFromPacket, playerLeft, setHost, gameStarted, turnStarted, turnEnded, playerShotAt, addItemsFromRoundStart, setTurnOrder } from "~/store/LobbyDataSlice";
+import { 
+    playerJoined, loadFromPacket, playerLeft, setHost, gameStarted, 
+    turnStarted, turnEnded, playerShotAt, addItemsFromRoundStart, 
+    setTurnOrder, reverseTurnOrderItemUsed, rackChamberItemUsed, 
+    extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed, 
+    invertItemUsed, chamberCheckItemUsed, doubleDamageItemUsed, 
+    skipItemUsed, ricochetItemUsed 
+} from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
 import { Lobby, Player } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "~/components/AlertDialogQueue";
@@ -32,6 +39,8 @@ export default function MainGameUI() {
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
     const liveRounds = useSelector((state: IRootState) => state.roundDataReducer.liveRounds);
     const blankRounds = useSelector((state: IRootState) => state.roundDataReducer.blankRounds);
+
+    const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
 
     const [gameInfoSidebarOpen, setGameInfoSidebarOpen] = useState<boolean>(false);
     const [useItemDialogOpen , setUseItemDialogOpen] = useState<boolean>(false);
@@ -136,44 +145,44 @@ export default function MainGameUI() {
             }));
         });
 
-        const sub_reverseTurnOrderItemUsed = serverConnection.subscribe("reverseTurnOrderItemUsed", async () => {
-            console.log("reverseTurnOrderItemUsed");
+        const sub_reverseTurnOrderItemUsed = serverConnection.subscribe("reverseTurnOrderItemUsed", async (itemSourceUsername: string) => {
+            dispatch(reverseTurnOrderItemUsed({ itemSourceUsername: itemSourceUsername }));
         });
 
-        const sub_rackChamberItemUsed = serverConnection.subscribe("rackChamberItemUsed", async () => {
-            console.log("rackChamberItemUsed");
+        const sub_rackChamberItemUsed = serverConnection.subscribe("rackChamberItemUsed", async (bulletType: BulletType, itemSourceUsername: string) => {
+            dispatch(rackChamberItemUsed({ bulletType: bulletType, itemSourceUsername: itemSourceUsername }));
         });
 
-        const sub_extraLifeItemUsed = serverConnection.subscribe("extraLifeItemUsed", async (target: string) => {
-            console.log("extraLifeItemUsed", target);
+        const sub_extraLifeItemUsed = serverConnection.subscribe("extraLifeItemUsed", async (target: string, itemSourceUsername: string) => {
+            dispatch(extraLifeItemUsed({ target: target, itemSourceUsername: itemSourceUsername }));
         });
 
-        const sub_pickpocketItemUsed = serverConnection.subscribe("pickpocketItemUsed", async (target: string, item: Item, itemTarget: string | undefined) => {
-            console.log("pickpocketItemUsed", target, item, itemTarget);
+        const sub_pickpocketItemUsed = serverConnection.subscribe("pickpocketItemUsed", async (target: string, item: Item, itemTarget: string | undefined, itemSourceUsername: string) => {
+            dispatch(pickpocketItemUsed({ target: target, item: item, itemTarget: itemTarget, itemSourceUsername: itemSourceUsername }));
         });
 
-        const sub_lifeGambleItemUsed = serverConnection.subscribe("lifeGambleItemUsed", async (lifeChange: number) => {
-            console.log("lifeGambleItemUsed", lifeChange);
+        const sub_lifeGambleItemUsed = serverConnection.subscribe("lifeGambleItemUsed", async (lifeChange: number, itemSourceUsername: string) => {
+            dispatch(lifeGambleItemUsed({ lifeChange: lifeChange, itemSourceUsername: itemSourceUsername }));
         });
 
-        const sub_invertItemUsed = serverConnection.subscribe("invertItemUsed", async () => {
-            console.log("invertItemUsed");
+        const sub_invertItemUsed = serverConnection.subscribe("invertItemUsed", async (itemSourceUsername: string) => {
+            dispatch(invertItemUsed({ itemSourceUsername: itemSourceUsername }));
         });
 
-        const sub_chamberCheckItemUsed = serverConnection.subscribe("chamberCheckItemUsed", async (bulletType: BulletType) => {
-            console.log("chamberCheckItemUsed", bulletType);
+        const sub_chamberCheckItemUsed = serverConnection.subscribe("chamberCheckItemUsed", async (bulletType: BulletType, itemSourceUsername: string) => {
+            dispatch(chamberCheckItemUsed({ bulletType: bulletType, itemSourceUsername: itemSourceUsername }));
         });
 
-        const sub_doubleDamageItemUsed = serverConnection.subscribe("doubleDamageItemUsed", async () => {
-            console.log("doubleDamageItemUsed");
+        const sub_doubleDamageItemUsed = serverConnection.subscribe("doubleDamageItemUsed", async (itemSourceUsername: string) => {
+            dispatch(doubleDamageItemUsed({ itemSourceUsername: itemSourceUsername }));
         });
 
-        const sub_skipItemUsed = serverConnection.subscribe("skipItemUsed", async (target: string) => {
-            console.log("skipItemUsed", target);
+        const sub_skipItemUsed = serverConnection.subscribe("skipItemUsed", async (target: string, itemSourceUsername: string) => {
+            dispatch(skipItemUsed({ target: target, itemSourceUsername: itemSourceUsername }));
         });
 
-        const sub_ricochetItemUsed = serverConnection.subscribe("ricochetItemUsed", async (target: string | undefined) => {
-            console.log("ricochetItemUsed", target);
+        const sub_ricochetItemUsed = serverConnection.subscribe("ricochetItemUsed", async (target: string, itemSourceUsername: string) => {
+            dispatch(ricochetItemUsed({ target: target, itemSourceUsername: itemSourceUsername }));
         });
 
         serverConnection.getLobbyDataRequest();
@@ -245,7 +254,12 @@ export default function MainGameUI() {
                 <ChevronUp size={32} color="#000" className="m-auto h-full" />
             </div>
             <Separator className="mt-auto" />
-            <p className="text-center align-center pt-1 text-sm lg:pt-2 lg:pb-1 lg:text-base">PLACEHOLDER: Felix shot Skylinerw with a live round for 2 damage.</p>
+            <p className="text-center align-center pt-1 text-sm lg:pt-2 lg:pb-1 lg:text-base">
+                {gameLogMessages.slice(-4)[0]?.message} <br />
+                {gameLogMessages.slice(-3)[0]?.message} <br />
+                {gameLogMessages.slice(-2)[0]?.message} <br />
+                {gameLogMessages.slice(-1)[0]?.message} <br />
+            </p>
         </> : <>
             {/* I don't know why I need these duplicate properties but it does not center if a single one is missing */}
             <div className="flex flex-grow">

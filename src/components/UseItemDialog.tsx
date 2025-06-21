@@ -61,20 +61,20 @@ export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
     function useItem() {
         // Some quick client side validation
         if (selectedItem === -1) {
-            setError("Please select an item.");
+            setError("Please select an item");
             return;
         }
         if ((selectedItem === Item.ExtraLife || selectedItem === Item.Pickpocket || selectedItem === Item.Skip || selectedItem === Item.Ricochet) && targetUsername === "") {
-            setError("Please select a target.");
+            setError("Please select a target");
             return;        
         }
         if (selectedItem === Item.Pickpocket) {
             if (selectedItemToSteal === -1) {
-                setError("Please select an item to steal.");
+                setError("Please select an item to steal");
                 return;
             }
             if ((selectedItemToSteal === Item.ExtraLife || selectedItemToSteal === Item.Skip || selectedItemToSteal === Item.Ricochet) && stolenItemTargetUsername === "") {
-                setError("Please select a target for the item you're stealing.");
+                setError("Please select a target for the item you're stealing");
                 return;
             }
         }
@@ -111,13 +111,14 @@ export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
                 serverConnection.useRicochetItem(targetUsername);
                 break;
         }
+        close();
     }
 
     return selfItems && <Dialog open={open}>
         <DialogContent onInteractOutside={close} onCloseButtonClick={close}>
             <DialogHeader>
                 <DialogTitle>Use Item</DialogTitle>
-                <DialogDescription>{error}</DialogDescription>
+                <DialogDescription className="text-red-300">{error}</DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 items-center lg:gap-x-8">
                 <SelectBox label="Item:" optionsHeader="Items" placeholder="Select an item" onValueChange={(value: string) => { resetFields(); setSelectedItem(parseInt(value)); }}>

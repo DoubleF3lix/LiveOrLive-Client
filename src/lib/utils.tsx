@@ -4,6 +4,7 @@ import { toast as sonnerToast } from 'sonner';
 import { Toast } from '~/types/Toast';
 import { GildedAchievementToast, NormalAchievementToast } from "~/components/CustomToast";
 import { Item } from "~/types/generated/liveorlive_server.Enums";
+import { Player } from "~/types/generated/liveorlive_server";
 
 
 type CondensedItemDetail = {
@@ -49,6 +50,14 @@ export function removeItemFromArray<T>(array: T[], item: T): T[] {
         ...array.slice(0, index),
         ...array.slice(index + 1)
     ];
+}
+
+export function removeGameItemFromPlayer(players: Player[], username: string, item: Item): Player[] {
+    const playerIndex = players.findIndex(player => player.username === username);
+    if (playerIndex !== -1) {
+        players[playerIndex].items = removeItemFromArray(players[playerIndex].items, item);
+    }
+    return players;
 }
 
 export function moveToFrontOfArray<T>(array: T[], item: T): T[] {

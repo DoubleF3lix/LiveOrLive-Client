@@ -12,8 +12,8 @@ type SelectBoxArgs = {
 
 export default function SelectBox({ label, optionsHeader, placeholder, children, onValueChange, defaultValue }: SelectBoxArgs) {
     return [
-        <label className="shrink">{label}</label>,
-        <Select onValueChange={onValueChange} defaultValue={defaultValue}>
+        <label className="shrink" htmlFor={label} key={`${label}-selectedBoxLabel`}>{label}</label>,
+        <Select onValueChange={onValueChange} defaultValue={defaultValue} key={`${label}-selectedBoxSelect`}>
             <SelectTrigger className="w-full">
                 <SelectValue placeholder={placeholder}/>
             </SelectTrigger>

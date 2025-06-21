@@ -87,16 +87,16 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
         };
 
         this.itemReceiver = {
-            reverseTurnOrderItemUsed: async (): Promise<void> => this.sendSubscription("reverseTurnOrderItemUsed"),
-            rackChamberItemUsed: async (): Promise<void> => this.sendSubscription("rackChamberItemUsed"),
-            extraLifeItemUsed: async (target: string): Promise<void> => this.sendSubscription("extraLifeItemUsed", target),
-            pickpocketItemUsed: async (target: string, item: Item, itemTarget: string): Promise<void> => this.sendSubscription("pickpocketItemUsed", target, item, itemTarget),
-            lifeGambleItemUsed: async (lifeChange: number): Promise<void> => this.sendSubscription("lifeGambleItemUsed", lifeChange),
-            invertItemUsed: async (): Promise<void> => this.sendSubscription("invertItemUsed"),
-            chamberCheckItemUsed: async (bulletType: BulletType): Promise<void> => this.sendSubscription("chamberCheckItemUsed", bulletType),
-            doubleDamageItemUsed: async (): Promise<void> => this.sendSubscription("doubleDamageItemUsed"),
-            skipItemUsed: async (target: string): Promise<void> => this.sendSubscription("skipItemUsed", target),
-            ricochetItemUsed: async (target: string): Promise<void> => this.sendSubscription("ricochetItemUsed", target)
+            reverseTurnOrderItemUsed: async (itemSourceUsername: string): Promise<void> => this.sendSubscription("reverseTurnOrderItemUsed", itemSourceUsername),
+            rackChamberItemUsed: async (bulletType: BulletType, itemSourceUsername: string): Promise<void> => this.sendSubscription("rackChamberItemUsed", bulletType, itemSourceUsername),
+            extraLifeItemUsed: async (target: string, itemSourceUsername: string): Promise<void> => this.sendSubscription("extraLifeItemUsed", target, itemSourceUsername),
+            pickpocketItemUsed: async (target: string, item: Item, itemTarget: string, itemSourceUsername: string): Promise<void> => this.sendSubscription("pickpocketItemUsed", target, item, itemTarget, itemSourceUsername),
+            lifeGambleItemUsed: async (lifeChange: number, itemSourceUsername: string): Promise<void> => this.sendSubscription("lifeGambleItemUsed", lifeChange, itemSourceUsername),
+            invertItemUsed: async (itemSourceUsername: string): Promise<void> => this.sendSubscription("invertItemUsed", itemSourceUsername),
+            chamberCheckItemUsed: async (bulletType: BulletType, itemSourceUsername: string): Promise<void> => this.sendSubscription("chamberCheckItemUsed", bulletType, itemSourceUsername),
+            doubleDamageItemUsed: async (itemSourceUsername: string): Promise<void> => this.sendSubscription("doubleDamageItemUsed", itemSourceUsername),
+            skipItemUsed: async (target: string, itemSourceUsername: string): Promise<void> => this.sendSubscription("skipItemUsed", target, itemSourceUsername),
+            ricochetItemUsed: async (target: string, itemSourceUsername: string): Promise<void> => this.sendSubscription("ricochetItemUsed", target, itemSourceUsername)
         };
 
         // Set up the receivers for subscriptions
