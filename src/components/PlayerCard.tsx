@@ -1,5 +1,5 @@
 import { condenseItemList } from "~/lib/utils";
-import { Player } from "~/types/generated/liveorlive_server";
+import { Player } from "~/types/generated/liveorlive_server.Models";
 import { Badge } from "@/badge";
 import { Button } from "@/button";
 import { Ban, Shield } from "lucide-react";

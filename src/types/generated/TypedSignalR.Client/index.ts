@@ -5,9 +5,9 @@
 import type { HubConnection, IStreamResult, Subject } from '@microsoft/signalr';
 import type { IChatRequest, IGameLogRequest, IConnectionRequest, IBaseGameRequest, IGenericRequest, IItemRequest, IHubServerResponse, IChatResponse, IGameLogResponse, IConnectionResponse, IBaseGameResponse, IGenericResponse, IItemResponse } from './liveorlive_server.HubPartials';
 import type { Item, BulletType } from '../liveorlive_server.Enums';
-import type { ChatMessage, GameLogMessage } from '../liveorlive_server.Models';
-import type { Player, Lobby } from '../liveorlive_server';
+import type { ChatMessage, GameLogMessage, ConnectedClient } from '../liveorlive_server.Models';
 import type { NewRoundResult } from '../liveorlive_server.Models.Results';
+import type { Lobby } from '../liveorlive_server';
 
 
 // components
@@ -313,10 +313,10 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __gameLogUpdate = (...args: [GameLogMessage]) => receiver.gameLogUpdate(...args);
         const __connectionSuccess = () => receiver.connectionSuccess();
         const __connectionFailed = (...args: [string]) => receiver.connectionFailed(...args);
-        const __playerJoined = (...args: [Player]) => receiver.playerJoined(...args);
-        const __playerLeft = (...args: [string]) => receiver.playerLeft(...args);
+        const __clientJoined = (...args: [ConnectedClient]) => receiver.clientJoined(...args);
+        const __clientLeft = (...args: [string]) => receiver.clientLeft(...args);
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
-        const __playerKicked = (...args: [string]) => receiver.playerKicked(...args);
+        const __clientKicked = (...args: [string]) => receiver.clientKicked(...args);
         const __gameStarted = (...args: [string[]]) => receiver.gameStarted(...args);
         const __gameEnded = (...args: [string]) => receiver.gameEnded(...args);
         const __newRoundStarted = (...args: [NewRoundResult]) => receiver.newRoundStarted(...args);
@@ -346,10 +346,10 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         connection.on("GameLogUpdate", __gameLogUpdate);
         connection.on("ConnectionSuccess", __connectionSuccess);
         connection.on("ConnectionFailed", __connectionFailed);
-        connection.on("PlayerJoined", __playerJoined);
-        connection.on("PlayerLeft", __playerLeft);
+        connection.on("ClientJoined", __clientJoined);
+        connection.on("ClientLeft", __clientLeft);
         connection.on("HostChanged", __hostChanged);
-        connection.on("PlayerKicked", __playerKicked);
+        connection.on("ClientKicked", __clientKicked);
         connection.on("GameStarted", __gameStarted);
         connection.on("GameEnded", __gameEnded);
         connection.on("NewRoundStarted", __newRoundStarted);
@@ -380,10 +380,10 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
             { methodName: "GameLogUpdate", method: __gameLogUpdate },
             { methodName: "ConnectionSuccess", method: __connectionSuccess },
             { methodName: "ConnectionFailed", method: __connectionFailed },
-            { methodName: "PlayerJoined", method: __playerJoined },
-            { methodName: "PlayerLeft", method: __playerLeft },
+            { methodName: "ClientJoined", method: __clientJoined },
+            { methodName: "ClientLeft", method: __clientLeft },
             { methodName: "HostChanged", method: __hostChanged },
-            { methodName: "PlayerKicked", method: __playerKicked },
+            { methodName: "ClientKicked", method: __clientKicked },
             { methodName: "GameStarted", method: __gameStarted },
             { methodName: "GameEnded", method: __gameEnded },
             { methodName: "NewRoundStarted", method: __newRoundStarted },
@@ -475,25 +475,25 @@ class IConnectionResponse_Binder implements ReceiverRegister<IConnectionResponse
 
         const __connectionSuccess = () => receiver.connectionSuccess();
         const __connectionFailed = (...args: [string]) => receiver.connectionFailed(...args);
-        const __playerJoined = (...args: [Player]) => receiver.playerJoined(...args);
-        const __playerLeft = (...args: [string]) => receiver.playerLeft(...args);
+        const __clientJoined = (...args: [ConnectedClient]) => receiver.clientJoined(...args);
+        const __clientLeft = (...args: [string]) => receiver.clientLeft(...args);
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
-        const __playerKicked = (...args: [string]) => receiver.playerKicked(...args);
+        const __clientKicked = (...args: [string]) => receiver.clientKicked(...args);
 
         connection.on("ConnectionSuccess", __connectionSuccess);
         connection.on("ConnectionFailed", __connectionFailed);
-        connection.on("PlayerJoined", __playerJoined);
-        connection.on("PlayerLeft", __playerLeft);
+        connection.on("ClientJoined", __clientJoined);
+        connection.on("ClientLeft", __clientLeft);
         connection.on("HostChanged", __hostChanged);
-        connection.on("PlayerKicked", __playerKicked);
+        connection.on("ClientKicked", __clientKicked);
 
         const methodList: ReceiverMethod[] = [
             { methodName: "ConnectionSuccess", method: __connectionSuccess },
             { methodName: "ConnectionFailed", method: __connectionFailed },
-            { methodName: "PlayerJoined", method: __playerJoined },
-            { methodName: "PlayerLeft", method: __playerLeft },
+            { methodName: "ClientJoined", method: __clientJoined },
+            { methodName: "ClientLeft", method: __clientLeft },
             { methodName: "HostChanged", method: __hostChanged },
-            { methodName: "PlayerKicked", method: __playerKicked }
+            { methodName: "ClientKicked", method: __clientKicked }
         ]
 
         return new ReceiverMethodSubscription(connection, methodList);

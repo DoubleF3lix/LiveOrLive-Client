@@ -4,7 +4,7 @@ import { toast as sonnerToast } from 'sonner';
 import { Toast } from '~/types/Toast';
 import { GildedAchievementToast, NormalAchievementToast } from "~/components/CustomToast";
 import { Item } from "~/types/generated/liveorlive_server.Enums";
-import { Player } from "~/types/generated/liveorlive_server";
+import { ConnectedClient, Player } from "~/types/generated/liveorlive_server.Models";
 
 
 type CondensedItemDetail = {
@@ -82,6 +82,10 @@ export function toLowercaseKeys(obj: object): object {
         );
     }
     return obj;
+}
+
+export function clientIsPlayer(client: ConnectedClient): client is Player {
+    return "lives" in client;
 }
 
 export function showToast(toast: Omit<Toast, "id">) {

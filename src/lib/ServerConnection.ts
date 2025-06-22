@@ -1,8 +1,8 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { getHubProxyFactory, getReceiverRegister } from "~/types/generated/TypedSignalR.Client";
 import { IBaseGameRequest, IBaseGameResponse, IChatRequest, IChatResponse, IConnectionRequest, IConnectionResponse, IGameLogRequest, IGameLogResponse, IGenericRequest, IGenericResponse, IHubServerResponse, IItemRequest, IItemResponse } from "~/types/generated/TypedSignalR.Client/liveorlive_server.HubPartials";
-import { Player, Lobby } from "~/types/generated/liveorlive_server";
-import { ChatMessage, GameLogMessage } from "~/types/generated/liveorlive_server.Models";
+import { Lobby } from "~/types/generated/liveorlive_server";
+import { ChatMessage, ConnectedClient, GameLogMessage } from "~/types/generated/liveorlive_server.Models";
 import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
 import { BASE_URL, SERVER_TIMEOUT } from "~/lib/const";
 import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
@@ -66,10 +66,10 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
         this.connectionReceiver = {
             connectionSuccess: async (): Promise<void> => this.sendSubscription("connectionSuccess"),
             connectionFailed: async (reason: string): Promise<void> => this.sendSubscription("connectionFailed", reason),
-            playerJoined: async (player: Player): Promise<void> => this.sendSubscription("playerJoined", player),
-            playerLeft: async (username: string): Promise<void> => this.sendSubscription("playerLeft", username),
+            clientJoined: async (player: ConnectedClient): Promise<void> => this.sendSubscription("clientJoined", player),
+            clientLeft: async (username: string): Promise<void> => this.sendSubscription("clientLeft", username),
             hostChanged: async (previous: string, current: string, reason: string): Promise<void> => this.sendSubscription("hostChanged", previous, current, reason),
-            playerKicked: async (username: string): Promise<void> => this.sendSubscription("playerKicked", username)
+            clientKicked: async (username: string): Promise<void> => this.sendSubscription("clientKicked", username)
         };
 
         this.baseGameReceiver = {

@@ -1,4 +1,3 @@
-import { Player } from "~/types/generated/liveorlive_server";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/dropdown-menu";
 import { CircleAlert, Sparkles } from "lucide-react";
 import { PLAYER_CARD_BADGE_ICONS } from "~/lib/const";
@@ -9,10 +8,10 @@ import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 
 
 type PlayerDropdownDisplayArgs = {
-    player: Player;
+    playerUsername: string;
 };
 
-export default function PlayerDropdownDisplay({ player }: PlayerDropdownDisplayArgs) {
+export default function PlayerDropdownDisplay({ playerUsername }: PlayerDropdownDisplayArgs) {
     const dispatch = useAppDispatch();
 
     const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
@@ -50,16 +49,16 @@ export default function PlayerDropdownDisplay({ player }: PlayerDropdownDisplayA
         <DropdownMenu>
             <DropdownMenuTrigger className="w-min">
                 <div className="flex">
-                    <p className="shrink-0">{player.username === clientUsername ? <strong>{player.username} (You)</strong> : player.username}</p>
-                    {player.username === lobbyHost && <Badge className="ml-2 mt-1 bg-amber-400 font-bold h-5 text-foreground">{PLAYER_CARD_BADGE_ICONS ? <Sparkles color="#ffffff" /> : "Host"}</Badge>}
+                    <p className="shrink-0">{playerUsername === clientUsername ? <strong>{playerUsername} (You)</strong> : playerUsername}</p>
+                    {playerUsername === lobbyHost && <Badge className="ml-2 mt-1 bg-amber-400 font-bold h-5 text-foreground">{PLAYER_CARD_BADGE_ICONS ? <Sparkles color="#ffffff" /> : "Host"}</Badge>}
                 </div>
             </DropdownMenuTrigger>
-            {isHost && player.username !== clientUsername &&
+            {isHost && playerUsername !== clientUsername &&
                 <DropdownMenuContent className="ml-12">
-                    <DropdownMenuLabel className="font-bold">{player.username}</DropdownMenuLabel>
+                    <DropdownMenuLabel className="font-bold">{playerUsername}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => promptTransferHost(player.username)}>Transfer Host</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => promptKickPlayer(player.username)}>
+                    <DropdownMenuItem onClick={() => promptTransferHost(playerUsername)}>Transfer Host</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => promptKickPlayer(playerUsername)}>
                         <CircleAlert color="#ff6467" className="p-0 mt-0.5" />
                         <span className="text-red-400">Kick</span>
                     </DropdownMenuItem>

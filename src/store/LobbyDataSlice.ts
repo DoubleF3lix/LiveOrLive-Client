@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { removeGameItemFromPlayer, removeItemFromArray } from "~/lib/utils";
-import { Lobby, Player } from "~/types/generated/liveorlive_server";
+import { clientIsPlayer, removeGameItemFromPlayer, removeItemFromArray } from "~/lib/utils";
+import { Lobby } from "~/types/generated/liveorlive_server";
 import { Item } from "~/types/generated/liveorlive_server.Enums";
+import { ConnectedClient } from "~/types/generated/liveorlive_server.Models";
 import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
 
 
@@ -57,6 +58,7 @@ const initialLobbyDataSliceState: Lobby = {
         lifeGambleWeights: {}
     },
     players: [],
+    spectators: [],
     host: undefined,
     gameStarted: false,
     turnOrder: [],
@@ -71,8 +73,12 @@ export const lobbyDataSlice = createSlice({
         loadFromPacket: (_state, action: PayloadAction<Lobby>) => {
             return action.payload;
         },
-        playerJoined: (state, action: PayloadAction<Player>) => {
-            state.players.push(action.payload);
+        playerJoined: (state, action: PayloadAction<ConnectedClient>) => {
+            if (clientIsPlayer(action.payload)) {
+                state.players.push(action.payload);
+            } else {
+                state.spectators.push(action.payload);
+            }
         },
         playerLeft: (state, action: PayloadAction<string>) => {
             const playerToRemove = state.players.find(player => player.username === action.payload);

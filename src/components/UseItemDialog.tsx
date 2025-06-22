@@ -26,12 +26,11 @@ export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
     const [error, setError] = useState<string>("");
 
     const selfUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
-    const allPlayers = useSelector((state: IRootState) => state.lobbyDataReducer.players);
+    const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
 
-    const selfItems = allPlayers.find(player => player.username === selfUsername)?.items;
+    const selfItems = players.find(player => player.username === selfUsername)?.items;
     const condensedSelfItems = condenseItemList(selfItems ?? []);
     
-    const players = allPlayers.filter(player => !player.isSpectator);
     const playerUsernames = players.map(player => player.username);
     const playerUsernamesSelfFirst = moveToFrontOfArray(playerUsernames, selfUsername);
     const playerUsernamesSelfLast = moveToBackOfArray(playerUsernames, selfUsername);

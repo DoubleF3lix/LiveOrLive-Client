@@ -1,9 +1,9 @@
 import SelectBox from "~/components/micro/SelectBox";
 import { SelectItem } from "@/select";
-import { Player } from "~/types/generated/liveorlive_server";
 import { Item } from "~/types/generated/liveorlive_server.Enums";
 import UseStolenItem from "~/components/UseItem/UseStolenItem";
 import { condenseItemList } from "~/lib/utils";
+import { Player } from "~/types/generated/liveorlive_server.Models";
 
 
 type UsePickpocketArgs = {

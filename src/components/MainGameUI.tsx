@@ -14,7 +14,7 @@ import {
     skipItemUsed, ricochetItemUsed
 } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
-import { Lobby, Player } from "~/types/generated/liveorlive_server";
+import { Lobby } from "~/types/generated/liveorlive_server";
 import AlertDialogQueue from "~/components/AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 import PlayerCard from "~/components/PlayerCard";
@@ -27,6 +27,7 @@ import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
 import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
 import { reverseTurnOrder, setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
 import UseItemDialog from "~/components/UseItemDialog";
+import { ConnectedClient } from "~/types/generated/liveorlive_server.Models";
 
 
 export default function MainGameUI() {
@@ -47,7 +48,6 @@ export default function MainGameUI() {
     const [useItemDialogOpen, setUseItemDialogOpen] = useState<boolean>(false);
 
     const isHost = clientUsername === lobbyHost;
-    const nonSpectatorPlayers = players.filter(player => !player.isSpectator);
     const isOurTurn = clientUsername === currentTurn;
 
     serverConnection.onDisconnect((error) => {
@@ -65,11 +65,11 @@ export default function MainGameUI() {
     }
 
     useEffect(() => {
-        const sub_playerJoined = serverConnection.subscribe("playerJoined", async (player: Player) => {
+        const sub_clientJoined = serverConnection.subscribe("clientJoined", async (player: ConnectedClient) => {
             dispatch(playerJoined(player));
         });
 
-        const sub_playerLeft = serverConnection.subscribe("playerLeft", async (username: string) => {
+        const sub_clientLeft = serverConnection.subscribe("clientLeft", async (username: string) => {
             dispatch(playerLeft(username));
         });
 
@@ -77,7 +77,7 @@ export default function MainGameUI() {
             dispatch(setHost(current));
         });
 
-        const sub_playerKicked = serverConnection.subscribe("playerKicked", async (username: string) => {
+        const sub_clientKicked = serverConnection.subscribe("clientKicked", async (username: string) => {
             if (username === clientUsername) {
                 dispatch(showAlertDialog({
                     title: "Connection Lost",
@@ -186,10 +186,10 @@ export default function MainGameUI() {
         serverConnection.getLobbyDataRequest();
 
         return () => {
-            serverConnection.unsubscribe("playerJoined", sub_playerJoined);
-            serverConnection.unsubscribe("playerLeft", sub_playerLeft);
+            serverConnection.unsubscribe("clientJoined", sub_clientJoined);
+            serverConnection.unsubscribe("clientLeft", sub_clientLeft);
             serverConnection.unsubscribe("hostChanged", sub_hostChanged);
-            serverConnection.unsubscribe("playerKicked", sub_playerKicked);
+            serverConnection.unsubscribe("clientKicked", sub_clientKicked);
             serverConnection.unsubscribe("gameStarted", sub_gameStarted);
             serverConnection.unsubscribe("gameEnded", sub_gameEnded);
             serverConnection.unsubscribe("newRoundStarted", sub_newRoundStarted);
@@ -261,7 +261,7 @@ export default function MainGameUI() {
             <div className="flex flex-col flex-grow m-1 -mt-1 p-2 lg:p-4 overflow-y-auto @container">
                 <TurnOrderBar className="mb-1 lg:mb-2" />
                 <div className="grid grid-cols-1 gap-1 @lg:grid-cols-2 @lg:gap-4 @4xl:grid-cols-3 @7xl:grid-cols-4 @7xl:gap-6">
-                    {nonSpectatorPlayers.map(player => <PlayerCard key={player.username + "_playerCard"} player={player} />)}
+                    {players.map(player => <PlayerCard key={player.username + "_playerCard"} player={player} />)}
                 </div>
             </div>
             {/* TODO make float over card section and not its own piece */}
@@ -281,7 +281,7 @@ export default function MainGameUI() {
             <div className="flex flex-grow">
                 <div className="flex flex-col flex-grow items-center justify-center">
                     <p className="text-lg md:text-2xl font-bold">Waiting for host to start the game...</p>
-                    <p className="text-lg md:text-xl font-bold">{nonSpectatorPlayers.length} player{nonSpectatorPlayers.length !== 1 ? "s" : ""} waiting</p>
+                    <p className="text-lg md:text-xl font-bold">{players.length} player{players.length !== 1 ? "s" : ""} waiting</p>
                     {isHost &&
                         <div className="flex mt-2">
                             <Button onClick={startGame}>Start Game</Button>

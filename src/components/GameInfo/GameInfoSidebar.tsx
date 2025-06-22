@@ -32,14 +32,13 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
     const lobbyId = useSelector((state: IRootState) => state.lobbyDataReducer.id);
     const lobbyName = useSelector((state: IRootState) => state.lobbyDataReducer.name);
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
-    const allPlayers = useSelector((state: IRootState) => state.lobbyDataReducer.players)
+    const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
+    const spectators = useSelector((state: IRootState) => state.lobbyDataReducer.spectators);
     const settings = useSelector((state: IRootState) => state.lobbyDataReducer.settings);
     const queueLength = useSelector((state: IRootState) => state.alertDialogQueueReducer.queue.length);
     const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
 
     const isHost = clientUsername === lobbyHost;
-    const players = allPlayers.filter(player => !player.isSpectator);
-    const spectators = allPlayers.filter(player => player.isSpectator);
 
     const closeSidebar = () => setOpen(false);
 
@@ -84,13 +83,13 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
                     </Popover>}
                 </div>
                 <ul className="list-disc list-inside pl-2">
-                    {players.map(player => <PlayerDropdownDisplay key={`${player.username}_playerDropdownDisplay`} player={player} />)}
+                    {players.map(player => <PlayerDropdownDisplay key={`${player.username}_playerDropdownDisplay`} playerUsername={player.username} />)}
                 </ul>
 
                 {spectators.length > 0 && <>
                     <p>Spectators:</p>
                     <ul className="list-disc list-inside pl-2">
-                        {spectators.map(player => <PlayerDropdownDisplay key={`${player.username}_playerDropdownDisplay`} player={player} />)}
+                        {spectators.map(player => <PlayerDropdownDisplay key={`${player.username}_playerDropdownDisplay`} playerUsername={player.username} />)}
                     </ul>
                 </>}
                 <Separator className="my-2" />

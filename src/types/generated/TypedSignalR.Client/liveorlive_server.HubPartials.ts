@@ -4,9 +4,9 @@
 // @ts-nocheck
 import type { IStreamResult, Subject } from '@microsoft/signalr';
 import type { Item, BulletType } from '../liveorlive_server.Enums';
-import type { ChatMessage, GameLogMessage } from '../liveorlive_server.Models';
-import type { Player, Lobby } from '../liveorlive_server';
+import type { ChatMessage, GameLogMessage, ConnectedClient } from '../liveorlive_server.Models';
 import type { NewRoundResult } from '../liveorlive_server.Models.Results';
+import type { Lobby } from '../liveorlive_server';
 
 export type IChatRequest = {
     /**
@@ -161,15 +161,15 @@ export type IHubServerResponse = {
     */
     connectionFailed(reason: string): Promise<void>;
     /**
-    * @param player Transpiled from liveorlive_server.Player
+    * @param client Transpiled from liveorlive_server.Models.ConnectedClient
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    playerJoined(player: Player): Promise<void>;
+    clientJoined(client: ConnectedClient): Promise<void>;
     /**
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    playerLeft(username: string): Promise<void>;
+    clientLeft(username: string): Promise<void>;
     /**
     * @param previous Transpiled from string?
     * @param current Transpiled from string?
@@ -181,7 +181,7 @@ export type IHubServerResponse = {
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    playerKicked(username: string): Promise<void>;
+    clientKicked(username: string): Promise<void>;
     /**
     * @param turnOrder Transpiled from System.Collections.Generic.List<string>
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -344,15 +344,15 @@ export type IConnectionResponse = {
     */
     connectionFailed(reason: string): Promise<void>;
     /**
-    * @param player Transpiled from liveorlive_server.Player
+    * @param client Transpiled from liveorlive_server.Models.ConnectedClient
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    playerJoined(player: Player): Promise<void>;
+    clientJoined(client: ConnectedClient): Promise<void>;
     /**
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    playerLeft(username: string): Promise<void>;
+    clientLeft(username: string): Promise<void>;
     /**
     * @param previous Transpiled from string?
     * @param current Transpiled from string?
@@ -364,7 +364,7 @@ export type IConnectionResponse = {
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    playerKicked(username: string): Promise<void>;
+    clientKicked(username: string): Promise<void>;
 }
 
 export type IBaseGameResponse = {
