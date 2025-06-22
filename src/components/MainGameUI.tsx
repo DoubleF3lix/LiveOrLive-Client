@@ -264,10 +264,9 @@ export default function MainGameUI() {
                     {players.map(player => <PlayerCard key={player.username + "_playerCard"} player={player} />)}
                 </div>
             </div>
-            {/* TODO make float over card section and not its own piece, make sheet on mobile */}
-            <div onClick={() => { setUseItemDialogOpen(true) }} className={`absolute right-0 bottom-0 border-black border-2 rounded-lg bg-foreground hover:bg-muted-foreground ml-auto mb-25 mr-2 h-16 w-16 lg:mb-36 lg:mr-8 lg:h-20 lg:w-20`}> 
+            {isOurTurn && <div onClick={() => { setUseItemDialogOpen(true) }} className={`absolute right-0 bottom-0 border-black border-2 rounded-lg bg-foreground hover:bg-muted-foreground ml-auto mb-25 mr-2 h-16 w-16 lg:mb-36 lg:mr-8 lg:h-20 lg:w-20`}> 
                 <ChevronUp size={32} color="#000" className="m-auto h-full" />
-            </div>
+            </div>}
             <Separator className="mt-auto relative" />
             <p className="text-center align-center text-nowrap overflow-x-auto pt-1 text-sm shrink-0 lg:pt-2 lg:pb-1 lg:text-base">
                 {gameLogMessages.slice(-4)[0]?.message} <br />
