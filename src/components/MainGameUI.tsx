@@ -264,18 +264,17 @@ export default function MainGameUI() {
                     {players.map(player => <PlayerCard key={player.username + "_playerCard"} player={player} />)}
                 </div>
             </div>
-            {/* TODO make float over card section and not its own piece */}
-            <div onClick={() => { setUseItemDialogOpen(true) }} className={`rounded-lg bg-foreground hover:bg-muted-foreground ml-auto mb-4 mr-2 h-12 w-12 lg:mb-12 lg:mr-12 lg:h-16 lg:w-16`}>
+            {/* TODO make float over card section and not its own piece, make sheet on mobile */}
+            <div onClick={() => { setUseItemDialogOpen(true) }} className={`absolute right-0 bottom-0 border-black border-2 rounded-lg bg-foreground hover:bg-muted-foreground ml-auto mb-25 mr-2 h-16 w-16 lg:mb-36 lg:mr-8 lg:h-20 lg:w-20`}> 
                 <ChevronUp size={32} color="#000" className="m-auto h-full" />
             </div>
-            <Separator className="mt-auto" />
-            <p className="text-center align-center pt-1 text-sm lg:pt-2 lg:pb-1 lg:text-base">
+            <Separator className="mt-auto relative" />
+            <p className="text-center align-center text-nowrap overflow-x-auto pt-1 text-sm shrink-0 lg:pt-2 lg:pb-1 lg:text-base">
                 {gameLogMessages.slice(-4)[0]?.message} <br />
                 {gameLogMessages.slice(-3)[0]?.message} <br />
                 {gameLogMessages.slice(-2)[0]?.message} <br />
                 {gameLogMessages.slice(-1)[0]?.message} <br />
             </p>
-            <p>{String(currentTurn)}</p>
         </> : <>
             {/* I don't know why I need these duplicate properties but it does not center if a single one is missing */}
             <div className="flex flex-grow">
