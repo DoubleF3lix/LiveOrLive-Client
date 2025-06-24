@@ -108,24 +108,22 @@ export function ChatSidebar() {
         }
     }, [chatMessages, chatIsOpen]);
 
-    return <div>
-        <Sidebar variant="floating">
-            <SidebarHeader>
-                <p className="font-bold text-xl text-center">Chat</p>
-                <Separator />
-            </SidebarHeader>
-            <SidebarContent className="px-2">
-                <ChatMessages messages={chatMessages} />
-            </SidebarContent>
-            <SidebarFooter>
-                <Separator />
-                <div className="flex">
-                    <textarea ref={chatMessageInput} rows={1} placeholder="Type a message..." className="grow min-w-0 border-2 border-input rounded-lg p-1 pl-2 resize-none" />
-                    <IconButton onClick={sendChatMessage} className="bg-chat-send hover:bg-chat-send-hover/99 content-center p-1 pl-1.5 rounded-xl w-8 ml-2" overrideSpacing>
-                        <SendHorizontal size={20} color="#ffffff" />
-                    </IconButton>
-                </div>
-            </SidebarFooter>
-        </Sidebar>
-    </div>;
+    return <Sidebar variant="floating">
+        <SidebarHeader>
+            <p className="font-bold text-xl text-center">Chat</p>
+            <Separator />
+        </SidebarHeader>
+        <SidebarContent className="px-2">
+            <ChatMessages messages={chatMessages} />
+        </SidebarContent>
+        <SidebarFooter>
+            <Separator />
+            <div className="flex">
+                <textarea ref={chatMessageInput} rows={1} placeholder="Type a message..." className="grow min-w-0 border-2 border-input rounded-lg p-1 pl-2 resize-none" />
+                <IconButton onClick={sendChatMessage} className="bg-chat-send hover:bg-chat-send-hover/99 content-center p-1 pl-1.5 rounded-xl w-8 ml-2" overrideSpacing>
+                    <SendHorizontal size={20} color="#ffffff" />
+                </IconButton>
+            </div>
+        </SidebarFooter>
+    </Sidebar>;
 }

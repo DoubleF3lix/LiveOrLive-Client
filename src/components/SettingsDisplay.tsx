@@ -29,6 +29,7 @@ export default function SettingsDisplay({ settings, className, editable = true }
         <LabelAndNumberGridRow label="Min Live Rounds:" numberRef={modSettings.minLiveRounds} disabled={!editable}></LabelAndNumberGridRow>
         <LabelAndNumberGridRow label="Max Blank Rounds:" numberRef={modSettings.maxBlankRounds} disabled={!editable}></LabelAndNumberGridRow>
         <LabelAndNumberGridRow label="Max Live Rounds:" numberRef={modSettings.maxLiveRounds} disabled={!editable}></LabelAndNumberGridRow>
+        <LabelAndSwitchGridRow label="Show Fired Rounds Tally:" boolRef={modSettings.showFiredRoundsTally} disabled={!editable}></LabelAndSwitchGridRow>
         <Separator className="col-span-2" />
         <LabelAndNumberGridRow label="Default Lives:" numberRef={modSettings.defaultLives} disabled={!editable}></LabelAndNumberGridRow>
         <LabelAndNumberGridRow label="Max Lives:" numberRef={modSettings.maxLives} disabled={!editable}></LabelAndNumberGridRow>

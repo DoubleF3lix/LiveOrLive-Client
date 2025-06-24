@@ -3,6 +3,12 @@
 /* tslint:disable */
 import type { Item } from './liveorlive_server.Enums';
 
+/** Transpiled from liveorlive_server.Models.Chat */
+export type Chat = {
+    /** Transpiled from System.Collections.Generic.List<liveorlive_server.Models.ChatMessage> */
+    messages: ChatMessage[];
+}
+
 /** Transpiled from liveorlive_server.Models.ChatMessage */
 export type ChatMessage = {
     /** Transpiled from System.Guid */
@@ -21,6 +27,12 @@ export type ConnectedClient = {
     username: string;
     /** Transpiled from long */
     joinTime: number;
+}
+
+/** Transpiled from liveorlive_server.Models.GameLog */
+export type GameLog = {
+    /** Transpiled from System.Collections.Generic.List<liveorlive_server.Models.GameLogMessage> */
+    messages: GameLogMessage[];
 }
 
 /** Transpiled from liveorlive_server.Models.GameLogMessage */
@@ -59,6 +71,8 @@ export type Settings = {
     maxBlankRounds: number;
     /** Transpiled from int */
     maxLiveRounds: number;
+    /** Transpiled from bool */
+    showFiredRoundsTally: boolean;
     /** Transpiled from int */
     defaultLives: number;
     /** Transpiled from int */

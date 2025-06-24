@@ -28,6 +28,7 @@ import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Resul
 import { reverseTurnOrder, setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
 import UseItemDialog from "~/components/UseItemDialog";
 import { ConnectedClient } from "~/types/generated/liveorlive_server.Models";
+import GameLogQuickView from "./micro/GameLogQuickView";
 
 
 export default function MainGameUI() {
@@ -235,15 +236,13 @@ export default function MainGameUI() {
         <div className="flex mb-0 justify-between py-3">
             <OpenSidebarButton className="ml-2 self-start" />
             {isGameStarted ?
-                <div className="flex flex-col">
+                <div className="flex flex-col items-center">
                     <div className="flex justify-center gap-x-12">
-                        {/* flex justify-center items-center relative */}
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-center">
                             <Circle fill="#fff" />
-                            {/* text-center absolute font-bold mb-0.5 text-sm text-accent */}
                             <p className="text-center">{liveRounds}</p>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-center">
                             <CircleDashed />
                             <p className="text-center">{blankRounds}</p>
                         </div>
@@ -268,12 +267,7 @@ export default function MainGameUI() {
                 <ChevronUp size={32} color="#000" className="m-auto h-full" />
             </div>}
             <Separator className="mt-auto relative" />
-            <p className="text-center align-center text-nowrap overflow-x-auto pt-1 text-sm shrink-0 lg:pt-2 lg:pb-1 lg:text-base">
-                {gameLogMessages.slice(-4)[0]?.message} <br />
-                {gameLogMessages.slice(-3)[0]?.message} <br />
-                {gameLogMessages.slice(-2)[0]?.message} <br />
-                {gameLogMessages.slice(-1)[0]?.message} <br />
-            </p>
+            <GameLogQuickView gameLogMessages={gameLogMessages} />
         </> : <>
             {/* I don't know why I need these duplicate properties but it does not center if a single one is missing */}
             <div className="flex flex-grow">
@@ -282,7 +276,7 @@ export default function MainGameUI() {
                     <p className="text-lg md:text-xl font-bold">{players.length} player{players.length !== 1 ? "s" : ""} waiting</p>
                     {isHost &&
                         <div className="flex mt-2">
-                            <Button onClick={startGame}>Start Game</Button>
+                            <Button onClick={startGame} disabled={players.length == 1}>Start Game</Button>
                         </div>
                     }
                 </div>

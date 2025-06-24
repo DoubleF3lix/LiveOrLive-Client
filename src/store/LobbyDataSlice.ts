@@ -18,6 +18,7 @@ const initialLobbyDataSliceState: Lobby = {
         minLiveRounds: 0,
         maxBlankRounds: 0,
         maxLiveRounds: 0,
+        showFiredRoundsTally: false,
         defaultLives: 0,
         maxLives: 0,
         randomItemsPerRound: false,

@@ -47,7 +47,7 @@ export default function PlayerCard({ player }: PlayerCardArgs) {
             </ul>
         </>}
         <div className="mt-auto">
-            <Button className="mt-2 h-8 w-full" disabled={!isOurTurn} onClick={() => shootPlayer(player.username)}>{player.username === clientUsername ? "Shoot Yourself" : "Shoot"}</Button> 
+            <Button className="mt-2 h-8 w-full" disabled={!isOurTurn || player.lives === 0} onClick={() => shootPlayer(player.username)}>{player.username === clientUsername ? "Shoot Yourself" : "Shoot"}</Button> 
         </div>
     </div>;
 }

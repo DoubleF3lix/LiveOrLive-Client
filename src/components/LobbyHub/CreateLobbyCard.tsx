@@ -77,6 +77,7 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
         minLiveRounds: useRef<number>(0),
         maxBlankRounds: useRef<number>(0),
         maxLiveRounds: useRef<number>(0),
+        showFiredRoundsTally: useRef<boolean>(false),
         defaultLives: useRef<number>(0),
         maxLives: useRef<number>(0),
         allowExtraLifeWhenFull: useRef<boolean>(false),
