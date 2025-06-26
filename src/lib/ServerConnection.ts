@@ -3,7 +3,7 @@ import { getHubProxyFactory, getReceiverRegister } from "~/types/generated/Typed
 import { IBaseGameRequest, IBaseGameResponse, IChatRequest, IChatResponse, IConnectionRequest, IConnectionResponse, IGameLogRequest, IGameLogResponse, IGenericRequest, IGenericResponse, IHubServerResponse, IItemRequest, IItemResponse } from "~/types/generated/TypedSignalR.Client/liveorlive_server.HubPartials";
 import { Lobby } from "~/types/generated/liveorlive_server";
 import { ChatMessage, ConnectedClient, GameLogMessage } from "~/types/generated/liveorlive_server.Models";
-import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
+import { BulletType, ClientType, Item } from "~/types/generated/liveorlive_server.Enums";
 import { BASE_URL, SERVER_TIMEOUT } from "~/lib/const";
 import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
 
@@ -69,7 +69,8 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
             clientJoined: async (player: ConnectedClient): Promise<void> => this.sendSubscription("clientJoined", player),
             clientLeft: async (username: string): Promise<void> => this.sendSubscription("clientLeft", username),
             hostChanged: async (previous: string, current: string, reason: string): Promise<void> => this.sendSubscription("hostChanged", previous, current, reason),
-            clientKicked: async (username: string): Promise<void> => this.sendSubscription("clientKicked", username)
+            clientKicked: async (username: string): Promise<void> => this.sendSubscription("clientKicked", username),
+            clientTypeChanged: async (newClient: ConnectedClient): Promise<void> => this.sendSubscription("clientTypeChanged", newClient)
         };
 
         this.baseGameReceiver = {
@@ -159,6 +160,9 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
     }
     kickPlayer(username: string): Promise<void> {
         return this.connectionHubProxy.kickPlayer(username);
+    }
+    changeClientType(clientType: ClientType): Promise<void> {
+        return this.connectionHubProxy.changeClientType(clientType);
     }
     startGame(): Promise<void> {
         return this.baseGameHubProxy.startGame();

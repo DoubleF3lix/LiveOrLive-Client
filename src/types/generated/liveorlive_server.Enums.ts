@@ -8,6 +8,12 @@ export enum BulletType {
     Live = 1,
 }
 
+/** Transpiled from liveorlive_server.Enums.ClientType */
+export enum ClientType {
+    Spectator = 0,
+    Player = 1,
+}
+
 /** Transpiled from liveorlive_server.Enums.Item */
 export enum Item {
     ReverseTurnOrder = 0,

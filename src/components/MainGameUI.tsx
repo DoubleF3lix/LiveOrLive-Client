@@ -6,7 +6,7 @@ import { IRootState, useAppDispatch } from "~/store/Store";
 import { Toaster } from "@/sonner";
 import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
 import {
-    playerJoined, loadFromPacket, playerLeft, setHost, gameStarted,
+    clientJoined, loadFromPacket, clientLeft, setHost, gameStarted,
     turnStarted, turnEnded, playerShotAt, addItemsFromRoundStart,
     setTurnOrder, reverseTurnOrderItemUsed, rackChamberItemUsed,
     extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed,
@@ -23,12 +23,14 @@ import { ChevronUp, Circle, CircleDashed, Info } from "lucide-react";
 import IconButton from "~/components/micro/IconButton";
 import TurnOrderBar from "~/components/TurnOrderBar";
 import { Button } from "@/button";
-import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
+import { BulletType, ClientType, Item } from "~/types/generated/liveorlive_server.Enums";
 import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
 import { reverseTurnOrder, setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
 import UseItemDialog from "~/components/UseItemDialog";
 import { ConnectedClient } from "~/types/generated/liveorlive_server.Models";
 import GameLogQuickView from "./micro/GameLogQuickView";
+import { Switch } from "./ui/switch";
+import { checkClientIsPlayer } from "~/lib/utils";
 
 
 export default function MainGameUI() {
@@ -39,6 +41,7 @@ export default function MainGameUI() {
     const isGameStarted = useSelector((state: IRootState) => state.lobbyDataReducer.gameStarted);
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
+    const spectator = useSelector((state: IRootState) => state.lobbyDataReducer.spectators);
     const liveRounds = useSelector((state: IRootState) => state.roundDataReducer.liveRounds);
     const blankRounds = useSelector((state: IRootState) => state.roundDataReducer.blankRounds);
     const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
@@ -50,6 +53,8 @@ export default function MainGameUI() {
 
     const isHost = clientUsername === lobbyHost;
     const isOurTurn = clientUsername === currentTurn;
+    const client = players.find(player => player.username === clientUsername) ?? spectator.find(spectator => spectator.username === clientUsername);
+    const clientIsPlayer = client ? checkClientIsPlayer(client) : false; 
 
     serverConnection.onDisconnect((error) => {
         if (error) {
@@ -67,11 +72,11 @@ export default function MainGameUI() {
 
     useEffect(() => {
         const sub_clientJoined = serverConnection.subscribe("clientJoined", async (player: ConnectedClient) => {
-            dispatch(playerJoined(player));
+            dispatch(clientJoined(player));
         });
 
         const sub_clientLeft = serverConnection.subscribe("clientLeft", async (username: string) => {
-            dispatch(playerLeft(username));
+            dispatch(clientLeft(username));
         });
 
         const sub_hostChanged = serverConnection.subscribe("hostChanged", async (_, current: string | undefined) => {
@@ -86,8 +91,15 @@ export default function MainGameUI() {
                     onClick: "reloadWindowKicked"
                 }));
             } else {
-                dispatch(playerLeft(username));
+                dispatch(clientLeft(username));
             }
+        });
+
+        const sub_clientTypeChanged = serverConnection.subscribe("clientTypeChanged", async (newClient: ConnectedClient) => {
+            // This handles removing them from either spectators or players by username
+            dispatch(clientLeft(newClient.username));
+            // And this handles re-adding them to the one we didn't remove them from
+            dispatch(clientJoined(newClient));
         });
 
         const sub_gameStarted = serverConnection.subscribe("gameStarted", async (turnOrder: string[]) => {
@@ -191,6 +203,7 @@ export default function MainGameUI() {
             serverConnection.unsubscribe("clientLeft", sub_clientLeft);
             serverConnection.unsubscribe("hostChanged", sub_hostChanged);
             serverConnection.unsubscribe("clientKicked", sub_clientKicked);
+            serverConnection.unsubscribe("clientTypeChanged", sub_clientTypeChanged);
             serverConnection.unsubscribe("gameStarted", sub_gameStarted);
             serverConnection.unsubscribe("gameEnded", sub_gameEnded);
             serverConnection.unsubscribe("newRoundStarted", sub_newRoundStarted);
@@ -279,6 +292,11 @@ export default function MainGameUI() {
                             <Button onClick={startGame} disabled={players.length == 1}>Start Game</Button>
                         </div>
                     }
+                    <div className="flex gap-2 left-0 bottom-0 absolute mb-4 ml-4">
+                        <p className={clientIsPlayer ? "" : "font-semibold"}>Spectator</p>
+                        <Switch defaultChecked={clientIsPlayer} onCheckedChange={(checked) => serverConnection.changeClientType(checked ? ClientType.Player : ClientType.Spectator)} className="mx-auto my-1"/>
+                        <p className={clientIsPlayer ? "font-semibold" : ""}>Player</p>
+                    </div>
                 </div>
             </div>
         </>}

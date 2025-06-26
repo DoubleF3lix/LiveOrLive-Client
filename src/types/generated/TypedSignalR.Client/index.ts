@@ -4,7 +4,7 @@
 // @ts-nocheck
 import type { HubConnection, IStreamResult, Subject } from '@microsoft/signalr';
 import type { IChatRequest, IGameLogRequest, IConnectionRequest, IBaseGameRequest, IGenericRequest, IItemRequest, IHubServerResponse, IChatResponse, IGameLogResponse, IConnectionResponse, IBaseGameResponse, IGenericResponse, IItemResponse } from './liveorlive_server.HubPartials';
-import type { Item, BulletType } from '../liveorlive_server.Enums';
+import type { ClientType, Item, BulletType } from '../liveorlive_server.Enums';
 import type { ChatMessage, GameLogMessage, ConnectedClient } from '../liveorlive_server.Models';
 import type { NewRoundResult } from '../liveorlive_server.Models.Results';
 import type { Lobby } from '../liveorlive_server';
@@ -188,6 +188,10 @@ class IConnectionRequest_HubProxy implements IConnectionRequest {
     public readonly kickPlayer = async (username: string): Promise<void> => {
         return await this.connection.invoke("KickPlayer", username);
     }
+
+    public readonly changeClientType = async (clientType: ClientType): Promise<void> => {
+        return await this.connection.invoke("ChangeClientType", clientType);
+    }
 }
 
 class IBaseGameRequest_HubProxyFactory implements HubProxyFactory<IBaseGameRequest> {
@@ -317,6 +321,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __clientLeft = (...args: [string]) => receiver.clientLeft(...args);
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
         const __clientKicked = (...args: [string]) => receiver.clientKicked(...args);
+        const __clientTypeChanged = (...args: [ConnectedClient]) => receiver.clientTypeChanged(...args);
         const __gameStarted = (...args: [string[]]) => receiver.gameStarted(...args);
         const __gameEnded = (...args: [string]) => receiver.gameEnded(...args);
         const __newRoundStarted = (...args: [NewRoundResult]) => receiver.newRoundStarted(...args);
@@ -350,6 +355,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         connection.on("ClientLeft", __clientLeft);
         connection.on("HostChanged", __hostChanged);
         connection.on("ClientKicked", __clientKicked);
+        connection.on("ClientTypeChanged", __clientTypeChanged);
         connection.on("GameStarted", __gameStarted);
         connection.on("GameEnded", __gameEnded);
         connection.on("NewRoundStarted", __newRoundStarted);
@@ -384,6 +390,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
             { methodName: "ClientLeft", method: __clientLeft },
             { methodName: "HostChanged", method: __hostChanged },
             { methodName: "ClientKicked", method: __clientKicked },
+            { methodName: "ClientTypeChanged", method: __clientTypeChanged },
             { methodName: "GameStarted", method: __gameStarted },
             { methodName: "GameEnded", method: __gameEnded },
             { methodName: "NewRoundStarted", method: __newRoundStarted },
@@ -479,6 +486,7 @@ class IConnectionResponse_Binder implements ReceiverRegister<IConnectionResponse
         const __clientLeft = (...args: [string]) => receiver.clientLeft(...args);
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
         const __clientKicked = (...args: [string]) => receiver.clientKicked(...args);
+        const __clientTypeChanged = (...args: [ConnectedClient]) => receiver.clientTypeChanged(...args);
 
         connection.on("ConnectionSuccess", __connectionSuccess);
         connection.on("ConnectionFailed", __connectionFailed);
@@ -486,6 +494,7 @@ class IConnectionResponse_Binder implements ReceiverRegister<IConnectionResponse
         connection.on("ClientLeft", __clientLeft);
         connection.on("HostChanged", __hostChanged);
         connection.on("ClientKicked", __clientKicked);
+        connection.on("ClientTypeChanged", __clientTypeChanged);
 
         const methodList: ReceiverMethod[] = [
             { methodName: "ConnectionSuccess", method: __connectionSuccess },
@@ -493,7 +502,8 @@ class IConnectionResponse_Binder implements ReceiverRegister<IConnectionResponse
             { methodName: "ClientJoined", method: __clientJoined },
             { methodName: "ClientLeft", method: __clientLeft },
             { methodName: "HostChanged", method: __hostChanged },
-            { methodName: "ClientKicked", method: __clientKicked }
+            { methodName: "ClientKicked", method: __clientKicked },
+            { methodName: "ClientTypeChanged", method: __clientTypeChanged }
         ]
 
         return new ReceiverMethodSubscription(connection, methodList);

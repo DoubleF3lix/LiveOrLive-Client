@@ -19,8 +19,6 @@ export type Lobby = {
     id: string;
     /** Transpiled from string */
     name: string;
-    /** Transpiled from bool */
-    private: boolean;
     /** Transpiled from long */
     creationTime: number;
     /** Transpiled from liveorlive_server.Models.Settings */

@@ -13,6 +13,7 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { GameLogMessage } from "~/types/generated/liveorlive_server.Models";
 import { addGameLogMessage, setGameLogMessages } from "~/store/GameLogSlice";
+import { ClientType } from "~/types/generated/liveorlive_server.Enums";
 
 
 type GameInfoSidebarArgs = {
@@ -105,6 +106,8 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
             </div>
             <SheetFooter>
                 <Separator className="-mt-4 mb-2" />
+                {/* TODO make this a popup first */}
+                <Button onClick={() => serverConnection.changeClientType(ClientType.Spectator)} variant="destructive">Forfeit</Button>
                 <Button onClick={closeSidebar}>Close</Button>
             </SheetFooter>
         </SheetContent>

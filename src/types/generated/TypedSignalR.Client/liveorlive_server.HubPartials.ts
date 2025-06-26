@@ -3,7 +3,7 @@
 /* tslint:disable */
 // @ts-nocheck
 import type { IStreamResult, Subject } from '@microsoft/signalr';
-import type { Item, BulletType } from '../liveorlive_server.Enums';
+import type { ClientType, Item, BulletType } from '../liveorlive_server.Enums';
 import type { ChatMessage, GameLogMessage, ConnectedClient } from '../liveorlive_server.Models';
 import type { NewRoundResult } from '../liveorlive_server.Models.Results';
 import type { Lobby } from '../liveorlive_server';
@@ -49,6 +49,11 @@ export type IConnectionRequest = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     kickPlayer(username: string): Promise<void>;
+    /**
+    * @param clientType Transpiled from liveorlive_server.Enums.ClientType
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    changeClientType(clientType: ClientType): Promise<void>;
 }
 
 export type IBaseGameRequest = {
@@ -182,6 +187,11 @@ export type IHubServerResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     clientKicked(username: string): Promise<void>;
+    /**
+    * @param newClient Transpiled from liveorlive_server.Models.ConnectedClient
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    clientTypeChanged(newClient: ConnectedClient): Promise<void>;
     /**
     * @param turnOrder Transpiled from System.Collections.Generic.List<string>
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -365,6 +375,11 @@ export type IConnectionResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     clientKicked(username: string): Promise<void>;
+    /**
+    * @param newClient Transpiled from liveorlive_server.Models.ConnectedClient
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    clientTypeChanged(newClient: ConnectedClient): Promise<void>;
 }
 
 export type IBaseGameResponse = {

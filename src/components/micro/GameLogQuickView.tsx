@@ -17,7 +17,7 @@ export default function GameLogQuickView({ gameLogMessages }: GameLogQuickViewAr
                 oneMore = true;
             } else {
                 if (message.startsWith("The game has started with")) oneMore = false;
-                output.push(<span>{gameLogMessages[i].message}<br/></span>);
+                output.push(<span key={`${i}_quickGLMessage`}>{gameLogMessages[i].message}<br/></span>);
                 if (oneMore) break;
             }
         }
