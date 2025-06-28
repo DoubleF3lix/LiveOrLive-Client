@@ -199,9 +199,10 @@ export type IHubServerResponse = {
     gameStarted(turnOrder: string[]): Promise<void>;
     /**
     * @param winner Transpiled from string?
+    * @param purgedPlayers Transpiled from System.Collections.Generic.List<string>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    gameEnded(winner: string): Promise<void>;
+    gameEnded(winner: string, purgedPlayers: string[]): Promise<void>;
     /**
     * @param result Transpiled from liveorlive_server.Models.Results.NewRoundResult
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -390,9 +391,10 @@ export type IBaseGameResponse = {
     gameStarted(turnOrder: string[]): Promise<void>;
     /**
     * @param winner Transpiled from string?
+    * @param purgedPlayers Transpiled from System.Collections.Generic.List<string>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    gameEnded(winner: string): Promise<void>;
+    gameEnded(winner: string, purgedPlayers: string[]): Promise<void>;
     /**
     * @param result Transpiled from liveorlive_server.Models.Results.NewRoundResult
     * @returns Transpiled from System.Threading.Tasks.Task

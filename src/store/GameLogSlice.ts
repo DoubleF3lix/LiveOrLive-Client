@@ -19,9 +19,12 @@ export const gameLogSlice = createSlice({
         },
         addGameLogMessage: (state, action: PayloadAction<GameLogMessage>) => {
             state.gameLogMessages.push(action.payload);
+        },
+        clearGameLogMessages: (state) => {
+            state.gameLogMessages = [];
         }
     }
 });
 
-export const { setGameLogMessages, addGameLogMessage } = gameLogSlice.actions;
+export const { setGameLogMessages, addGameLogMessage, clearGameLogMessages } = gameLogSlice.actions;
 export default gameLogSlice.reducer;
