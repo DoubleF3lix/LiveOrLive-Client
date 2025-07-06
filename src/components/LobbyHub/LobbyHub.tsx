@@ -3,7 +3,7 @@ import { toast, Toaster } from "sonner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/tabs";
 import CreateLobbyCard from "~/components/LobbyHub/CreateLobbyCard";
 import JoinPublicLobbyCard from "~/components/LobbyHub/JoinPublicLobbyCard";
-import JoinPrivateLobby from "~/components/LobbyHub/JoinPrivateLobbyCard";
+import JoinPrivateLobbyCard from "~/components/LobbyHub/JoinPrivateLobbyCard";
 
 
 type LobbySelectorArgs = {
@@ -53,7 +53,7 @@ export default function LobbyHub({ setLobbyConnectionInfo: setLobbyConnectionInf
                     <JoinPublicLobbyCard validateAndSetConnectionInfo={validateAndSetConnectionInfo} />
                 </TabsContent>
                 <TabsContent value="joinPrivate">
-                    <JoinPrivateLobby validateAndSetConnectionInfo={validateAndSetConnectionInfo} />
+                    <JoinPrivateLobbyCard validateAndSetConnectionInfo={validateAndSetConnectionInfo} />
                 </TabsContent>
                 <TabsContent value="create">
                     <CreateLobbyCard validateAndSetConnectionInfo={validateAndSetConnectionInfo} />

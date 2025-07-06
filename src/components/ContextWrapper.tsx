@@ -6,6 +6,8 @@ import MainGameUI from "~/components/MainGameUI";
 import { setUsername } from "~/store/SelfDataSlice";
 import { SidebarProvider } from "@/sidebar";
 import { ChatSidebar } from "~/components/Chat/ChatSidebar";
+import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
+import AlertDialogQueue from "~/components/AlertDialogQueue";
 
 
 type ContextWrapperArgs = {
@@ -27,12 +29,21 @@ export default function ContextWrapper({ lobbyId, username }: ContextWrapperArgs
                     dispatch(setUsername(username));
                     setConnected(true);
                 },
-                "connectionFailed": async (reason: string) => { alert(reason); setConnected(false) },
+                "connectionFailed": async (reason: string) => { 
+                    dispatch(showAlertDialog({
+                        title: "Connection Failed",
+                        description: reason,
+                        onClick: "reloadWindow"
+                    })); 
+                    setConnected(false) 
+                },
             });
             serverConnection.current.start();
         }
     });
 
+    // Bring in just the dialog queue if we're not connected (so we can show alert dialogs for connection failure)
+    // Otherwise, render the entire game UI (AlertDialogQueue is part of MainGameUI)
     return connected ? <>
         <ServerConnectionContext.Provider value={serverConnection.current}>
             <SidebarProvider defaultOpen={false}>
@@ -40,5 +51,5 @@ export default function ContextWrapper({ lobbyId, username }: ContextWrapperArgs
                 <MainGameUI />
             </SidebarProvider>
         </ServerConnectionContext.Provider>
-    </> : <></>;
+    </> : <AlertDialogQueue />;
 }

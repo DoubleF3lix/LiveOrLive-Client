@@ -16,7 +16,7 @@ type JoinPrivateLobbyArgs = {
     validateAndSetConnectionInfo: (lobbyId: string, username: string, lobbyIdManuallyEntered: boolean) => void;
 };
 
-export default function JoinPublicLobby({ validateAndSetConnectionInfo }: JoinPrivateLobbyArgs) {
+export default function JoinPrivateLobbyCard({ validateAndSetConnectionInfo }: JoinPrivateLobbyArgs) {
     const lobbyCode = useRef<string>("");
     const username = useRef<string>("");
 
@@ -33,7 +33,7 @@ export default function JoinPublicLobby({ validateAndSetConnectionInfo }: JoinPr
                 </div>
             </CardContent>
             <CardFooter>
-                <Button onClick={() => validateAndSetConnectionInfo(lobbyCode.current, username.current, true)} className="font-bold w-full">Join</Button>
+                <Button onClick={() => validateAndSetConnectionInfo(lobbyCode.current.toUpperCase(), username.current, true)} className="font-bold w-full">Join</Button>
             </CardFooter>
         </Card >
     </>;
