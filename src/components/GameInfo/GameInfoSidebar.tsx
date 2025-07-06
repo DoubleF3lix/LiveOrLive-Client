@@ -14,6 +14,7 @@ import { ServerConnection } from "~/lib/ServerConnection";
 import { GameLogMessage } from "~/types/generated/liveorlive_server.Models";
 import { addGameLogMessage, setGameLogMessages } from "~/store/GameLogSlice";
 import { ClientType } from "~/types/generated/liveorlive_server.Enums";
+import { checkClientIsPlayer } from "~/lib/utils";
 
 
 type GameInfoSidebarArgs = {
@@ -31,6 +32,7 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
 
     const clientUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
     const lobbyId = useSelector((state: IRootState) => state.lobbyDataReducer.id);
+    const isGameStarted = useSelector((state: IRootState) => state.lobbyDataReducer.gameStarted);
     const lobbyName = useSelector((state: IRootState) => state.lobbyDataReducer.name);
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
@@ -38,6 +40,9 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
     const settings = useSelector((state: IRootState) => state.lobbyDataReducer.settings);
     const queueLength = useSelector((state: IRootState) => state.alertDialogQueueReducer.queue.length);
     const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
+    
+    const client = players.find(player => player.username === clientUsername) ?? spectators.find(spectator => spectator.username === clientUsername);
+    const clientIsPlayer = client !== undefined ? checkClientIsPlayer(client) : false;
 
     const isHost = clientUsername === lobbyHost;
 
@@ -107,7 +112,7 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
             <SheetFooter>
                 <Separator className="-mt-4 mb-2" />
                 {/* TODO make this a popup first */}
-                <Button onClick={() => serverConnection.changeClientType(ClientType.Spectator)} variant="destructive">Forfeit</Button>
+                {isGameStarted && clientIsPlayer && <Button onClick={() => serverConnection.changeClientType(ClientType.Spectator)} variant="destructive">Forfeit</Button>}
                 <Button onClick={closeSidebar}>Close</Button>
             </SheetFooter>
         </SheetContent>

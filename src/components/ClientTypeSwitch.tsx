@@ -1,5 +1,5 @@
 import { Switch } from "@/switch";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { checkClientIsPlayer } from "~/lib/utils";
@@ -22,6 +22,10 @@ export default function ClientTypeSwitch() {
         setIsChecked(checked);
         serverConnection.changeClientType(checked ? ClientType.Player : ClientType.Spectator);
     }
+
+    useEffect(() => {
+        setIsChecked(clientIsPlayer);
+    }, [clientIsPlayer]);
 
     return <div className="flex gap-2 left-0 bottom-0 absolute mb-4 ml-4">
         <p className={clientIsPlayer ? "" : "font-semibold"}>Spectator</p>
