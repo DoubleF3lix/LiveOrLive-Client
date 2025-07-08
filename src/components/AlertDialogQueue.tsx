@@ -8,6 +8,7 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { useContext } from "react";
 import { gameEnded } from "~/store/LobbyDataSlice";
+import { ClientType } from "~/types/generated/liveorlive_server.Enums";
 
 
 export default function AlertDialogQueue() {
@@ -38,6 +39,9 @@ export default function AlertDialogQueue() {
             case "gameEnded":
                 dispatch(gameEnded());
                 serverConnection.getLobbyDataRequest();
+                break;
+            case "forfeitGame":
+                serverConnection.changeClientType(ClientType.Spectator);
                 break;
         }
     }

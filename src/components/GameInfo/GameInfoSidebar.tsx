@@ -13,8 +13,8 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { GameLogMessage } from "~/types/generated/liveorlive_server.Models";
 import { addGameLogMessage, setGameLogMessages } from "~/store/GameLogSlice";
-import { ClientType } from "~/types/generated/liveorlive_server.Enums";
 import { checkClientIsPlayer } from "~/lib/utils";
+import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 
 
 type GameInfoSidebarArgs = {
@@ -40,7 +40,7 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
     const settings = useSelector((state: IRootState) => state.lobbyDataReducer.settings);
     const queueLength = useSelector((state: IRootState) => state.alertDialogQueueReducer.queue.length);
     const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
-    
+
     const client = players.find(player => player.username === clientUsername) ?? spectators.find(spectator => spectator.username === clientUsername);
     const clientIsPlayer = client !== undefined ? checkClientIsPlayer(client) : false;
 
@@ -111,8 +111,14 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
             </div>
             <SheetFooter>
                 <Separator className="-mt-4 mb-2" />
-                {/* TODO make this a popup first */}
-                {isGameStarted && clientIsPlayer && <Button onClick={() => serverConnection.changeClientType(ClientType.Spectator)} variant="destructive">Forfeit</Button>}
+                {isGameStarted && clientIsPlayer &&
+                    <Button variant="destructive" onClick={() => dispatch(showAlertDialog({
+                        title: "Forfeit Game",
+                        description: "Are you sure you want to forfeit the game? You can't undo this action.",
+                        onClick: "forfeitGame",
+                        skippable: true
+                    }))}>Forfeit</Button>
+                }
                 <Button onClick={closeSidebar}>Close</Button>
             </SheetFooter>
         </SheetContent>

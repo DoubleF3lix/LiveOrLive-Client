@@ -28,7 +28,7 @@ export default function PlayerCard({ player }: PlayerCardArgs) {
         serverConnection.shootPlayer(username);
     }
 
-    return <div className="flex flex-col border-foreground border-3 rounded-sm my-2 p-2 md:px-4 md:py-3">
+    return <div className={`flex flex-col border-3 rounded-sm my-2 p-2 md:px-4 md:py-3 ${player.inGame ? "border-foreground" : "border-muted-foreground"}`}>
         <div className="flex justify-between">
             <div className="flex flex-col shrink-0">
                 <p className="text-xl font-bold">{player.username}</p>

@@ -75,7 +75,12 @@ export const lobbyDataSlice = createSlice({
         },
         clientJoined: (state, action: PayloadAction<ConnectedClient>) => {
             if (checkClientIsPlayer(action.payload)) {
-                state.players.push(action.payload);
+                const existingPlayer = state.players.find(player => player.username === action.payload.username);
+                if (existingPlayer) {
+                    existingPlayer.inGame = true;
+                } else {
+                    state.players.push(action.payload);
+                }
             } else {
                 state.spectators.push(action.payload);
             }

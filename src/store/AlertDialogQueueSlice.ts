@@ -4,7 +4,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 type AlertDialogQueueItem = {
     title: string;
     description: string;
-    onClick?: "reloadWindow" | "reloadWindowKicked" | "transferHost" | "kickPlayer" | "gameEnded";
+    onClick?: "reloadWindow" | "reloadWindowKicked" | "transferHost" | "kickPlayer" | "gameEnded" | "forfeitGame";
     skippable?: boolean;
     arg?: string;
 };
