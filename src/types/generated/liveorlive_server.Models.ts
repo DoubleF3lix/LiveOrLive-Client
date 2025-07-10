@@ -120,6 +120,14 @@ export type Settings = {
     /** Transpiled from bool */
     enableRicochetItem: boolean;
     /** Transpiled from bool */
+    enableTrenchcoatItem: boolean;
+    /** Transpiled from bool */
+    enableMisfireItem: boolean;
+    /** Transpiled from bool */
+    enableHypnotizeItem: boolean;
+    /** Transpiled from bool */
+    enablePocketPistolItem: boolean;
+    /** Transpiled from bool */
     allowLifeDonation: boolean;
     /** Transpiled from bool */
     allowPlayerRevival: boolean;
@@ -134,7 +142,7 @@ export type Settings = {
     /** Transpiled from bool */
     showRicochetsCounter: boolean;
     /** Transpiled from bool */
-    disableDealReverseWhenTwoPlayers: boolean;
+    disableDealReverseAndRicochetWhenTwoPlayers: boolean;
     /** Transpiled from bool */
     loseSkipAfterRound: boolean;
     /** Transpiled from bool */

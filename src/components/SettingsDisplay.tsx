@@ -54,6 +54,10 @@ export default function SettingsDisplay({ settings, className, editable = true }
         <LabelAndSwitchGridRow label="Enable Double Damage Item:" boolRef={modSettings.enableDoubleDamageItem} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Enable Skip Item:" boolRef={modSettings.enableSkipItem} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Enable Ricochet Item:" boolRef={modSettings.enableRicochetItem} disabled={!editable}></LabelAndSwitchGridRow>
+        <LabelAndSwitchGridRow label="Enable Trenchcoat Item:" boolRef={modSettings.enableTrenchcoatItem} disabled={!editable}></LabelAndSwitchGridRow>
+        <LabelAndSwitchGridRow label="Enable Misfire Item:" boolRef={modSettings.enableMisfireItem} disabled={!editable}></LabelAndSwitchGridRow>
+        <LabelAndSwitchGridRow label="Enable Hypnotize Item:" boolRef={modSettings.enableHypnotizeItem} disabled={!editable}></LabelAndSwitchGridRow>
+        <LabelAndSwitchGridRow label="Enable Pocket Pistol Item:" boolRef={modSettings.enablePocketPistolItem} disabled={!editable}></LabelAndSwitchGridRow>
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Allow Life Donation:" boolRef={modSettings.allowLifeDonation} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Allow Player Revival:" boolRef={modSettings.allowPlayerRevival} disabled={!editable}></LabelAndSwitchGridRow>
@@ -63,7 +67,7 @@ export default function SettingsDisplay({ settings, className, editable = true }
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Show Ricochets:" boolRef={modSettings.showRicochets} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Show Ricochets Counter:" boolRef={modSettings.showRicochetsCounter} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Disable Deal Reverse When Two Players:" boolRef={modSettings.disableDealReverseWhenTwoPlayers} disabled={!editable}></LabelAndSwitchGridRow>
+        <LabelAndSwitchGridRow label="Disable Deal Reverse/Ricochet With Two Players:" boolRef={modSettings.disableDealReverseAndRicochetWhenTwoPlayers} disabled={!editable}></LabelAndSwitchGridRow> 
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Lose Skip After Round:" boolRef={modSettings.loseSkipAfterRound} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Ricochet Ignore Skipped Players:" boolRef={modSettings.ricochetIgnoreSkippedPlayers} disabled={!editable}></LabelAndSwitchGridRow>

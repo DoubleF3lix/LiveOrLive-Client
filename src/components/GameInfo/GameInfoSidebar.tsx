@@ -3,7 +3,7 @@ import { Button } from "@/button";
 import { IRootState, useAppDispatch } from "~/store/Store";
 import { useSelector } from "react-redux";
 import { Separator } from "@/separator";
-import { CircleHelp } from "lucide-react";
+import { ChevronsUpDown, CircleHelp } from "lucide-react";
 import PlayerDropdownDisplay from "~/components/GameInfo/PlayerDropdownDisplay";
 import { Popover, PopoverContent } from "@/popover";
 import { PopoverTrigger } from "@radix-ui/react-popover";
@@ -15,6 +15,12 @@ import { GameLogMessage } from "~/types/generated/liveorlive_server.Models";
 import { addGameLogMessage, setGameLogMessages } from "~/store/GameLogSlice";
 import { checkClientIsPlayer } from "~/lib/utils";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
+import { useIsMobile } from "~/hooks/use-mobile";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/collapsible";
 
 
 type GameInfoSidebarArgs = {
@@ -40,6 +46,8 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
     const settings = useSelector((state: IRootState) => state.lobbyDataReducer.settings);
     const queueLength = useSelector((state: IRootState) => state.alertDialogQueueReducer.queue.length);
     const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
+
+    const isMobile = useIsMobile();
 
     const client = players.find(player => player.username === clientUsername) ?? spectators.find(spectator => spectator.username === clientUsername);
     const clientIsPlayer = client !== undefined ? checkClientIsPlayer(client) : false;
@@ -76,7 +84,7 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
                 </SheetDescription>
                 <Separator className="my-2" />
             </SheetHeader>
-            <div className="flex flex-col px-4 -mt-8 overflow-y-auto">
+            <div className="flex flex-col px-4 -mt-8 overflow-y-auto h-full">
                 <div className="flex justify-between">
                     <p>Players: </p>
                     {isHost && <Popover>
@@ -100,12 +108,28 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
                 </>}
                 <Separator className="my-2" />
 
-                <p className="mb-2">Lobby Settings:</p>
-                <SettingsDisplay settings={settings} editable={false} className="overflow-y-auto pr-2" />
+                {isGameStarted ? 
+                    <Collapsible className="pr-2" >
+                        <CollapsibleTrigger asChild>
+                            <Button variant="secondary" className="w-full">
+                                Lobby Settings <ChevronsUpDown />
+                            </Button>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="overflow-y-auto max-h-[36dvh] py-2">
+                            <SettingsDisplay settings={settings} editable={false} />
+                        </CollapsibleContent>
+                    </Collapsible> 
+                : <>
+                    <p className="mb-2">Lobby Settings:</p>
+                    <SettingsDisplay settings={settings} editable={false} className="overflow-y-auto pr-2" />
+                </>}
                 <Separator className="my-2" />
 
                 <p className="mb-2">Game Log:</p>
-                <textarea className="border-2 border-input rounded-lg p-1 px-2 resize-none grow text-xs font-mono" rows={6} disabled={true}
+                <textarea 
+                    rows={isGameStarted ? 18 : 6}
+                    className="border-2 border-input rounded-lg p-1 px-2 resize-none h-full text-xs font-mono" 
+                    disabled={true} 
                     value={gameLogMessages.map(message => `[${timestampToFormatString(message.timestamp)}]: ${message.message}`).join("\n")}
                     placeholder="No game log available" />
             </div>
