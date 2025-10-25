@@ -1,10 +1,10 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { DEFAULT_SETTINGS } from "~/lib/const";
 import { checkClientIsPlayer, removeGameItemFromPlayer, removeItemFromArray } from "~/lib/utils";
-import { Lobby } from "~/types/generated/liveorlive_server";
-import { Item } from "~/types/generated/liveorlive_server.Enums";
-import { ConnectedClient } from "~/types/generated/liveorlive_server.Models";
-import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
+import { Lobby } from "~/types/generated/LiveOrLiveServer";
+import { Item } from "~/types/generated/LiveOrLiveServer.Enums";
+import { ConnectedClient } from "~/types/generated/LiveOrLiveServer.Models";
+import { NewRoundResult } from "~/types/generated/LiveOrLiveServer.Models.Results";
 
 
 const initialLobbyDataSliceState: Lobby = {
@@ -18,7 +18,8 @@ const initialLobbyDataSliceState: Lobby = {
     gameStarted: false,
     turnOrder: [],
     currentTurn: undefined,
-    ammoLeftInChamber: 0
+    ammoLeftInChamber: 0,
+    suddenDeathActivated: false
 };
 
 export const lobbyDataSlice = createSlice({

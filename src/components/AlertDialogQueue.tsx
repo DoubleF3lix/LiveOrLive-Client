@@ -8,7 +8,7 @@ import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { ServerConnection } from "~/lib/ServerConnection";
 import { useContext } from "react";
 import { gameEnded } from "~/store/LobbyDataSlice";
-import { ClientType } from "~/types/generated/liveorlive_server.Enums";
+import { ClientType } from "~/types/generated/LiveOrLiveServer.Enums";
 
 
 export default function AlertDialogQueue() {

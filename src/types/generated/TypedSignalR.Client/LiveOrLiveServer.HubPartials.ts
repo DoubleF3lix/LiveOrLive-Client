@@ -3,10 +3,10 @@
 /* tslint:disable */
 // @ts-nocheck
 import type { IStreamResult, Subject } from '@microsoft/signalr';
-import type { ClientType, Item, BulletType } from '../liveorlive_server.Enums';
-import type { ChatMessage, GameLogMessage, ConnectedClient } from '../liveorlive_server.Models';
-import type { NewRoundResult } from '../liveorlive_server.Models.Results';
-import type { Lobby } from '../liveorlive_server';
+import type { ClientType, Item, BulletType } from '../LiveOrLiveServer.Enums';
+import type { ChatMessage, GameLogMessage, ConnectedClient } from '../LiveOrLiveServer.Models';
+import type { NewRoundResult } from '../LiveOrLiveServer.Models.Results';
+import type { Lobby } from '../LiveOrLiveServer';
 
 export type IChatRequest = {
     /**
@@ -50,7 +50,7 @@ export type IConnectionRequest = {
     */
     kickPlayer(username: string): Promise<void>;
     /**
-    * @param clientType Transpiled from liveorlive_server.Enums.ClientType
+    * @param clientType Transpiled from LiveOrLiveServer.Enums.ClientType
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     changeClientType(clientType: ClientType): Promise<void>;
@@ -91,7 +91,7 @@ export type IItemRequest = {
     useExtraLifeItem(target: string): Promise<void>;
     /**
     * @param target Transpiled from string
-    * @param item Transpiled from liveorlive_server.Enums.Item
+    * @param item Transpiled from LiveOrLiveServer.Enums.Item
     * @param itemTarget Transpiled from string?
     * @returns Transpiled from System.Threading.Tasks.Task
     */
@@ -126,12 +126,12 @@ export type IItemRequest = {
 
 export type IHubServerResponse = {
     /**
-    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.Models.ChatMessage>
+    * @param messages Transpiled from System.Collections.Generic.List<LiveOrLiveServer.Models.ChatMessage>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getChatMessagesResponse(messages: ChatMessage[]): Promise<void>;
     /**
-    * @param message Transpiled from liveorlive_server.Models.ChatMessage
+    * @param message Transpiled from LiveOrLiveServer.Models.ChatMessage
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     chatMessageSent(message: ChatMessage): Promise<void>;
@@ -147,12 +147,12 @@ export type IHubServerResponse = {
     */
     chatMessageEdited(messageId: string, content: string): Promise<void>;
     /**
-    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.Models.GameLogMessage>
+    * @param messages Transpiled from System.Collections.Generic.List<LiveOrLiveServer.Models.GameLogMessage>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getGameLogResponse(messages: GameLogMessage[]): Promise<void>;
     /**
-    * @param message Transpiled from liveorlive_server.Models.GameLogMessage
+    * @param message Transpiled from LiveOrLiveServer.Models.GameLogMessage
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     gameLogUpdate(message: GameLogMessage): Promise<void>;
@@ -166,7 +166,7 @@ export type IHubServerResponse = {
     */
     connectionFailed(reason: string): Promise<void>;
     /**
-    * @param client Transpiled from liveorlive_server.Models.ConnectedClient
+    * @param client Transpiled from LiveOrLiveServer.Models.ConnectedClient
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     clientJoined(client: ConnectedClient): Promise<void>;
@@ -188,7 +188,7 @@ export type IHubServerResponse = {
     */
     clientKicked(username: string): Promise<void>;
     /**
-    * @param newClient Transpiled from liveorlive_server.Models.ConnectedClient
+    * @param newClient Transpiled from LiveOrLiveServer.Models.ConnectedClient
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     clientTypeChanged(newClient: ConnectedClient): Promise<void>;
@@ -204,7 +204,7 @@ export type IHubServerResponse = {
     */
     gameEnded(winner: string, purgedPlayers: string[]): Promise<void>;
     /**
-    * @param result Transpiled from liveorlive_server.Models.Results.NewRoundResult
+    * @param result Transpiled from LiveOrLiveServer.Models.Results.NewRoundResult
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     newRoundStarted(result: NewRoundResult): Promise<void>;
@@ -219,13 +219,13 @@ export type IHubServerResponse = {
     */
     turnEnded(username: string): Promise<void>;
     /**
-    * @param lobbyData Transpiled from liveorlive_server.Lobby
+    * @param lobbyData Transpiled from LiveOrLiveServer.Lobby
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getLobbyDataResponse(lobbyData: Lobby): Promise<void>;
     /**
     * @param target Transpiled from string
-    * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
+    * @param bulletType Transpiled from LiveOrLiveServer.Enums.BulletType
     * @param damage Transpiled from int
     * @returns Transpiled from System.Threading.Tasks.Task
     */
@@ -252,7 +252,7 @@ export type IHubServerResponse = {
     */
     reverseTurnOrderItemUsed(itemSourceUsername: string): Promise<void>;
     /**
-    * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
+    * @param bulletType Transpiled from LiveOrLiveServer.Enums.BulletType
     * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
@@ -265,7 +265,7 @@ export type IHubServerResponse = {
     extraLifeItemUsed(target: string, itemSourceUsername: string): Promise<void>;
     /**
     * @param target Transpiled from string
-    * @param item Transpiled from liveorlive_server.Enums.Item
+    * @param item Transpiled from LiveOrLiveServer.Enums.Item
     * @param itemTarget Transpiled from string?
     * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -283,11 +283,11 @@ export type IHubServerResponse = {
     */
     invertItemUsed(itemSourceUsername: string): Promise<void>;
     /**
-    * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
+    * @param bulletType Transpiled from LiveOrLiveServer.Enums.BulletType?
     * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    chamberCheckItemUsed(bulletType: BulletType, itemSourceUsername: string): Promise<void>;
+    chamberCheckItemUsed(bulletType: (BulletType | undefined), itemSourceUsername: string): Promise<void>;
     /**
     * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -309,12 +309,12 @@ export type IHubServerResponse = {
 
 export type IChatResponse = {
     /**
-    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.Models.ChatMessage>
+    * @param messages Transpiled from System.Collections.Generic.List<LiveOrLiveServer.Models.ChatMessage>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getChatMessagesResponse(messages: ChatMessage[]): Promise<void>;
     /**
-    * @param message Transpiled from liveorlive_server.Models.ChatMessage
+    * @param message Transpiled from LiveOrLiveServer.Models.ChatMessage
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     chatMessageSent(message: ChatMessage): Promise<void>;
@@ -333,12 +333,12 @@ export type IChatResponse = {
 
 export type IGameLogResponse = {
     /**
-    * @param messages Transpiled from System.Collections.Generic.List<liveorlive_server.Models.GameLogMessage>
+    * @param messages Transpiled from System.Collections.Generic.List<LiveOrLiveServer.Models.GameLogMessage>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getGameLogResponse(messages: GameLogMessage[]): Promise<void>;
     /**
-    * @param message Transpiled from liveorlive_server.Models.GameLogMessage
+    * @param message Transpiled from LiveOrLiveServer.Models.GameLogMessage
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     gameLogUpdate(message: GameLogMessage): Promise<void>;
@@ -355,7 +355,7 @@ export type IConnectionResponse = {
     */
     connectionFailed(reason: string): Promise<void>;
     /**
-    * @param client Transpiled from liveorlive_server.Models.ConnectedClient
+    * @param client Transpiled from LiveOrLiveServer.Models.ConnectedClient
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     clientJoined(client: ConnectedClient): Promise<void>;
@@ -377,7 +377,7 @@ export type IConnectionResponse = {
     */
     clientKicked(username: string): Promise<void>;
     /**
-    * @param newClient Transpiled from liveorlive_server.Models.ConnectedClient
+    * @param newClient Transpiled from LiveOrLiveServer.Models.ConnectedClient
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     clientTypeChanged(newClient: ConnectedClient): Promise<void>;
@@ -396,7 +396,7 @@ export type IBaseGameResponse = {
     */
     gameEnded(winner: string, purgedPlayers: string[]): Promise<void>;
     /**
-    * @param result Transpiled from liveorlive_server.Models.Results.NewRoundResult
+    * @param result Transpiled from LiveOrLiveServer.Models.Results.NewRoundResult
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     newRoundStarted(result: NewRoundResult): Promise<void>;
@@ -411,13 +411,13 @@ export type IBaseGameResponse = {
     */
     turnEnded(username: string): Promise<void>;
     /**
-    * @param lobbyData Transpiled from liveorlive_server.Lobby
+    * @param lobbyData Transpiled from LiveOrLiveServer.Lobby
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     getLobbyDataResponse(lobbyData: Lobby): Promise<void>;
     /**
     * @param target Transpiled from string
-    * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
+    * @param bulletType Transpiled from LiveOrLiveServer.Enums.BulletType
     * @param damage Transpiled from int
     * @returns Transpiled from System.Threading.Tasks.Task
     */
@@ -450,7 +450,7 @@ export type IItemResponse = {
     */
     reverseTurnOrderItemUsed(itemSourceUsername: string): Promise<void>;
     /**
-    * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
+    * @param bulletType Transpiled from LiveOrLiveServer.Enums.BulletType
     * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
@@ -463,7 +463,7 @@ export type IItemResponse = {
     extraLifeItemUsed(target: string, itemSourceUsername: string): Promise<void>;
     /**
     * @param target Transpiled from string
-    * @param item Transpiled from liveorlive_server.Enums.Item
+    * @param item Transpiled from LiveOrLiveServer.Enums.Item
     * @param itemTarget Transpiled from string?
     * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -481,11 +481,11 @@ export type IItemResponse = {
     */
     invertItemUsed(itemSourceUsername: string): Promise<void>;
     /**
-    * @param bulletType Transpiled from liveorlive_server.Enums.BulletType
+    * @param bulletType Transpiled from LiveOrLiveServer.Enums.BulletType?
     * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    chamberCheckItemUsed(bulletType: BulletType, itemSourceUsername: string): Promise<void>;
+    chamberCheckItemUsed(bulletType: (BulletType | undefined), itemSourceUsername: string): Promise<void>;
     /**
     * @param itemSourceUsername Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task

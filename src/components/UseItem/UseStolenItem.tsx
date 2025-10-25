@@ -1,4 +1,4 @@
-import { Item } from "~/types/generated/liveorlive_server.Enums";
+import { Item } from "~/types/generated/LiveOrLiveServer.Enums";
 import UseExtraLife from "~/components/UseItem/UseExtraLife";
 import UseSkip from "~/components/UseItem/UseSkip";
 import UseRicochet from "~/components/UseItem/UseRicochet";

@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import LabelAndTextInputGridRow from "~/components/micro/LabelAndTextInputGridRow";
 import { BASE_URL, DEFAULT_SETTINGS } from "~/lib/const";
 import { toLowercaseKeys } from "~/lib/utils";
-import { Settings } from "~/types/generated/liveorlive_server.Models";
+import { Settings } from "~/types/generated/LiveOrLiveServer.Models";
 import { SettingsRefs } from "~/types/SettingsRefs";
 import EditLifeGambleWeightsModal from "~/components/LobbyHub/EditLifeGambleWeightsModal";
 import SettingsDisplay from "~/components/SettingsDisplay";
@@ -86,6 +86,7 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
         minItemsPerRound: useRef<number>(DEFAULT_SETTINGS.minItemsPerRound),
         maxItemsPerRound: useRef<number>(DEFAULT_SETTINGS.maxItemsPerRound),
         maxItems: useRef<number>(DEFAULT_SETTINGS.maxItems),
+        showItems: useRef<boolean>(DEFAULT_SETTINGS.showItems),
         lootItemsOnKill: useRef<boolean>(DEFAULT_SETTINGS.lootItemsOnKill),
         maxLootItemsOnKill: useRef<number>(DEFAULT_SETTINGS.maxLootItemsOnKill),
         allowLootItemsExceedMax: useRef<boolean>(DEFAULT_SETTINGS.allowLootItemsExceedMax),
@@ -103,8 +104,9 @@ export default function CreateLobbyCard({ validateAndSetConnectionInfo }: Create
         enableMisfireItem: useRef<boolean>(DEFAULT_SETTINGS.enableMisfireItem),
         enableHypnotizeItem: useRef<boolean>(DEFAULT_SETTINGS.enableHypnotizeItem),
         enablePocketPistolItem: useRef<boolean>(DEFAULT_SETTINGS.enablePocketPistolItem),
+        announceChamberCheckResults: useRef<boolean>(DEFAULT_SETTINGS.announceChamberCheckResults),
         allowLifeDonation: useRef<boolean>(DEFAULT_SETTINGS.allowLifeDonation),
-        allowPlayerRevival: useRef<boolean>(DEFAULT_SETTINGS.allowPlayerRevival),
+        maxPlayerRevives: useRef<number>(DEFAULT_SETTINGS.maxPlayerRevives),
         allowDoubleDamageStacking: useRef<boolean>(DEFAULT_SETTINGS.allowDoubleDamageStacking),
         allowSequentialSkips: useRef<boolean>(DEFAULT_SETTINGS.allowSequentialSkips),
         allowSelfSkip: useRef<boolean>(DEFAULT_SETTINGS.allowSelfSkip),

@@ -2,7 +2,7 @@ import LabelAndSwitchGridRow from "~/components/micro/LabelAndSwitchGridRow";
 import LabelAndNumberGridRow from "~/components/micro/LabelAndNumberGridRow";
 import { Separator } from "@/separator";
 import { SettingsRefs } from "~/types/SettingsRefs";
-import { Settings } from "~/types/generated/liveorlive_server.Models";
+import { Settings } from "~/types/generated/LiveOrLiveServer.Models";
 
 
 type SettingsDisplayArgs = {
@@ -60,7 +60,7 @@ export default function SettingsDisplay({ settings, className, editable = true }
         <LabelAndSwitchGridRow label="Enable Pocket Pistol Item:" boolRef={modSettings.enablePocketPistolItem} disabled={!editable}></LabelAndSwitchGridRow>
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Allow Life Donation:" boolRef={modSettings.allowLifeDonation} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Allow Player Revival:" boolRef={modSettings.allowPlayerRevival} disabled={!editable}></LabelAndSwitchGridRow>
+        <LabelAndNumberGridRow label="Allow Player Revival:" numberRef={modSettings.maxPlayerRevives} disabled={!editable}></LabelAndNumberGridRow>
         <LabelAndSwitchGridRow label="Allow Double Damage Stacking:" boolRef={modSettings.allowDoubleDamageStacking} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Allow Sequential Skips:" boolRef={modSettings.allowSequentialSkips} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Allow Self Skip:" boolRef={modSettings.allowSelfSkip} disabled={!editable}></LabelAndSwitchGridRow>

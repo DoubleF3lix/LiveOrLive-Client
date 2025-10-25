@@ -14,7 +14,7 @@ import {
     skipItemUsed, ricochetItemUsed
 } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
-import { Lobby } from "~/types/generated/liveorlive_server";
+import { Lobby } from "~/types/generated/LiveOrLiveServer";
 import AlertDialogQueue from "~/components/AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 import PlayerCard from "~/components/PlayerCard";
@@ -23,11 +23,11 @@ import { ChevronUp, Circle, CircleDashed, Info } from "lucide-react";
 import IconButton from "~/components/micro/IconButton";
 import TurnOrderBar from "~/components/TurnOrderBar";
 import { Button } from "@/button";
-import { BulletType, Item } from "~/types/generated/liveorlive_server.Enums";
-import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
+import { BulletType, Item } from "~/types/generated/LiveOrLiveServer.Enums";
+import { NewRoundResult } from "~/types/generated/LiveOrLiveServer.Models.Results";
 import { reverseTurnOrder, setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
 import UseItemDialog from "~/components/UseItemDialog";
-import { ConnectedClient } from "~/types/generated/liveorlive_server.Models";
+import { ConnectedClient } from "~/types/generated/LiveOrLiveServer.Models";
 import GameLogQuickView from "./micro/GameLogQuickView";
 import ClientTypeSwitch from "./ClientTypeSwitch";
 import { clearGameLogMessages } from "~/store/GameLogSlice";

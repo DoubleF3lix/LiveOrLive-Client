@@ -2,19 +2,19 @@
 /* eslint-disable */
 /* tslint:disable */
 
-/** Transpiled from liveorlive_server.Enums.BulletType */
+/** Transpiled from LiveOrLiveServer.Enums.BulletType */
 export enum BulletType {
     Blank = 0,
     Live = 1,
 }
 
-/** Transpiled from liveorlive_server.Enums.ClientType */
+/** Transpiled from LiveOrLiveServer.Enums.ClientType */
 export enum ClientType {
     Spectator = 0,
     Player = 1,
 }
 
-/** Transpiled from liveorlive_server.Enums.Item */
+/** Transpiled from LiveOrLiveServer.Enums.Item */
 export enum Item {
     ReverseTurnOrder = 0,
     RackChamber = 1,

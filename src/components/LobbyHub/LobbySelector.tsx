@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Lobby } from "~/types/generated/liveorlive_server";
+import { Lobby } from "~/types/generated/LiveOrLiveServer";
 import ClickableTableRowBody from "~/components/micro/ClickableTableRowBody";
 import ClickableTableRow from "~/components/micro/ClickableTableRow";
 import {

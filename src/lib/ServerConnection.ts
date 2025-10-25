@@ -1,11 +1,11 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { getHubProxyFactory, getReceiverRegister } from "~/types/generated/TypedSignalR.Client";
-import { IBaseGameRequest, IBaseGameResponse, IChatRequest, IChatResponse, IConnectionRequest, IConnectionResponse, IGameLogRequest, IGameLogResponse, IGenericRequest, IGenericResponse, IHubServerResponse, IItemRequest, IItemResponse } from "~/types/generated/TypedSignalR.Client/liveorlive_server.HubPartials";
-import { Lobby } from "~/types/generated/liveorlive_server";
-import { ChatMessage, ConnectedClient, GameLogMessage } from "~/types/generated/liveorlive_server.Models";
-import { BulletType, ClientType, Item } from "~/types/generated/liveorlive_server.Enums";
+import { IBaseGameRequest, IBaseGameResponse, IChatRequest, IChatResponse, IConnectionRequest, IConnectionResponse, IGameLogRequest, IGameLogResponse, IGenericRequest, IGenericResponse, IHubServerResponse, IItemRequest, IItemResponse } from "~/types/generated/TypedSignalR.Client/LiveOrLiveServer.HubPartials";
+import { Lobby } from "~/types/generated/LiveOrLiveServer";
+import { ChatMessage, ConnectedClient, GameLogMessage } from "~/types/generated/LiveOrLiveServer.Models";
+import { BulletType, ClientType, Item } from "~/types/generated/LiveOrLiveServer.Enums";
 import { BASE_URL, SERVER_TIMEOUT } from "~/lib/const";
-import { NewRoundResult } from "~/types/generated/liveorlive_server.Models.Results";
+import { NewRoundResult } from "~/types/generated/LiveOrLiveServer.Models.Results";
 
 
 type ResponseCallback<K extends keyof IHubServerResponse = keyof IHubServerResponse> = IHubServerResponse[K];

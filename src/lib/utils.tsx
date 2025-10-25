@@ -3,8 +3,8 @@ import { twMerge } from "tailwind-merge"
 import { toast as sonnerToast } from 'sonner';
 import { Toast } from '~/types/Toast';
 import { GildedAchievementToast, NormalAchievementToast } from "~/components/CustomToast";
-import { ClientType, Item } from "~/types/generated/liveorlive_server.Enums";
-import { ConnectedClient, Player } from "~/types/generated/liveorlive_server.Models";
+import { ClientType, Item } from "~/types/generated/LiveOrLiveServer.Enums";
+import { ConnectedClient, Player } from "~/types/generated/LiveOrLiveServer.Models";
 
 
 type CondensedItemDetail = {

@@ -3,11 +3,11 @@
 /* tslint:disable */
 // @ts-nocheck
 import type { HubConnection, IStreamResult, Subject } from '@microsoft/signalr';
-import type { IChatRequest, IGameLogRequest, IConnectionRequest, IBaseGameRequest, IGenericRequest, IItemRequest, IHubServerResponse, IChatResponse, IGameLogResponse, IConnectionResponse, IBaseGameResponse, IGenericResponse, IItemResponse } from './liveorlive_server.HubPartials';
-import type { ClientType, Item, BulletType } from '../liveorlive_server.Enums';
-import type { ChatMessage, GameLogMessage, ConnectedClient } from '../liveorlive_server.Models';
-import type { NewRoundResult } from '../liveorlive_server.Models.Results';
-import type { Lobby } from '../liveorlive_server';
+import type { IChatRequest, IGameLogRequest, IConnectionRequest, IBaseGameRequest, IGenericRequest, IItemRequest, IHubServerResponse, IChatResponse, IGameLogResponse, IConnectionResponse, IBaseGameResponse, IGenericResponse, IItemResponse } from './LiveOrLiveServer.HubPartials';
+import type { ClientType, Item, BulletType } from '../LiveOrLiveServer.Enums';
+import type { ChatMessage, GameLogMessage, ConnectedClient } from '../LiveOrLiveServer.Models';
+import type { NewRoundResult } from '../LiveOrLiveServer.Models.Results';
+import type { Lobby } from '../LiveOrLiveServer';
 
 
 // components
@@ -338,7 +338,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __pickpocketItemUsed = (...args: [string, Item, string, string]) => receiver.pickpocketItemUsed(...args);
         const __lifeGambleItemUsed = (...args: [number, string]) => receiver.lifeGambleItemUsed(...args);
         const __invertItemUsed = (...args: [string]) => receiver.invertItemUsed(...args);
-        const __chamberCheckItemUsed = (...args: [BulletType, string]) => receiver.chamberCheckItemUsed(...args);
+        const __chamberCheckItemUsed = (...args: [(BulletType | undefined), string]) => receiver.chamberCheckItemUsed(...args);
         const __doubleDamageItemUsed = (...args: [string]) => receiver.doubleDamageItemUsed(...args);
         const __skipItemUsed = (...args: [string, string]) => receiver.skipItemUsed(...args);
         const __ricochetItemUsed = (...args: [string, string]) => receiver.ricochetItemUsed(...args);
@@ -591,7 +591,7 @@ class IItemResponse_Binder implements ReceiverRegister<IItemResponse> {
         const __pickpocketItemUsed = (...args: [string, Item, string, string]) => receiver.pickpocketItemUsed(...args);
         const __lifeGambleItemUsed = (...args: [number, string]) => receiver.lifeGambleItemUsed(...args);
         const __invertItemUsed = (...args: [string]) => receiver.invertItemUsed(...args);
-        const __chamberCheckItemUsed = (...args: [BulletType, string]) => receiver.chamberCheckItemUsed(...args);
+        const __chamberCheckItemUsed = (...args: [(BulletType | undefined), string]) => receiver.chamberCheckItemUsed(...args);
         const __doubleDamageItemUsed = (...args: [string]) => receiver.doubleDamageItemUsed(...args);
         const __skipItemUsed = (...args: [string, string]) => receiver.skipItemUsed(...args);
         const __ricochetItemUsed = (...args: [string, string]) => receiver.ricochetItemUsed(...args);

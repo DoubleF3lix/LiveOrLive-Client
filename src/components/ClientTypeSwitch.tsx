@@ -5,7 +5,7 @@ import { ServerConnection } from "~/lib/ServerConnection";
 import { checkClientIsPlayer } from "~/lib/utils";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { IRootState } from "~/store/Store";
-import { ClientType } from "~/types/generated/liveorlive_server.Enums";
+import { ClientType } from "~/types/generated/LiveOrLiveServer.Enums";
 
 export default function ClientTypeSwitch() {
     const serverConnection = useContext(ServerConnectionContext) as ServerConnection;

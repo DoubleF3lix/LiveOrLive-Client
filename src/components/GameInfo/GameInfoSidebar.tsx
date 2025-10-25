@@ -11,11 +11,10 @@ import SettingsDisplay from "~/components/SettingsDisplay";
 import { useContext, useEffect } from "react";
 import { ServerConnectionContext } from "~/store/ServerConnectionContext";
 import { ServerConnection } from "~/lib/ServerConnection";
-import { GameLogMessage } from "~/types/generated/liveorlive_server.Models";
+import { GameLogMessage } from "~/types/generated/LiveOrLiveServer.Models";
 import { addGameLogMessage, setGameLogMessages } from "~/store/GameLogSlice";
 import { checkClientIsPlayer } from "~/lib/utils";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
-import { useIsMobile } from "~/hooks/use-mobile";
 import {
   Collapsible,
   CollapsibleContent,
@@ -46,8 +45,6 @@ export default function GameInfoSidebar({ open, setOpen }: GameInfoSidebarArgs) 
     const settings = useSelector((state: IRootState) => state.lobbyDataReducer.settings);
     const queueLength = useSelector((state: IRootState) => state.alertDialogQueueReducer.queue.length);
     const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
-
-    const isMobile = useIsMobile();
 
     const client = players.find(player => player.username === clientUsername) ?? spectators.find(spectator => spectator.username === clientUsername);
     const clientIsPlayer = client !== undefined ? checkClientIsPlayer(client) : false;

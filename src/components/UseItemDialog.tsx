@@ -8,7 +8,7 @@ import SelectBox from "~/components/micro/SelectBox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/dialog";
 import { Button } from "@/button";
 import { SelectItem } from "@/select";
-import { Item } from "~/types/generated/liveorlive_server.Enums";
+import { Item } from "~/types/generated/LiveOrLiveServer.Enums";
 import UseExtraLife from "~/components/UseItem/UseExtraLife";
 import UsePickpocket from "~/components/UseItem/UsePickpocket";
 import UseSkip from "~/components/UseItem/UseSkip";

@@ -1,4 +1,4 @@
-import { ChatMessage as ChatMessageType } from "~/types/generated/liveorlive_server.Models";
+import { ChatMessage as ChatMessageType } from "~/types/generated/LiveOrLiveServer.Models";
 // import Markdown from "react-markdown";
 
 

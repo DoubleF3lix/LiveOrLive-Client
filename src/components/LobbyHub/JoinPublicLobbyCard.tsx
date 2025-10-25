@@ -11,7 +11,7 @@ import {
 import { Button } from "@/button";
 import LabelAndTextInputGridRow from "~/components/micro/LabelAndTextInputGridRow";
 import { RefreshCw } from "lucide-react";
-import { Lobby } from "~/types/generated/liveorlive_server";
+import { Lobby } from "~/types/generated/LiveOrLiveServer";
 import { toLowercaseKeys } from "~/lib/utils";
 import { BASE_URL } from "~/lib/const";
 

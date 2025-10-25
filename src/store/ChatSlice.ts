@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ChatMessage } from "~/types/generated/liveorlive_server.Models";
+import { ChatMessage } from "~/types/generated/LiveOrLiveServer.Models";
 
 
 type ChatSliceType = {
