@@ -4,7 +4,7 @@ import { toast as sonnerToast } from 'sonner';
 import { Toast } from '~/types/Toast';
 import { GildedAchievementToast, NormalAchievementToast } from "~/components/CustomToast";
 import { ClientType, Item } from "~/types/generated/LiveOrLiveServer.Enums";
-import { ConnectedClient, Player } from "~/types/generated/LiveOrLiveServer.Models";
+import { ConnectedClientDto, PlayerDto } from "~/types/generated/LiveOrLiveServer.Models.Dto";
 
 
 type CondensedItemDetail = {
@@ -52,10 +52,10 @@ export function removeItemFromArray<T>(array: T[], item: T): T[] {
     ];
 }
 
-export function removeGameItemFromPlayer(players: Player[], username: string, item: Item): Player[] {
+export function removeGameItemFromPlayer(players: PlayerDto[], username: string, item: Item): PlayerDto[] {
     const playerIndex = players.findIndex(player => player.username === username);
     if (playerIndex !== -1) {
-        players[playerIndex].items = removeItemFromArray(players[playerIndex].items, item);
+        players[playerIndex].items = removeItemFromArray(players[playerIndex].items ?? [], item);
     }
     return players;
 }
@@ -84,7 +84,7 @@ export function toLowercaseKeys(obj: object): object {
     return obj;
 }
 
-export function checkClientIsPlayer(client: ConnectedClient): client is Player {
+export function checkClientIsPlayer(client: ConnectedClientDto): client is PlayerDto {
     return client.clientType === ClientType.Player;
 }
 

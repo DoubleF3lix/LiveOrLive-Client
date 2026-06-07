@@ -11,9 +11,9 @@ import {
 import { Button } from "@/button";
 import LabelAndTextInputGridRow from "~/components/micro/LabelAndTextInputGridRow";
 import { RefreshCw } from "lucide-react";
-import { Lobby } from "~/types/generated/LiveOrLiveServer";
 import { toLowercaseKeys } from "~/lib/utils";
 import { BASE_URL } from "~/lib/const";
+import { LobbyDto } from "~/types/generated/LiveOrLiveServer.Models.Dto";
 
 
 type JoinPubicLobbyCardArgs = {
@@ -21,7 +21,7 @@ type JoinPubicLobbyCardArgs = {
 };
 
 export default function JoinPublicLobbyCard({ validateAndSetConnectionInfo }: JoinPubicLobbyCardArgs) {
-    const [lobbies, setLobbies] = useState<Lobby[]>([]);
+    const [lobbies, setLobbies] = useState<LobbyDto[]>([]);
     const selectedLobbyId = useRef<string>("");
     const username = useRef<string>("");
 
@@ -32,7 +32,7 @@ export default function JoinPublicLobbyCard({ validateAndSetConnectionInfo }: Jo
     function getLobbies() {
         fetch(`${BASE_URL}/lobbies`)
             .then(response => response.json())
-            .then((lobbies: Lobby[]) => setLobbies(lobbies.map(toLowercaseKeys) as Lobby[]));
+            .then((lobbies: LobbyDto[]) => setLobbies(lobbies.map(toLowercaseKeys) as LobbyDto[]));
     }
 
     return <>

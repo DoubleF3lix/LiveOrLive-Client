@@ -1,11 +1,11 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { getHubProxyFactory, getReceiverRegister } from "~/types/generated/TypedSignalR.Client";
 import { IBaseGameRequest, IBaseGameResponse, IChatRequest, IChatResponse, IConnectionRequest, IConnectionResponse, IGameLogRequest, IGameLogResponse, IGenericRequest, IGenericResponse, IHubServerResponse, IItemRequest, IItemResponse } from "~/types/generated/TypedSignalR.Client/LiveOrLiveServer.HubPartials";
-import { Lobby } from "~/types/generated/LiveOrLiveServer";
-import { ChatMessage, ConnectedClient, GameLogMessage } from "~/types/generated/LiveOrLiveServer.Models";
+import { ChatMessage, GameLogMessage } from "~/types/generated/LiveOrLiveServer.Models";
 import { BulletType, ClientType, Item } from "~/types/generated/LiveOrLiveServer.Enums";
 import { BASE_URL, SERVER_TIMEOUT } from "~/lib/const";
 import { NewRoundResult } from "~/types/generated/LiveOrLiveServer.Models.Results";
+import { ConnectedClientDto, LobbyDto } from "~/types/generated/LiveOrLiveServer.Models.Dto";
 
 
 type ResponseCallback<K extends keyof IHubServerResponse = keyof IHubServerResponse> = IHubServerResponse[K];
@@ -66,11 +66,11 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
         this.connectionReceiver = {
             connectionSuccess: async (): Promise<void> => this.sendSubscription("connectionSuccess"),
             connectionFailed: async (reason: string): Promise<void> => this.sendSubscription("connectionFailed", reason),
-            clientJoined: async (player: ConnectedClient): Promise<void> => this.sendSubscription("clientJoined", player),
+            clientJoined: async (player: ConnectedClientDto): Promise<void> => this.sendSubscription("clientJoined", player),
             clientLeft: async (username: string): Promise<void> => this.sendSubscription("clientLeft", username),
             hostChanged: async (previous: string, current: string, reason: string): Promise<void> => this.sendSubscription("hostChanged", previous, current, reason),
             clientKicked: async (username: string): Promise<void> => this.sendSubscription("clientKicked", username),
-            clientTypeChanged: async (newClient: ConnectedClient): Promise<void> => this.sendSubscription("clientTypeChanged", newClient)
+            clientTypeChanged: async (newClient: ConnectedClientDto): Promise<void> => this.sendSubscription("clientTypeChanged", newClient)
         };
 
         this.baseGameReceiver = {
@@ -79,8 +79,10 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
             newRoundStarted: async (result: NewRoundResult): Promise<void> => this.sendSubscription("newRoundStarted", result),
             turnStarted: async (username: string): Promise<void> => this.sendSubscription("turnStarted", username),
             turnEnded: async (username: string): Promise<void> => this.sendSubscription("turnEnded", username),
-            getLobbyDataResponse: async (lobbyData: Lobby): Promise<void> => this.sendSubscription("getLobbyDataResponse", lobbyData),
-            playerShotAt: async (target: string, bulletType: BulletType, damage: number): Promise<void> => this.sendSubscription("playerShotAt", target, bulletType, damage)
+            getLobbyDataResponse: async (lobbyData: LobbyDto): Promise<void> => this.sendSubscription("getLobbyDataResponse", lobbyData),
+            playerShotAt: async (target: string, bulletType: BulletType, damage: number, ricochets: string[]): Promise<void> => this.sendSubscription("playerShotAt", target, bulletType, damage, ricochets),
+            suddenDeathActivated: async (): Promise<void> => this.sendSubscription("suddenDeathActivated"),
+            playerEliminated: async (username: string): Promise<void> => this.sendSubscription("playerEliminated", username),
         };
 
         this.genericReceiver = {

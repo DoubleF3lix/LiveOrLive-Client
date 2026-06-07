@@ -7,14 +7,13 @@ import { Toaster } from "@/sonner";
 import OpenSidebarButton from "~/components/Chat/OpenSidebarButton";
 import {
     clientJoined, loadFromPacket, clientLeft, setHost, gameStarted,
-    turnStarted, turnEnded, playerShotAt, addItemsFromRoundStart,
-    setTurnOrder, reverseTurnOrderItemUsed, rackChamberItemUsed,
+    turnStarted, turnEnded, playerShotAt, suddenDeathActivated, playerEliminated, 
+    addItemsFromRoundStart, setTurnOrder, reverseTurnOrderItemUsed, rackChamberItemUsed,
     extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed,
     invertItemUsed, chamberCheckItemUsed, doubleDamageItemUsed,
-    skipItemUsed, ricochetItemUsed
+    skipItemUsed, ricochetItemUsed,
 } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
-import { Lobby } from "~/types/generated/LiveOrLiveServer";
 import AlertDialogQueue from "~/components/AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 import PlayerCard from "~/components/PlayerCard";
@@ -27,10 +26,10 @@ import { BulletType, Item } from "~/types/generated/LiveOrLiveServer.Enums";
 import { NewRoundResult } from "~/types/generated/LiveOrLiveServer.Models.Results";
 import { reverseTurnOrder, setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
 import UseItemDialog from "~/components/UseItemDialog";
-import { ConnectedClient } from "~/types/generated/LiveOrLiveServer.Models";
 import GameLogQuickView from "./micro/GameLogQuickView";
 import ClientTypeSwitch from "./ClientTypeSwitch";
 import { clearGameLogMessages } from "~/store/GameLogSlice";
+import { ConnectedClientDto, LobbyDto } from "~/types/generated/LiveOrLiveServer.Models.Dto";
 
 
 export default function MainGameUI() {
@@ -68,7 +67,7 @@ export default function MainGameUI() {
     }
 
     useEffect(() => {
-        const sub_clientJoined = serverConnection.subscribe("clientJoined", async (player: ConnectedClient) => {
+        const sub_clientJoined = serverConnection.subscribe("clientJoined", async (player: ConnectedClientDto) => {
             dispatch(clientJoined(player));
         });
 
@@ -92,7 +91,7 @@ export default function MainGameUI() {
             }
         });
 
-        const sub_clientTypeChanged = serverConnection.subscribe("clientTypeChanged", async (newClient: ConnectedClient) => {
+        const sub_clientTypeChanged = serverConnection.subscribe("clientTypeChanged", async (newClient: ConnectedClientDto) => {
             // This handles removing them from either spectators or players by username
             dispatch(clientLeft(newClient.username));
             // And this handles re-adding them to the one we didn't remove them from
@@ -132,12 +131,20 @@ export default function MainGameUI() {
             dispatch(turnEnded());
         });
 
-        const sub_getLobbyDataResponse = serverConnection.subscribe("getLobbyDataResponse", async (lobbyData: Lobby) => {
+        const sub_getLobbyDataResponse = serverConnection.subscribe("getLobbyDataResponse", async (lobbyData: LobbyDto) => {
             dispatch(loadFromPacket(lobbyData));
         });
 
-        const sub_playerShotAt = serverConnection.subscribe("playerShotAt", async (username: string, bulletType: BulletType, damage: number) => {
-            dispatch(playerShotAt({ username: username, bulletType: bulletType, damage: damage }));
+        const sub_playerShotAt = serverConnection.subscribe("playerShotAt", async (username: string, bulletType: BulletType, damage: number, ricochets: string[]) => {
+            dispatch(playerShotAt({ username: username, bulletType: bulletType, damage: damage, ricochets: ricochets }));
+        });
+
+        const sub_suddenDeathActivated = serverConnection.subscribe("suddenDeathActivated", async () => {
+            dispatch(suddenDeathActivated());
+        });
+
+        const sub_playerEliminated = serverConnection.subscribe("playerEliminated", async (username: string) => {
+            dispatch(playerEliminated(username));
         });
 
         const sub_showAlert = serverConnection.subscribe("showAlert", async (message: string) => {
@@ -212,6 +219,8 @@ export default function MainGameUI() {
             serverConnection.unsubscribe("turnEnded", sub_turnEnded);
             serverConnection.unsubscribe("getLobbyDataResponse", sub_getLobbyDataResponse);
             serverConnection.unsubscribe("playerShotAt", sub_playerShotAt);
+            serverConnection.unsubscribe("suddenDeathActivated", sub_suddenDeathActivated);
+            serverConnection.unsubscribe("playerEliminated", sub_playerEliminated);
             serverConnection.unsubscribe("showAlert", sub_showAlert);
             serverConnection.unsubscribe("achievementUnlocked", sub_achievementUnlocked);
             serverConnection.unsubscribe("actionFailed", sub_actionFailed);

@@ -7,6 +7,9 @@ Settings configuration
 Chat length limits
 Message deletion/moderation
 
+Add extra items
+Add item looting on dead players
+
 
 Wishlist:
 Markdown in chat (install react-markdown and uncomment in ChatMessage to deploy)

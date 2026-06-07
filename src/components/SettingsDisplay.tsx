@@ -29,7 +29,6 @@ export default function SettingsDisplay({ settings, className, editable = true }
         <LabelAndNumberGridRow label="Min Live Rounds:" numberRef={modSettings.minLiveRounds} disabled={!editable}></LabelAndNumberGridRow>
         <LabelAndNumberGridRow label="Max Blank Rounds:" numberRef={modSettings.maxBlankRounds} disabled={!editable}></LabelAndNumberGridRow>
         <LabelAndNumberGridRow label="Max Live Rounds:" numberRef={modSettings.maxLiveRounds} disabled={!editable}></LabelAndNumberGridRow>
-        <LabelAndSwitchGridRow label="Show Fired Rounds Tally:" boolRef={modSettings.showFiredRoundsTally} disabled={!editable}></LabelAndSwitchGridRow>
         <Separator className="col-span-2" />
         <LabelAndNumberGridRow label="Default Lives:" numberRef={modSettings.defaultLives} disabled={!editable}></LabelAndNumberGridRow>
         <LabelAndNumberGridRow label="Max Lives:" numberRef={modSettings.maxLives} disabled={!editable}></LabelAndNumberGridRow>
@@ -40,9 +39,6 @@ export default function SettingsDisplay({ settings, className, editable = true }
         <LabelAndNumberGridRow label="Min Items Per Round:" numberRef={modSettings.minItemsPerRound} disabled={!editable}></LabelAndNumberGridRow>
         <LabelAndNumberGridRow label="Max Items Per Round:" numberRef={modSettings.maxItemsPerRound} disabled={!editable}></LabelAndNumberGridRow>
         <LabelAndNumberGridRow label="Max Items:" numberRef={modSettings.maxItems} disabled={!editable}></LabelAndNumberGridRow>
-        <LabelAndSwitchGridRow label="Loot Items On Kill:" boolRef={modSettings.lootItemsOnKill} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndNumberGridRow label="Max Loot Items On Kill:" numberRef={modSettings.maxLootItemsOnKill} disabled={!editable}></LabelAndNumberGridRow>
-        <LabelAndSwitchGridRow label="Allow Loot Items Exceed Max:" boolRef={modSettings.allowLootItemsExceedMax} disabled={!editable}></LabelAndSwitchGridRow>
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Enable Reverse Turn Order Item:" boolRef={modSettings.enableReverseTurnOrderItem} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Enable Rack Chamber Item:" boolRef={modSettings.enableRackChamberItem} disabled={!editable}></LabelAndSwitchGridRow>
@@ -54,20 +50,15 @@ export default function SettingsDisplay({ settings, className, editable = true }
         <LabelAndSwitchGridRow label="Enable Double Damage Item:" boolRef={modSettings.enableDoubleDamageItem} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Enable Skip Item:" boolRef={modSettings.enableSkipItem} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Enable Ricochet Item:" boolRef={modSettings.enableRicochetItem} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Enable Trenchcoat Item:" boolRef={modSettings.enableTrenchcoatItem} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Enable Misfire Item:" boolRef={modSettings.enableMisfireItem} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Enable Hypnotize Item:" boolRef={modSettings.enableHypnotizeItem} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Enable Pocket Pistol Item:" boolRef={modSettings.enablePocketPistolItem} disabled={!editable}></LabelAndSwitchGridRow>
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Allow Life Donation:" boolRef={modSettings.allowLifeDonation} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndNumberGridRow label="Allow Player Revival:" numberRef={modSettings.maxPlayerRevives} disabled={!editable}></LabelAndNumberGridRow>
+        <LabelAndNumberGridRow label="Max Player Revives:" numberRef={modSettings.maxPlayerRevives} disabled={!editable}></LabelAndNumberGridRow>
         <LabelAndSwitchGridRow label="Allow Double Damage Stacking:" boolRef={modSettings.allowDoubleDamageStacking} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Allow Sequential Skips:" boolRef={modSettings.allowSequentialSkips} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Allow Self Skip:" boolRef={modSettings.allowSelfSkip} disabled={!editable}></LabelAndSwitchGridRow>
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Show Ricochets:" boolRef={modSettings.showRicochets} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Show Ricochets Counter:" boolRef={modSettings.showRicochetsCounter} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Disable Deal Reverse/Ricochet With Two Players:" boolRef={modSettings.disableDealReverseAndRicochetWhenTwoPlayers} disabled={!editable}></LabelAndSwitchGridRow> 
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Lose Skip After Round:" boolRef={modSettings.loseSkipAfterRound} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Ricochet Ignore Skipped Players:" boolRef={modSettings.ricochetIgnoreSkippedPlayers} disabled={!editable}></LabelAndSwitchGridRow>
@@ -75,9 +66,6 @@ export default function SettingsDisplay({ settings, className, editable = true }
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Second Wind:" boolRef={modSettings.secondWind} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Copy Skip On Kill:" boolRef={modSettings.copySkipOnKill} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Allow Looting Dead:" boolRef={modSettings.allowLootingDead} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Refresh Dead Player Items:" boolRef={modSettings.refreshDeadPlayerItems} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Clear Dead Player Items After Round:" boolRef={modSettings.clearDeadPlayerItemsAfterRound} disabled={!editable}></LabelAndSwitchGridRow>
         <Separator className="col-span-2" />
         {/* <Button className="col-span-2" variant="secondary" onClick={() => setEditLifeGambleWeightsModalOpen(true)} disabled={!editable}>Edit Life Gamble Weights</Button>
                             <Separator className="col-span-2" /> */}

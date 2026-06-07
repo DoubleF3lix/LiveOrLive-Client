@@ -5,9 +5,9 @@
 import type { HubConnection, IStreamResult, Subject } from '@microsoft/signalr';
 import type { IChatRequest, IGameLogRequest, IConnectionRequest, IBaseGameRequest, IGenericRequest, IItemRequest, IHubServerResponse, IChatResponse, IGameLogResponse, IConnectionResponse, IBaseGameResponse, IGenericResponse, IItemResponse } from './LiveOrLiveServer.HubPartials';
 import type { ClientType, Item, BulletType } from '../LiveOrLiveServer.Enums';
-import type { ChatMessage, GameLogMessage, ConnectedClient } from '../LiveOrLiveServer.Models';
+import type { ChatMessage, GameLogMessage } from '../LiveOrLiveServer.Models';
+import type { ConnectedClientDto, LobbyDto } from '../LiveOrLiveServer.Models.Dto';
 import type { NewRoundResult } from '../LiveOrLiveServer.Models.Results';
-import type { Lobby } from '../LiveOrLiveServer';
 
 
 // components
@@ -317,18 +317,20 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __gameLogUpdate = (...args: [GameLogMessage]) => receiver.gameLogUpdate(...args);
         const __connectionSuccess = () => receiver.connectionSuccess();
         const __connectionFailed = (...args: [string]) => receiver.connectionFailed(...args);
-        const __clientJoined = (...args: [ConnectedClient]) => receiver.clientJoined(...args);
+        const __clientJoined = (...args: [ConnectedClientDto]) => receiver.clientJoined(...args);
         const __clientLeft = (...args: [string]) => receiver.clientLeft(...args);
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
         const __clientKicked = (...args: [string]) => receiver.clientKicked(...args);
-        const __clientTypeChanged = (...args: [ConnectedClient]) => receiver.clientTypeChanged(...args);
+        const __clientTypeChanged = (...args: [ConnectedClientDto]) => receiver.clientTypeChanged(...args);
         const __gameStarted = (...args: [string[]]) => receiver.gameStarted(...args);
         const __gameEnded = (...args: [string, string[]]) => receiver.gameEnded(...args);
         const __newRoundStarted = (...args: [NewRoundResult]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);
-        const __getLobbyDataResponse = (...args: [Lobby]) => receiver.getLobbyDataResponse(...args);
-        const __playerShotAt = (...args: [string, BulletType, number]) => receiver.playerShotAt(...args);
+        const __getLobbyDataResponse = (...args: [LobbyDto]) => receiver.getLobbyDataResponse(...args);
+        const __playerShotAt = (...args: [string, BulletType, number, string[]]) => receiver.playerShotAt(...args);
+        const __suddenDeathActivated = () => receiver.suddenDeathActivated();
+        const __playerEliminated = (...args: [string]) => receiver.playerEliminated(...args);
         const __showAlert = (...args: [string]) => receiver.showAlert(...args);
         const __achievementUnlocked = (...args: [string, string]) => receiver.achievementUnlocked(...args);
         const __actionFailed = (...args: [string]) => receiver.actionFailed(...args);
@@ -363,6 +365,8 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         connection.on("TurnEnded", __turnEnded);
         connection.on("GetLobbyDataResponse", __getLobbyDataResponse);
         connection.on("PlayerShotAt", __playerShotAt);
+        connection.on("SuddenDeathActivated", __suddenDeathActivated);
+        connection.on("PlayerEliminated", __playerEliminated);
         connection.on("ShowAlert", __showAlert);
         connection.on("AchievementUnlocked", __achievementUnlocked);
         connection.on("ActionFailed", __actionFailed);
@@ -398,6 +402,8 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
             { methodName: "TurnEnded", method: __turnEnded },
             { methodName: "GetLobbyDataResponse", method: __getLobbyDataResponse },
             { methodName: "PlayerShotAt", method: __playerShotAt },
+            { methodName: "SuddenDeathActivated", method: __suddenDeathActivated },
+            { methodName: "PlayerEliminated", method: __playerEliminated },
             { methodName: "ShowAlert", method: __showAlert },
             { methodName: "AchievementUnlocked", method: __achievementUnlocked },
             { methodName: "ActionFailed", method: __actionFailed },
@@ -482,11 +488,11 @@ class IConnectionResponse_Binder implements ReceiverRegister<IConnectionResponse
 
         const __connectionSuccess = () => receiver.connectionSuccess();
         const __connectionFailed = (...args: [string]) => receiver.connectionFailed(...args);
-        const __clientJoined = (...args: [ConnectedClient]) => receiver.clientJoined(...args);
+        const __clientJoined = (...args: [ConnectedClientDto]) => receiver.clientJoined(...args);
         const __clientLeft = (...args: [string]) => receiver.clientLeft(...args);
         const __hostChanged = (...args: [string, string, string]) => receiver.hostChanged(...args);
         const __clientKicked = (...args: [string]) => receiver.clientKicked(...args);
-        const __clientTypeChanged = (...args: [ConnectedClient]) => receiver.clientTypeChanged(...args);
+        const __clientTypeChanged = (...args: [ConnectedClientDto]) => receiver.clientTypeChanged(...args);
 
         connection.on("ConnectionSuccess", __connectionSuccess);
         connection.on("ConnectionFailed", __connectionFailed);
@@ -524,8 +530,10 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
         const __newRoundStarted = (...args: [NewRoundResult]) => receiver.newRoundStarted(...args);
         const __turnStarted = (...args: [string]) => receiver.turnStarted(...args);
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);
-        const __getLobbyDataResponse = (...args: [Lobby]) => receiver.getLobbyDataResponse(...args);
-        const __playerShotAt = (...args: [string, BulletType, number]) => receiver.playerShotAt(...args);
+        const __getLobbyDataResponse = (...args: [LobbyDto]) => receiver.getLobbyDataResponse(...args);
+        const __playerShotAt = (...args: [string, BulletType, number, string[]]) => receiver.playerShotAt(...args);
+        const __suddenDeathActivated = () => receiver.suddenDeathActivated();
+        const __playerEliminated = (...args: [string]) => receiver.playerEliminated(...args);
 
         connection.on("GameStarted", __gameStarted);
         connection.on("GameEnded", __gameEnded);
@@ -534,6 +542,8 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
         connection.on("TurnEnded", __turnEnded);
         connection.on("GetLobbyDataResponse", __getLobbyDataResponse);
         connection.on("PlayerShotAt", __playerShotAt);
+        connection.on("SuddenDeathActivated", __suddenDeathActivated);
+        connection.on("PlayerEliminated", __playerEliminated);
 
         const methodList: ReceiverMethod[] = [
             { methodName: "GameStarted", method: __gameStarted },
@@ -542,7 +552,9 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
             { methodName: "TurnStarted", method: __turnStarted },
             { methodName: "TurnEnded", method: __turnEnded },
             { methodName: "GetLobbyDataResponse", method: __getLobbyDataResponse },
-            { methodName: "PlayerShotAt", method: __playerShotAt }
+            { methodName: "PlayerShotAt", method: __playerShotAt },
+            { methodName: "SuddenDeathActivated", method: __suddenDeathActivated },
+            { methodName: "PlayerEliminated", method: __playerEliminated }
         ]
 
         return new ReceiverMethodSubscription(connection, methodList);

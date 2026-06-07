@@ -1,13 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { DEFAULT_SETTINGS } from "~/lib/const";
 import { checkClientIsPlayer, removeGameItemFromPlayer, removeItemFromArray } from "~/lib/utils";
-import { Lobby } from "~/types/generated/LiveOrLiveServer";
+import { LobbyDto, ConnectedClientDto } from "~/types/generated/LiveOrLiveServer.Models.Dto";
 import { Item } from "~/types/generated/LiveOrLiveServer.Enums";
-import { ConnectedClient } from "~/types/generated/LiveOrLiveServer.Models";
 import { NewRoundResult } from "~/types/generated/LiveOrLiveServer.Models.Results";
 
 
-const initialLobbyDataSliceState: Lobby = {
+const initialLobbyDataSliceState: LobbyDto = {
     id: "",
     name: "",
     creationTime: 0,
@@ -26,10 +25,10 @@ export const lobbyDataSlice = createSlice({
     name: "lobbyData",
     initialState: initialLobbyDataSliceState,
     reducers: {
-        loadFromPacket: (_state, action: PayloadAction<Lobby>) => {
+        loadFromPacket: (_state, action: PayloadAction<LobbyDto>) => {
             return action.payload;
         },
-        clientJoined: (state, action: PayloadAction<ConnectedClient>) => {
+        clientJoined: (state, action: PayloadAction<ConnectedClientDto>) => {
             if (checkClientIsPlayer(action.payload)) {
                 const existingPlayer = state.players.find(player => player.username === action.payload.username);
                 if (existingPlayer) {
@@ -72,7 +71,9 @@ export const lobbyDataSlice = createSlice({
             for (const [username, itemSet] of Object.entries(action.payload)) {
                 if (itemSet) {
                     const targetIndex = state.players.findIndex(player => player.username === username);
-                    state.players[targetIndex].items = [...state.players[targetIndex].items, ...itemSet];
+                    if (targetIndex !== -1) {
+                        state.players[targetIndex].items = [...(state.players[targetIndex].items ?? []), ...itemSet];
+                    }
                 }
             }
         },
@@ -86,10 +87,31 @@ export const lobbyDataSlice = createSlice({
         turnEnded: (state) => {
             state.currentTurn = undefined;
         },
-        playerShotAt: (state, action: PayloadAction<{ username: string, bulletType: number, damage: number }>) => {
+        playerShotAt: (state, action: PayloadAction<{ username: string, bulletType: number, damage: number, ricochets: string[] }>) => {
             const targetIndex = state.players.findIndex(player => player.username === action.payload.username);
             if (targetIndex !== -1) {
                 state.players[targetIndex].lives = Math.max(0, state.players[targetIndex].lives - action.payload.damage);
+            }
+            for (const ricochetUsername of action.payload.ricochets) {
+                const ricochetIndex = state.players.findIndex(player => player.username === ricochetUsername);
+                if (ricochetIndex !== -1) {
+                    state.players[ricochetIndex].isRicochet = false;
+                }
+            }
+        },
+        suddenDeathActivated: (state) => {
+            state.suddenDeathActivated = true;
+            // Turn all existing extra life items into double damage
+            state.players.forEach(player => {
+                player.items = (player.items ?? []).map(item =>
+                    item === Item.ExtraLife ? Item.DoubleDamage : item
+                );
+            });
+        },
+        playerEliminated: (state, action: PayloadAction<string>) => {
+            const playerIndex = state.players.findIndex(player => player.username === action.payload);
+            if (playerIndex !== -1) {
+                state.players[playerIndex].eliminated = true;
             }
         },
         reverseTurnOrderItemUsed: (state, action: PayloadAction<{ itemSourceUsername: string }>) => {
@@ -102,9 +124,7 @@ export const lobbyDataSlice = createSlice({
             const targetIndex = state.players.findIndex(player => player.username === action.payload.target);
             if (targetIndex !== -1) {
                 state.players[targetIndex].lives += 1;
-                // state.players[targetIndex].lives = Math.min(state.players[targetIndex].lives + 1, state.settings.maxLives);
             }
-
             state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.ExtraLife);
         },
         pickpocketItemUsed: (state, action: PayloadAction<{ target: string, item: Item, itemTarget: string | undefined, itemSourceUsername: string }>) => {
@@ -133,10 +153,16 @@ export const lobbyDataSlice = createSlice({
             if (targetIndex !== -1) {
                 state.players[targetIndex].isSkipped = true;
             }
-
             state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.Skip);
         },
         ricochetItemUsed: (state, action: PayloadAction<{ target: string, itemSourceUsername: string }>) => {
+            // Add the badge if we're told who to add it to
+            if (action.payload.target !== null) { 
+                const targetIndex = state.players.findIndex(player => player.username === action.payload.target);
+                if (targetIndex !== -1) {
+                    state.players[targetIndex].isRicochet = true;
+                }
+            }
             state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.Ricochet);
         }
     }
@@ -144,8 +170,8 @@ export const lobbyDataSlice = createSlice({
 
 export const {
     loadFromPacket, clientJoined, clientLeft, setHost, gameStarted, setTurnOrder, gameEnded,
-    addItemsFromRoundStart, turnStarted, turnEnded, playerShotAt, reverseTurnOrderItemUsed,
-    rackChamberItemUsed, extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed, invertItemUsed,
-    chamberCheckItemUsed, doubleDamageItemUsed, skipItemUsed, ricochetItemUsed
+    addItemsFromRoundStart, turnStarted, turnEnded, playerShotAt, suddenDeathActivated, playerEliminated,
+    reverseTurnOrderItemUsed, rackChamberItemUsed, extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed, 
+    invertItemUsed, chamberCheckItemUsed, doubleDamageItemUsed, skipItemUsed, ricochetItemUsed
 } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;

@@ -4,9 +4,9 @@
 // @ts-nocheck
 import type { IStreamResult, Subject } from '@microsoft/signalr';
 import type { ClientType, Item, BulletType } from '../LiveOrLiveServer.Enums';
-import type { ChatMessage, GameLogMessage, ConnectedClient } from '../LiveOrLiveServer.Models';
+import type { ChatMessage, GameLogMessage } from '../LiveOrLiveServer.Models';
+import type { ConnectedClientDto, LobbyDto } from '../LiveOrLiveServer.Models.Dto';
 import type { NewRoundResult } from '../LiveOrLiveServer.Models.Results';
-import type { Lobby } from '../LiveOrLiveServer';
 
 export type IChatRequest = {
     /**
@@ -166,10 +166,10 @@ export type IHubServerResponse = {
     */
     connectionFailed(reason: string): Promise<void>;
     /**
-    * @param client Transpiled from LiveOrLiveServer.Models.ConnectedClient
+    * @param client Transpiled from LiveOrLiveServer.Models.Dto.ConnectedClientDto
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    clientJoined(client: ConnectedClient): Promise<void>;
+    clientJoined(client: ConnectedClientDto): Promise<void>;
     /**
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -188,10 +188,10 @@ export type IHubServerResponse = {
     */
     clientKicked(username: string): Promise<void>;
     /**
-    * @param newClient Transpiled from LiveOrLiveServer.Models.ConnectedClient
+    * @param newClient Transpiled from LiveOrLiveServer.Models.Dto.ConnectedClientDto
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    clientTypeChanged(newClient: ConnectedClient): Promise<void>;
+    clientTypeChanged(newClient: ConnectedClientDto): Promise<void>;
     /**
     * @param turnOrder Transpiled from System.Collections.Generic.List<string>
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -219,17 +219,27 @@ export type IHubServerResponse = {
     */
     turnEnded(username: string): Promise<void>;
     /**
-    * @param lobbyData Transpiled from LiveOrLiveServer.Lobby
+    * @param lobbyData Transpiled from LiveOrLiveServer.Models.Dto.LobbyDto
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    getLobbyDataResponse(lobbyData: Lobby): Promise<void>;
+    getLobbyDataResponse(lobbyData: LobbyDto): Promise<void>;
     /**
     * @param target Transpiled from string
     * @param bulletType Transpiled from LiveOrLiveServer.Enums.BulletType
     * @param damage Transpiled from int
+    * @param ricochets Transpiled from System.Collections.Generic.List<string>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    playerShotAt(target: string, bulletType: BulletType, damage: number): Promise<void>;
+    playerShotAt(target: string, bulletType: BulletType, damage: number, ricochets: string[]): Promise<void>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    suddenDeathActivated(): Promise<void>;
+    /**
+    * @param username Transpiled from string
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    playerEliminated(username: string): Promise<void>;
     /**
     * @param message Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -355,10 +365,10 @@ export type IConnectionResponse = {
     */
     connectionFailed(reason: string): Promise<void>;
     /**
-    * @param client Transpiled from LiveOrLiveServer.Models.ConnectedClient
+    * @param client Transpiled from LiveOrLiveServer.Models.Dto.ConnectedClientDto
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    clientJoined(client: ConnectedClient): Promise<void>;
+    clientJoined(client: ConnectedClientDto): Promise<void>;
     /**
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -377,10 +387,10 @@ export type IConnectionResponse = {
     */
     clientKicked(username: string): Promise<void>;
     /**
-    * @param newClient Transpiled from LiveOrLiveServer.Models.ConnectedClient
+    * @param newClient Transpiled from LiveOrLiveServer.Models.Dto.ConnectedClientDto
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    clientTypeChanged(newClient: ConnectedClient): Promise<void>;
+    clientTypeChanged(newClient: ConnectedClientDto): Promise<void>;
 }
 
 export type IBaseGameResponse = {
@@ -411,17 +421,27 @@ export type IBaseGameResponse = {
     */
     turnEnded(username: string): Promise<void>;
     /**
-    * @param lobbyData Transpiled from LiveOrLiveServer.Lobby
+    * @param lobbyData Transpiled from LiveOrLiveServer.Models.Dto.LobbyDto
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    getLobbyDataResponse(lobbyData: Lobby): Promise<void>;
+    getLobbyDataResponse(lobbyData: LobbyDto): Promise<void>;
     /**
     * @param target Transpiled from string
     * @param bulletType Transpiled from LiveOrLiveServer.Enums.BulletType
     * @param damage Transpiled from int
+    * @param ricochets Transpiled from System.Collections.Generic.List<string>
     * @returns Transpiled from System.Threading.Tasks.Task
     */
-    playerShotAt(target: string, bulletType: BulletType, damage: number): Promise<void>;
+    playerShotAt(target: string, bulletType: BulletType, damage: number, ricochets: string[]): Promise<void>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    suddenDeathActivated(): Promise<void>;
+    /**
+    * @param username Transpiled from string
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    playerEliminated(username: string): Promise<void>;
 }
 
 export type IGenericResponse = {

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Lobby } from "~/types/generated/LiveOrLiveServer";
 import ClickableTableRowBody from "~/components/micro/ClickableTableRowBody";
 import ClickableTableRow from "~/components/micro/ClickableTableRow";
 import {
@@ -16,11 +15,12 @@ import {
     PaginationPrevious,
 } from "@/pagination"
 import { Check } from "lucide-react";
+import { LobbyDto } from "~/types/generated/LiveOrLiveServer.Models.Dto";
 
 
 type LobbySelectorArgs = {
     selectedLobbyIdRef: React.MutableRefObject<string>;
-    lobbies: Lobby[];
+    lobbies: LobbyDto[];
     className?: string;
 };
 

@@ -3,13 +3,13 @@ import { SelectItem } from "@/select";
 import { Item } from "~/types/generated/LiveOrLiveServer.Enums";
 import UseStolenItem from "~/components/UseItem/UseStolenItem";
 import { condenseItemList } from "~/lib/utils";
-import { Player } from "~/types/generated/LiveOrLiveServer.Models";
+import { PlayerDto } from "~/types/generated/LiveOrLiveServer.Models.Dto";
 
 
 type UsePickpocketArgs = {
     playerUsernamesSelfFirst: string[];
     playerUsernamesSelfLast: string[];
-    otherPlayers: Player[];
+    otherPlayers: PlayerDto[];
     targetUsername: string;
     setTargetUsername: (value: string) => void;
     selectedItemToSteal: Item | -1;
@@ -19,7 +19,7 @@ type UsePickpocketArgs = {
 };
 
 export default function UsePickpocket({ playerUsernamesSelfFirst, playerUsernamesSelfLast, otherPlayers, targetUsername, setTargetUsername, selectedItemToSteal, setSelectedItemToSteal, stolenItemTargetUsername, setStolenItemTargetUsername }: UsePickpocketArgs) {
-    const validPickpocketTargets: Player[] = otherPlayers
+    const validPickpocketTargets: PlayerDto[] = otherPlayers
         .map(player => ({ ...player, items: player.items.filter(item => item !== Item.Pickpocket) }))
         .filter(player => player.items.length >= 1) ?? [];
     const validPickpocketTargetUsernames = validPickpocketTargets.map(player => player.username);
