@@ -12,6 +12,7 @@ import {
     extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed,
     invertItemUsed, chamberCheckItemUsed, doubleDamageItemUsed,
     skipItemUsed, ricochetItemUsed,
+    showdownActivated,
 } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
 import AlertDialogQueue from "~/components/AlertDialogQueue";
@@ -139,12 +140,16 @@ export default function MainGameUI() {
             dispatch(playerShotAt({ username: username, bulletType: bulletType, damage: damage, ricochets: ricochets }));
         });
 
+        const sub_playerEliminated = serverConnection.subscribe("playerEliminated", async (username: string) => {
+            dispatch(playerEliminated(username));
+        });
+
         const sub_suddenDeathActivated = serverConnection.subscribe("suddenDeathActivated", async () => {
             dispatch(suddenDeathActivated());
         });
 
-        const sub_playerEliminated = serverConnection.subscribe("playerEliminated", async (username: string) => {
-            dispatch(playerEliminated(username));
+        const sub_showdownActivated = serverConnection.subscribe("showdownActivated", async () => {
+            dispatch(showdownActivated());
         });
 
         const sub_showAlert = serverConnection.subscribe("showAlert", async (message: string) => {
@@ -219,8 +224,9 @@ export default function MainGameUI() {
             serverConnection.unsubscribe("turnEnded", sub_turnEnded);
             serverConnection.unsubscribe("getLobbyDataResponse", sub_getLobbyDataResponse);
             serverConnection.unsubscribe("playerShotAt", sub_playerShotAt);
-            serverConnection.unsubscribe("suddenDeathActivated", sub_suddenDeathActivated);
             serverConnection.unsubscribe("playerEliminated", sub_playerEliminated);
+            serverConnection.unsubscribe("suddenDeathActivated", sub_suddenDeathActivated);
+            serverConnection.unsubscribe("showdownActivated", sub_showdownActivated);
             serverConnection.unsubscribe("showAlert", sub_showAlert);
             serverConnection.unsubscribe("achievementUnlocked", sub_achievementUnlocked);
             serverConnection.unsubscribe("actionFailed", sub_actionFailed);

@@ -232,14 +232,18 @@ export type IHubServerResponse = {
     */
     playerShotAt(target: string, bulletType: BulletType, damage: number, ricochets: string[]): Promise<void>;
     /**
-    * @returns Transpiled from System.Threading.Tasks.Task
-    */
-    suddenDeathActivated(): Promise<void>;
-    /**
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     playerEliminated(username: string): Promise<void>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    suddenDeathActivated(): Promise<void>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    showdownActivated(): Promise<void>;
     /**
     * @param message Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
@@ -434,14 +438,18 @@ export type IBaseGameResponse = {
     */
     playerShotAt(target: string, bulletType: BulletType, damage: number, ricochets: string[]): Promise<void>;
     /**
-    * @returns Transpiled from System.Threading.Tasks.Task
-    */
-    suddenDeathActivated(): Promise<void>;
-    /**
     * @param username Transpiled from string
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     playerEliminated(username: string): Promise<void>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    suddenDeathActivated(): Promise<void>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    showdownActivated(): Promise<void>;
 }
 
 export type IGenericResponse = {

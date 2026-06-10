@@ -81,8 +81,9 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
             turnEnded: async (username: string): Promise<void> => this.sendSubscription("turnEnded", username),
             getLobbyDataResponse: async (lobbyData: LobbyDto): Promise<void> => this.sendSubscription("getLobbyDataResponse", lobbyData),
             playerShotAt: async (target: string, bulletType: BulletType, damage: number, ricochets: string[]): Promise<void> => this.sendSubscription("playerShotAt", target, bulletType, damage, ricochets),
-            suddenDeathActivated: async (): Promise<void> => this.sendSubscription("suddenDeathActivated"),
             playerEliminated: async (username: string): Promise<void> => this.sendSubscription("playerEliminated", username),
+            suddenDeathActivated: async (): Promise<void> => this.sendSubscription("suddenDeathActivated"),
+            showdownActivated: async (): Promise<void> => this.sendSubscription("showdownActivated"),
         };
 
         this.genericReceiver = {

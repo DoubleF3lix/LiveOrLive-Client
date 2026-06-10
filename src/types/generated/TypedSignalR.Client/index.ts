@@ -329,8 +329,9 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);
         const __getLobbyDataResponse = (...args: [LobbyDto]) => receiver.getLobbyDataResponse(...args);
         const __playerShotAt = (...args: [string, BulletType, number, string[]]) => receiver.playerShotAt(...args);
-        const __suddenDeathActivated = () => receiver.suddenDeathActivated();
         const __playerEliminated = (...args: [string]) => receiver.playerEliminated(...args);
+        const __suddenDeathActivated = () => receiver.suddenDeathActivated();
+        const __showdownActivated = () => receiver.showdownActivated();
         const __showAlert = (...args: [string]) => receiver.showAlert(...args);
         const __achievementUnlocked = (...args: [string, string]) => receiver.achievementUnlocked(...args);
         const __actionFailed = (...args: [string]) => receiver.actionFailed(...args);
@@ -365,8 +366,9 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         connection.on("TurnEnded", __turnEnded);
         connection.on("GetLobbyDataResponse", __getLobbyDataResponse);
         connection.on("PlayerShotAt", __playerShotAt);
-        connection.on("SuddenDeathActivated", __suddenDeathActivated);
         connection.on("PlayerEliminated", __playerEliminated);
+        connection.on("SuddenDeathActivated", __suddenDeathActivated);
+        connection.on("ShowdownActivated", __showdownActivated);
         connection.on("ShowAlert", __showAlert);
         connection.on("AchievementUnlocked", __achievementUnlocked);
         connection.on("ActionFailed", __actionFailed);
@@ -402,8 +404,9 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
             { methodName: "TurnEnded", method: __turnEnded },
             { methodName: "GetLobbyDataResponse", method: __getLobbyDataResponse },
             { methodName: "PlayerShotAt", method: __playerShotAt },
-            { methodName: "SuddenDeathActivated", method: __suddenDeathActivated },
             { methodName: "PlayerEliminated", method: __playerEliminated },
+            { methodName: "SuddenDeathActivated", method: __suddenDeathActivated },
+            { methodName: "ShowdownActivated", method: __showdownActivated },
             { methodName: "ShowAlert", method: __showAlert },
             { methodName: "AchievementUnlocked", method: __achievementUnlocked },
             { methodName: "ActionFailed", method: __actionFailed },
@@ -532,8 +535,9 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
         const __turnEnded = (...args: [string]) => receiver.turnEnded(...args);
         const __getLobbyDataResponse = (...args: [LobbyDto]) => receiver.getLobbyDataResponse(...args);
         const __playerShotAt = (...args: [string, BulletType, number, string[]]) => receiver.playerShotAt(...args);
-        const __suddenDeathActivated = () => receiver.suddenDeathActivated();
         const __playerEliminated = (...args: [string]) => receiver.playerEliminated(...args);
+        const __suddenDeathActivated = () => receiver.suddenDeathActivated();
+        const __showdownActivated = () => receiver.showdownActivated();
 
         connection.on("GameStarted", __gameStarted);
         connection.on("GameEnded", __gameEnded);
@@ -542,8 +546,9 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
         connection.on("TurnEnded", __turnEnded);
         connection.on("GetLobbyDataResponse", __getLobbyDataResponse);
         connection.on("PlayerShotAt", __playerShotAt);
-        connection.on("SuddenDeathActivated", __suddenDeathActivated);
         connection.on("PlayerEliminated", __playerEliminated);
+        connection.on("SuddenDeathActivated", __suddenDeathActivated);
+        connection.on("ShowdownActivated", __showdownActivated);
 
         const methodList: ReceiverMethod[] = [
             { methodName: "GameStarted", method: __gameStarted },
@@ -553,8 +558,9 @@ class IBaseGameResponse_Binder implements ReceiverRegister<IBaseGameResponse> {
             { methodName: "TurnEnded", method: __turnEnded },
             { methodName: "GetLobbyDataResponse", method: __getLobbyDataResponse },
             { methodName: "PlayerShotAt", method: __playerShotAt },
+            { methodName: "PlayerEliminated", method: __playerEliminated },
             { methodName: "SuddenDeathActivated", method: __suddenDeathActivated },
-            { methodName: "PlayerEliminated", method: __playerEliminated }
+            { methodName: "ShowdownActivated", method: __showdownActivated }
         ]
 
         return new ReceiverMethodSubscription(connection, methodList);

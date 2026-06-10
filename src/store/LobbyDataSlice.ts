@@ -99,6 +99,12 @@ export const lobbyDataSlice = createSlice({
                 }
             }
         },
+        playerEliminated: (state, action: PayloadAction<string>) => {
+            const playerIndex = state.players.findIndex(player => player.username === action.payload);
+            if (playerIndex !== -1) {
+                state.players[playerIndex].eliminated = true;
+            }
+        },
         suddenDeathActivated: (state) => {
             state.suddenDeathActivated = true;
             // Turn all existing extra life items into double damage
@@ -108,11 +114,12 @@ export const lobbyDataSlice = createSlice({
                 );
             });
         },
-        playerEliminated: (state, action: PayloadAction<string>) => {
-            const playerIndex = state.players.findIndex(player => player.username === action.payload);
-            if (playerIndex !== -1) {
-                state.players[playerIndex].eliminated = true;
-            }
+        showdownActivated: (state) => {
+            state.players.forEach(player => {
+                player.items = (player.items ?? []).map(item =>
+                    item === Item.ReverseTurnOrder || item === Item.Ricochet ? Item.Invert : item
+                );
+            });
         },
         reverseTurnOrderItemUsed: (state, action: PayloadAction<{ itemSourceUsername: string }>) => {
             state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.ReverseTurnOrder);
@@ -170,7 +177,7 @@ export const lobbyDataSlice = createSlice({
 
 export const {
     loadFromPacket, clientJoined, clientLeft, setHost, gameStarted, setTurnOrder, gameEnded,
-    addItemsFromRoundStart, turnStarted, turnEnded, playerShotAt, suddenDeathActivated, playerEliminated,
+    addItemsFromRoundStart, turnStarted, turnEnded, playerShotAt, playerEliminated, suddenDeathActivated, showdownActivated,
     reverseTurnOrderItemUsed, rackChamberItemUsed, extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed, 
     invertItemUsed, chamberCheckItemUsed, doubleDamageItemUsed, skipItemUsed, ricochetItemUsed
 } = lobbyDataSlice.actions;
