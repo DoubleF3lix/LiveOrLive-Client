@@ -36,10 +36,10 @@ export type LobbyDto = {
     turnOrder: string[];
     /** Transpiled from string? */
     currentTurn?: string;
-    /** Transpiled from int */
-    ammoLeftInChamber: number;
     /** Transpiled from bool */
     suddenDeathActivated: boolean;
+    /** Transpiled from int */
+    ricochetCounter: number;
 }
 
 /** Transpiled from LiveOrLiveServer.Models.Dto.PlayerDto */

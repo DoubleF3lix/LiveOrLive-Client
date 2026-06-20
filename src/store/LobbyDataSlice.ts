@@ -17,8 +17,8 @@ const initialLobbyDataSliceState: LobbyDto = {
     gameStarted: false,
     turnOrder: [],
     currentTurn: undefined,
-    ammoLeftInChamber: 0,
-    suddenDeathActivated: false
+    suddenDeathActivated: false,
+    ricochetCounter: 0,
 };
 
 export const lobbyDataSlice = createSlice({
@@ -96,6 +96,7 @@ export const lobbyDataSlice = createSlice({
                 const ricochetIndex = state.players.findIndex(player => player.username === ricochetUsername);
                 if (ricochetIndex !== -1) {
                     state.players[ricochetIndex].isRicochet = false;
+                    state.ricochetCounter--;
                 }
             }
         },
@@ -171,6 +172,7 @@ export const lobbyDataSlice = createSlice({
                 }
             }
             state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.Ricochet);
+            state.ricochetCounter++;
         }
     }
 });

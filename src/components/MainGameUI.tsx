@@ -41,6 +41,7 @@ export default function MainGameUI() {
     const isGameStarted = useSelector((state: IRootState) => state.lobbyDataReducer.gameStarted);
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
+    const ricochetCounter = useSelector((state: IRootState) => state.lobbyDataReducer.ricochetCounter);
     const liveRounds = useSelector((state: IRootState) => state.roundDataReducer.liveRounds);
     const blankRounds = useSelector((state: IRootState) => state.roundDataReducer.blankRounds);
     const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
@@ -287,7 +288,10 @@ export default function MainGameUI() {
         {/* Body */}
         {isGameStarted ? <>
             <div className="flex flex-col flex-grow m-1 -mt-1 p-2 lg:p-4 overflow-y-auto @container">
-                <TurnOrderBar className="mb-1 lg:mb-2" />
+                <div className="flex flex-col items-center">
+                    <TurnOrderBar className="mb-1 lg:mb-2" />
+                    <p>{ricochetCounter} ricochets active</p>
+                </div>
                 <div className="grid grid-cols-1 gap-1 @lg:grid-cols-2 @lg:gap-4 @4xl:grid-cols-3 @7xl:grid-cols-4 @7xl:gap-6">
                     {players.map(player => <PlayerCard key={player.username + "_playerCard"} player={player} />)}
                 </div>
