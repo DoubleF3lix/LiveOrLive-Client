@@ -19,7 +19,7 @@ import AlertDialogQueue from "~/components/AlertDialogQueue";
 import { showAlertDialog } from "~/store/AlertDialogQueueSlice";
 import PlayerCard from "~/components/PlayerCard";
 import GameInfoSidebar from "~/components/GameInfo/GameInfoSidebar";
-import { ChevronUp, Circle, CircleDashed, Info } from "lucide-react";
+import { ChevronUp, Circle, CircleDashed, Info, Shield } from "lucide-react";
 import IconButton from "~/components/micro/IconButton";
 import TurnOrderBar from "~/components/TurnOrderBar";
 import { Button } from "@/button";
@@ -42,6 +42,7 @@ export default function MainGameUI() {
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
     const ricochetCounter = useSelector((state: IRootState) => state.lobbyDataReducer.ricochetCounter);
+    const showRicochetsCounter = useSelector((state: IRootState) => state.lobbyDataReducer.settings.showRicochetsCounter);
     const liveRounds = useSelector((state: IRootState) => state.roundDataReducer.liveRounds);
     const blankRounds = useSelector((state: IRootState) => state.roundDataReducer.blankRounds);
     const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
@@ -276,6 +277,12 @@ export default function MainGameUI() {
                             <CircleDashed />
                             <p className="text-center">{blankRounds}</p>
                         </div>
+                        {showRicochetsCounter && (
+                            <div className="flex flex-col items-center">
+                                <Shield />
+                                <p className="text-center">{ricochetCounter}</p>
+                            </div>
+                        )}     
                     </div>
                 </div>
                 : <h1 className="flex-grow text-center justify-center content-center text-2xl font-bold -mt-1">Live or Live</h1>
@@ -290,7 +297,6 @@ export default function MainGameUI() {
             <div className="flex flex-col flex-grow m-1 -mt-1 p-2 lg:p-4 overflow-y-auto @container">
                 <div className="flex flex-col items-center">
                     <TurnOrderBar className="mb-1 lg:mb-2" />
-                    <p>{ricochetCounter} ricochets active</p>
                 </div>
                 <div className="grid grid-cols-1 gap-1 @lg:grid-cols-2 @lg:gap-4 @4xl:grid-cols-3 @7xl:grid-cols-4 @7xl:gap-6">
                     {players.map(player => <PlayerCard key={player.username + "_playerCard"} player={player} />)}
