@@ -42,7 +42,7 @@ export default function MainGameUI() {
     const lobbyHost = useSelector((state: IRootState) => state.lobbyDataReducer.host);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
     const ricochetCounter = useSelector((state: IRootState) => state.lobbyDataReducer.ricochetCounter);
-    const showRicochetsCounter = useSelector((state: IRootState) => state.lobbyDataReducer.settings.showRicochetsCounter);
+    const settings = useSelector((state: IRootState) => state.lobbyDataReducer.settings);
     const liveRounds = useSelector((state: IRootState) => state.roundDataReducer.liveRounds);
     const blankRounds = useSelector((state: IRootState) => state.roundDataReducer.blankRounds);
     const gameLogMessages = useSelector((state: IRootState) => state.gameLogReducer.gameLogMessages);
@@ -283,7 +283,7 @@ export default function MainGameUI() {
                             <CircleDashed />
                             <p className="text-center">{blankRounds}</p>
                         </div>
-                        {showRicochetsCounter && (
+                        {settings.showRicochetsCounter && (
                             <div className="flex flex-col items-center">
                                 <Shield />
                                 <p className="text-center">{ricochetCounter}</p>

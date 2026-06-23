@@ -35,6 +35,7 @@ export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
 
     const selfUsername = useSelector((state: IRootState) => state.selfDataReducer.username);
     const players = useSelector((state: IRootState) => state.lobbyDataReducer.players);
+    const settings = useSelector((state: IRootState) => state.lobbyDataReducer.settings);
 
     const selfItems = players.find(player => player.username === selfUsername)?.items;
     const condensedSelfItems = condenseItemList(selfItems ?? []);
@@ -150,10 +151,11 @@ export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
                 </SelectBox>
 
                 {/* Move preset select boxes to components, include labels */}
+                {/* TODO remove the target box if life donation is disabled */}
                 {selectedItem === Item.ExtraLife && <UseExtraLife 
-                    usernames={fetchUsernames(players, false, false, PlaceSelfMode.Front)}
+                    usernames={settings.allowLifeDonation ? fetchUsernames(players, false, false, PlaceSelfMode.Front) : [selfUsername]}
                     targetUsername={targetUsername}
-                    setTargetUsername={setTargetUsername} 
+                    setTargetUsername={setTargetUsername}
                 />}
 
                 {selectedItem === Item.Pickpocket && <UsePickpocket 
@@ -169,7 +171,7 @@ export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
                 />}
 
                 {selectedItem === Item.Skip && <UseSkip 
-                    usernames={fetchUsernames(players, true, false, PlaceSelfMode.Back)}
+                    usernames={fetchUsernames(players, true, !settings.allowSelfSkip, PlaceSelfMode.Back)}
                     targetUsername={targetUsername} 
                     setTargetUsername={setTargetUsername} 
                 />}
