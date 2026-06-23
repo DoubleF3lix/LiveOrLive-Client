@@ -8,16 +8,17 @@ type RoundDataSliceType = {
     turnOrderReversed: boolean;
 };
 
-const initialLobbyDataSliceState: RoundDataSliceType = {
+// Represents data that the server doesn't track of, but that we do
+const initialRoundDataSliceState: RoundDataSliceType = {
     liveRounds: 0,
     blankRounds: 0,
     roundsFired: 0,
     turnOrderReversed: false
 }
 
-export const lobbyDataSlice = createSlice({
+export const roundDataSlice = createSlice({
     name: "lobbyData",
-    initialState: initialLobbyDataSliceState,
+    initialState: initialRoundDataSliceState,
     reducers: {
         setLiveRoundsCount: (state, action: PayloadAction<number>) => {
             state.liveRounds = action.payload;
@@ -27,9 +28,10 @@ export const lobbyDataSlice = createSlice({
         },
         reverseTurnOrder: (state) => {
             state.turnOrderReversed = !state.turnOrderReversed;
-        }
+        },
+        resetRoundDataState: () => initialRoundDataSliceState
     }
 });
 
-export const { setLiveRoundsCount, setBlankRoundsCount, reverseTurnOrder } = lobbyDataSlice.actions;
-export default lobbyDataSlice.reducer;
+export const { setLiveRoundsCount, setBlankRoundsCount, reverseTurnOrder, resetRoundDataState } = roundDataSlice.actions;
+export default roundDataSlice.reducer;

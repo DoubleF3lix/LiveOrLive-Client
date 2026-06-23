@@ -2,11 +2,11 @@ import UseTargetedItem from "~/components/UseItem/UseTargetedItem";
 
 
 type UseRicochetArgs = {
-    playerUsernamesSelfFirst: string[];
+    usernames: string[];
     targetUsername: string;
     setTargetUsername: (value: string) => void;
 };
 
-export default function UseRicochet({ playerUsernamesSelfFirst, targetUsername, setTargetUsername }: UseRicochetArgs) {
-    return <UseTargetedItem keySuffix="_useItemSelectRicochetTarget" usernames={playerUsernamesSelfFirst} targetUsername={targetUsername} setTargetUsername={setTargetUsername} />;    
+export default function UseRicochet({ usernames, targetUsername, setTargetUsername }: UseRicochetArgs) {
+    return <UseTargetedItem keySuffix="_useItemSelectRicochetTarget" usernames={usernames} targetUsername={targetUsername} setTargetUsername={setTargetUsername} />;    
 }

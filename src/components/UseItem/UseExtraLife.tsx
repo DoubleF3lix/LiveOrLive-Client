@@ -2,11 +2,11 @@ import UseTargetedItem from "~/components/UseItem/UseTargetedItem";
 
 
 type UseExtraLifeArgs = {
-    playerUsernamesSelfFirst: string[];
+    usernames: string[];
     targetUsername: string;
     setTargetUsername: (value: string) => void;
 };
 
-export default function UseExtraLife({ playerUsernamesSelfFirst, targetUsername, setTargetUsername }: UseExtraLifeArgs) {
-    return <UseTargetedItem keySuffix="_useItemSelectLifeTarget" usernames={playerUsernamesSelfFirst} targetUsername={targetUsername} setTargetUsername={setTargetUsername} />;    
+export default function UseExtraLife({ usernames, targetUsername, setTargetUsername }: UseExtraLifeArgs) {
+    return <UseTargetedItem keySuffix="_useItemSelectLifeTarget" usernames={usernames} targetUsername={targetUsername} setTargetUsername={setTargetUsername} />;    
 }

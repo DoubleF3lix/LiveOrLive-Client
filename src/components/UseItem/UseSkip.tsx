@@ -2,11 +2,11 @@ import UseTargetedItem from "~/components/UseItem/UseTargetedItem";
 
 
 type UseSkipArgs = {
-    playerUsernamesSelfLast: string[];
+    usernames: string[];
     targetUsername: string;
     setTargetUsername: (value: string) => void;
 };
 
-export default function UseSkip({ playerUsernamesSelfLast, targetUsername, setTargetUsername }: UseSkipArgs) {
-    return <UseTargetedItem keySuffix="_useItemSelectSkipTarget" usernames={playerUsernamesSelfLast} targetUsername={targetUsername} setTargetUsername={setTargetUsername} />;    
+export default function UseSkip({ usernames, targetUsername, setTargetUsername }: UseSkipArgs) {
+    return <UseTargetedItem keySuffix="_useItemSelectSkipTarget" usernames={usernames} targetUsername={targetUsername} setTargetUsername={setTargetUsername} />;    
 }

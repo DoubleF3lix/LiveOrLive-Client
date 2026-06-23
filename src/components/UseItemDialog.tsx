@@ -14,12 +14,19 @@ import UsePickpocket from "~/components/UseItem/UsePickpocket";
 import UseSkip from "~/components/UseItem/UseSkip";
 import UseRicochet from "~/components/UseItem/UseRicochet";
 import UsePocketPistol from "./UseItem/UsePocketPistol";
+import { PlayerDto } from "~/types/generated/LiveOrLiveServer.Models.Dto";
 
 
 type UseItemDialogArgs = {
     open: boolean;
     setOpen: (open: boolean) => void;
 };
+
+enum PlaceSelfMode {
+    None,
+    Front,
+    Back
+}
 
 export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
     const serverConnection = useContext(ServerConnectionContext) as ServerConnection;
@@ -32,10 +39,24 @@ export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
     const selfItems = players.find(player => player.username === selfUsername)?.items;
     const condensedSelfItems = condenseItemList(selfItems ?? []);
     
-    const playerUsernames = players.map(player => player.username);
-    const playerUsernamesSelfFirst = moveToFrontOfArray(playerUsernames, selfUsername);
-    const playerUsernamesSelfLast = moveToBackOfArray(playerUsernames, selfUsername);
-    const otherPlayers = players.filter(player => player.username !== selfUsername);
+    function fetchPlayers(players: PlayerDto[], livingOnly: boolean = false, excludeSelf: boolean = false): PlayerDto[] {
+        if (excludeSelf) players = players.filter(player => player.username !== selfUsername);
+        if (livingOnly) players = players.filter(player => player.lives >= 1 && !player.eliminated);
+        return players;
+    }
+
+    function fetchUsernames(players: PlayerDto[], livingOnly: boolean = false, excludeSelf: boolean = false, placeSelfMode: PlaceSelfMode = PlaceSelfMode.None): string[] {
+        players = fetchPlayers(players, livingOnly, excludeSelf);
+        const usernames = players.map(player => player.username);
+        switch (placeSelfMode) {
+            case PlaceSelfMode.Front:
+                return moveToFrontOfArray(usernames, selfUsername);
+            case PlaceSelfMode.Back:
+                return moveToBackOfArray(usernames, selfUsername);
+            default:
+                return usernames;
+        }
+    }
 
     const [selectedItem, setSelectedItem] = useState<Item | -1>(-1);
     const [targetUsername, setTargetUsername] = useState<string>("");
@@ -130,37 +151,37 @@ export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
 
                 {/* Move preset select boxes to components, include labels */}
                 {selectedItem === Item.ExtraLife && <UseExtraLife 
-                    playerUsernamesSelfFirst={playerUsernamesSelfFirst} 
+                    usernames={fetchUsernames(players, false, false, PlaceSelfMode.Front)}
                     targetUsername={targetUsername}
                     setTargetUsername={setTargetUsername} 
                 />}
 
                 {selectedItem === Item.Pickpocket && <UsePickpocket 
-                    playerUsernamesSelfFirst={playerUsernamesSelfFirst}         // Passed to UseStolenItem (for Extra Life and Ricochet)
-                    playerUsernamesSelfLast={playerUsernamesSelfLast}           // Passed to UseStolenItem (for Skip)
-                    otherPlayers={otherPlayers}                                 // Used to compute valid pickpocket targets (has to have at least one non-pickpocket item)
-                    targetUsername={targetUsername}                             // The player we're stealing from
+                    playerUsernamesSelfFirst={fetchUsernames(players, false, true, PlaceSelfMode.Front)}         // Passed to UseStolenItem (for Extra Life and Ricochet)
+                    playerUsernamesSelfLast={fetchUsernames(players, false, true, PlaceSelfMode.Back)}           // Passed to UseStolenItem (for Skip)
+                    otherPlayers={fetchPlayers(players, false, true)}                                            // Used to compute valid pickpocket targets (has to have at least one non-pickpocket item)
+                    targetUsername={targetUsername}                                                              // The player we're stealing from
                     setTargetUsername={setTargetUsername}
-                    selectedItemToSteal={selectedItemToSteal}                   // The item we're stealing from the above player
+                    selectedItemToSteal={selectedItemToSteal}                                                    // The item we're stealing from the above player
                     setSelectedItemToSteal={setSelectedItemToSteal}
-                    stolenItemTargetUsername={stolenItemTargetUsername}         // The player we're using the stolen item on. May be null.
+                    stolenItemTargetUsername={stolenItemTargetUsername}                                          // The player we're using the stolen item on. May be null.     
                     setStolenItemTargetUsername={setStolenItemTargetUsername} 
                 />}
 
                 {selectedItem === Item.Skip && <UseSkip 
-                    playerUsernamesSelfLast={playerUsernamesSelfLast}
+                    usernames={fetchUsernames(players, true, false, PlaceSelfMode.Back)}
                     targetUsername={targetUsername} 
                     setTargetUsername={setTargetUsername} 
                 />}
 
                 {selectedItem === Item.Ricochet && <UseRicochet 
-                    playerUsernamesSelfFirst={playerUsernamesSelfFirst} 
+                    usernames={fetchUsernames(players, true, false, PlaceSelfMode.Front)}
                     targetUsername={targetUsername}
                     setTargetUsername={setTargetUsername} 
                 />}
 
                 {selectedItem === Item.PocketPistol && <UsePocketPistol 
-                    otherLivingPlayerUsernames={otherPlayers.filter(p => p.lives > 0).map(p => p.username)}
+                    usernames={fetchUsernames(players, true, true, PlaceSelfMode.None)}
                     targetUsername={targetUsername}
                     setTargetUsername={setTargetUsername} 
                 />}

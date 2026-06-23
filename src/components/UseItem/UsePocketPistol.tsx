@@ -2,11 +2,11 @@ import UseTargetedItem from "~/components/UseItem/UseTargetedItem";
 
 
 type UsePocketPistolArgs = {
-    otherLivingPlayerUsernames: string[];
+    usernames: string[];
     targetUsername: string;
     setTargetUsername: (value: string) => void;
 };
 
-export default function UsePocketPistol({ otherLivingPlayerUsernames, targetUsername, setTargetUsername }: UsePocketPistolArgs) {
-    return <UseTargetedItem keySuffix="_useItemSelectPocketPistolTarget" usernames={otherLivingPlayerUsernames} targetUsername={targetUsername} setTargetUsername={setTargetUsername} />;    
+export default function UsePocketPistol({ usernames, targetUsername, setTargetUsername }: UsePocketPistolArgs) {
+    return <UseTargetedItem keySuffix="_useItemSelectPocketPistolTarget" usernames={usernames} targetUsername={targetUsername} setTargetUsername={setTargetUsername} />;    
 }

@@ -25,7 +25,7 @@ import TurnOrderBar from "~/components/TurnOrderBar";
 import { Button } from "@/button";
 import { BulletType, Item } from "~/types/generated/LiveOrLiveServer.Enums";
 import { NewRoundResult } from "~/types/generated/LiveOrLiveServer.Models.Results";
-import { reverseTurnOrder, setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
+import { resetRoundDataState, reverseTurnOrder, setBlankRoundsCount, setLiveRoundsCount } from "~/store/RoundDataSlice";
 import UseItemDialog from "~/components/UseItemDialog";
 import GameLogQuickView from "./micro/GameLogQuickView";
 import ClientTypeSwitch from "./ClientTypeSwitch";
@@ -105,6 +105,7 @@ export default function MainGameUI() {
             dispatch(gameStarted());
             dispatch(setTurnOrder(turnOrder));
             dispatch(clearGameLogMessages());
+            dispatch(resetRoundDataState());
         });
 
         const sub_gameEnded = serverConnection.subscribe("gameEnded", async (winner: string | null, purgedPlayers: string[]) => {
