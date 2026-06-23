@@ -11,7 +11,7 @@ import {
     addItemsFromRoundStart, setTurnOrder, reverseTurnOrderItemUsed, rackChamberItemUsed,
     extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed,
     invertItemUsed, chamberCheckItemUsed, doubleDamageItemUsed,
-    skipItemUsed, ricochetItemUsed,
+    skipItemUsed, ricochetItemUsed, pocketPistolItemUsed,
     showdownActivated,
 } from "~/store/LobbyDataSlice";
 import { Separator } from "@/separator";
@@ -211,6 +211,10 @@ export default function MainGameUI() {
             dispatch(ricochetItemUsed({ target: target, itemSourceUsername: itemSourceUsername }));
         });
 
+        const sub_pocketPistolItemUsed = serverConnection.subscribe("pocketPistolItemUsed", async (target: string, itemSourceUsername: string) => {
+            dispatch(pocketPistolItemUsed({ target: target, itemSourceUsername: itemSourceUsername }));
+        });
+
         serverConnection.getLobbyDataRequest();
 
         return () => {
@@ -241,6 +245,7 @@ export default function MainGameUI() {
             serverConnection.unsubscribe("doubleDamageItemUsed", sub_doubleDamageItemUsed);
             serverConnection.unsubscribe("skipItemUsed", sub_skipItemUsed);
             serverConnection.unsubscribe("ricochetItemUsed", sub_ricochetItemUsed);
+            serverConnection.unsubscribe("pocketPistolItemUsed", sub_pocketPistolItemUsed);
         };
     }, [clientUsername, dispatch, serverConnection]);
 

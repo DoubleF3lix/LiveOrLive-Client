@@ -26,5 +26,6 @@ export enum Item {
     DoubleDamage = 7,
     Skip = 8,
     Ricochet = 9,
+    PocketPistol = 10,
 }
 

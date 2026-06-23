@@ -295,6 +295,10 @@ class IItemRequest_HubProxy implements IItemRequest {
     public readonly useRicochetItem = async (target: string): Promise<void> => {
         return await this.connection.invoke("UseRicochetItem", target);
     }
+
+    public readonly usePocketPistolItem = async (target: string): Promise<void> => {
+        return await this.connection.invoke("UsePocketPistolItem", target);
+    }
 }
 
 
@@ -345,6 +349,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         const __doubleDamageItemUsed = (...args: [string]) => receiver.doubleDamageItemUsed(...args);
         const __skipItemUsed = (...args: [string, string]) => receiver.skipItemUsed(...args);
         const __ricochetItemUsed = (...args: [string, string]) => receiver.ricochetItemUsed(...args);
+        const __pocketPistolItemUsed = (...args: [string, string]) => receiver.pocketPistolItemUsed(...args);
 
         connection.on("GetChatMessagesResponse", __getChatMessagesResponse);
         connection.on("ChatMessageSent", __chatMessageSent);
@@ -382,6 +387,7 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
         connection.on("DoubleDamageItemUsed", __doubleDamageItemUsed);
         connection.on("SkipItemUsed", __skipItemUsed);
         connection.on("RicochetItemUsed", __ricochetItemUsed);
+        connection.on("PocketPistolItemUsed", __pocketPistolItemUsed);
 
         const methodList: ReceiverMethod[] = [
             { methodName: "GetChatMessagesResponse", method: __getChatMessagesResponse },
@@ -419,7 +425,8 @@ class IHubServerResponse_Binder implements ReceiverRegister<IHubServerResponse> 
             { methodName: "ChamberCheckItemUsed", method: __chamberCheckItemUsed },
             { methodName: "DoubleDamageItemUsed", method: __doubleDamageItemUsed },
             { methodName: "SkipItemUsed", method: __skipItemUsed },
-            { methodName: "RicochetItemUsed", method: __ricochetItemUsed }
+            { methodName: "RicochetItemUsed", method: __ricochetItemUsed },
+            { methodName: "PocketPistolItemUsed", method: __pocketPistolItemUsed }
         ]
 
         return new ReceiverMethodSubscription(connection, methodList);
@@ -613,6 +620,7 @@ class IItemResponse_Binder implements ReceiverRegister<IItemResponse> {
         const __doubleDamageItemUsed = (...args: [string]) => receiver.doubleDamageItemUsed(...args);
         const __skipItemUsed = (...args: [string, string]) => receiver.skipItemUsed(...args);
         const __ricochetItemUsed = (...args: [string, string]) => receiver.ricochetItemUsed(...args);
+        const __pocketPistolItemUsed = (...args: [string, string]) => receiver.pocketPistolItemUsed(...args);
 
         connection.on("ReverseTurnOrderItemUsed", __reverseTurnOrderItemUsed);
         connection.on("RackChamberItemUsed", __rackChamberItemUsed);
@@ -624,6 +632,7 @@ class IItemResponse_Binder implements ReceiverRegister<IItemResponse> {
         connection.on("DoubleDamageItemUsed", __doubleDamageItemUsed);
         connection.on("SkipItemUsed", __skipItemUsed);
         connection.on("RicochetItemUsed", __ricochetItemUsed);
+        connection.on("PocketPistolItemUsed", __pocketPistolItemUsed);
 
         const methodList: ReceiverMethod[] = [
             { methodName: "ReverseTurnOrderItemUsed", method: __reverseTurnOrderItemUsed },
@@ -635,7 +644,8 @@ class IItemResponse_Binder implements ReceiverRegister<IItemResponse> {
             { methodName: "ChamberCheckItemUsed", method: __chamberCheckItemUsed },
             { methodName: "DoubleDamageItemUsed", method: __doubleDamageItemUsed },
             { methodName: "SkipItemUsed", method: __skipItemUsed },
-            { methodName: "RicochetItemUsed", method: __ricochetItemUsed }
+            { methodName: "RicochetItemUsed", method: __ricochetItemUsed },
+            { methodName: "PocketPistolItemUsed", method: __pocketPistolItemUsed }
         ]
 
         return new ReceiverMethodSubscription(connection, methodList);

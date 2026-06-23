@@ -102,7 +102,8 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
             chamberCheckItemUsed: async (bulletType: BulletType, itemSourceUsername: string): Promise<void> => this.sendSubscription("chamberCheckItemUsed", bulletType, itemSourceUsername),
             doubleDamageItemUsed: async (itemSourceUsername: string): Promise<void> => this.sendSubscription("doubleDamageItemUsed", itemSourceUsername),
             skipItemUsed: async (target: string, itemSourceUsername: string): Promise<void> => this.sendSubscription("skipItemUsed", target, itemSourceUsername),
-            ricochetItemUsed: async (target: string, itemSourceUsername: string): Promise<void> => this.sendSubscription("ricochetItemUsed", target, itemSourceUsername)
+            ricochetItemUsed: async (target: string, itemSourceUsername: string): Promise<void> => this.sendSubscription("ricochetItemUsed", target, itemSourceUsername),
+            pocketPistolItemUsed: async (target: string, itemSourceUsername: string): Promise<void> => this.sendSubscription("pocketPistolItemUsed", target, itemSourceUsername),
         };
 
         // Set up the receivers for subscriptions
@@ -205,6 +206,9 @@ export class ServerConnection implements IChatRequest, IGameLogRequest, IConnect
     }
     useRicochetItem(target: string): Promise<void> {
         return this.itemHubProxy.useRicochetItem(target);
+    }
+    usePocketPistolItem(target: string): Promise<void> {
+        return this.itemHubProxy.usePocketPistolItem(target);
     }
 
     subscribe<K extends keyof IHubServerResponse>(type: K, callback: IHubServerResponse[K]): IHubServerResponse[K] {

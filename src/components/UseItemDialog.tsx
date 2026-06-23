@@ -13,6 +13,7 @@ import UseExtraLife from "~/components/UseItem/UseExtraLife";
 import UsePickpocket from "~/components/UseItem/UsePickpocket";
 import UseSkip from "~/components/UseItem/UseSkip";
 import UseRicochet from "~/components/UseItem/UseRicochet";
+import UsePocketPistol from "./UseItem/UsePocketPistol";
 
 
 type UseItemDialogArgs = {
@@ -109,6 +110,9 @@ export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
             case Item.Ricochet:
                 serverConnection.useRicochetItem(targetUsername);
                 break;
+            case Item.PocketPistol:
+                serverConnection.usePocketPistolItem(targetUsername);
+                break;
         }
         close();
     }
@@ -151,6 +155,12 @@ export default function UseItemDialog({ open, setOpen }: UseItemDialogArgs) {
 
                 {selectedItem === Item.Ricochet && <UseRicochet 
                     playerUsernamesSelfFirst={playerUsernamesSelfFirst} 
+                    targetUsername={targetUsername}
+                    setTargetUsername={setTargetUsername} 
+                />}
+
+                {selectedItem === Item.PocketPistol && <UsePocketPistol 
+                    otherLivingPlayerUsernames={otherPlayers.filter(p => p.lives > 0).map(p => p.username)}
                     targetUsername={targetUsername}
                     setTargetUsername={setTargetUsername} 
                 />}

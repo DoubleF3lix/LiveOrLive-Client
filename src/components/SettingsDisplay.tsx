@@ -50,6 +50,7 @@ export default function SettingsDisplay({ settings, className, editable = true }
         <LabelAndSwitchGridRow label="Enable Double Damage Item:" boolRef={modSettings.enableDoubleDamageItem} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Enable Skip Item:" boolRef={modSettings.enableSkipItem} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndSwitchGridRow label="Enable Ricochet Item:" boolRef={modSettings.enableRicochetItem} disabled={!editable}></LabelAndSwitchGridRow>
+        <LabelAndSwitchGridRow label="Enable Pocket Pistol Item:" boolRef={modSettings.enablePocketPistolItem} disabled={!editable}></LabelAndSwitchGridRow>
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Allow Life Donation:" boolRef={modSettings.allowLifeDonation} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndNumberGridRow label="Max Player Revives:" numberRef={modSettings.maxPlayerRevives} disabled={!editable}></LabelAndNumberGridRow>
@@ -61,7 +62,6 @@ export default function SettingsDisplay({ settings, className, editable = true }
         <LabelAndSwitchGridRow label="Show Ricochets Counter:" boolRef={modSettings.showRicochetsCounter} disabled={!editable}></LabelAndSwitchGridRow>
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Lose Skip After Round:" boolRef={modSettings.loseSkipAfterRound} disabled={!editable}></LabelAndSwitchGridRow>
-        <LabelAndSwitchGridRow label="Ricochet Ignore Skipped Players:" boolRef={modSettings.ricochetIgnoreSkippedPlayers} disabled={!editable}></LabelAndSwitchGridRow>
         <LabelAndNumberGridRow label="Sudden Death Activation Point:" numberRef={modSettings.suddenDeathActivationPoint} disabled={!editable}></LabelAndNumberGridRow>
         <Separator className="col-span-2" />
         <LabelAndSwitchGridRow label="Second Wind:" boolRef={modSettings.secondWind} disabled={!editable}></LabelAndSwitchGridRow>

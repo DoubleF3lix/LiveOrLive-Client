@@ -105,6 +105,7 @@ export const lobbyDataSlice = createSlice({
             if (playerIndex !== -1) {
                 state.players[playerIndex].eliminated = true;
             }
+            state.turnOrder = removeItemFromArray(state.turnOrder, action.payload);
         },
         suddenDeathActivated: (state) => {
             state.suddenDeathActivated = true;
@@ -173,6 +174,9 @@ export const lobbyDataSlice = createSlice({
             }
             state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.Ricochet);
             state.ricochetCounter++;
+        },
+        pocketPistolItemUsed: (state, action: PayloadAction<{ target: string, itemSourceUsername: string }>) => {
+            state.players = removeGameItemFromPlayer(state.players, action.payload.itemSourceUsername, Item.PocketPistol);
         }
     }
 });
@@ -181,6 +185,6 @@ export const {
     loadFromPacket, clientJoined, clientLeft, setHost, gameStarted, setTurnOrder, gameEnded,
     addItemsFromRoundStart, turnStarted, turnEnded, playerShotAt, playerEliminated, suddenDeathActivated, showdownActivated,
     reverseTurnOrderItemUsed, rackChamberItemUsed, extraLifeItemUsed, pickpocketItemUsed, lifeGambleItemUsed, 
-    invertItemUsed, chamberCheckItemUsed, doubleDamageItemUsed, skipItemUsed, ricochetItemUsed
+    invertItemUsed, chamberCheckItemUsed, doubleDamageItemUsed, skipItemUsed, ricochetItemUsed, pocketPistolItemUsed,
 } = lobbyDataSlice.actions;
 export default lobbyDataSlice.reducer;

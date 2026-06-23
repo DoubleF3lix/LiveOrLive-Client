@@ -122,6 +122,11 @@ export type IItemRequest = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     useRicochetItem(target: string): Promise<void>;
+    /**
+    * @param target Transpiled from string
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    usePocketPistolItem(target: string): Promise<void>;
 }
 
 export type IHubServerResponse = {
@@ -319,6 +324,12 @@ export type IHubServerResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     ricochetItemUsed(target: string, itemSourceUsername: string): Promise<void>;
+    /**
+    * @param target Transpiled from string?
+    * @param itemSourceUsername Transpiled from string
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    pocketPistolItemUsed(target: string, itemSourceUsername: string): Promise<void>;
 }
 
 export type IChatResponse = {
@@ -531,5 +542,11 @@ export type IItemResponse = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     ricochetItemUsed(target: string, itemSourceUsername: string): Promise<void>;
+    /**
+    * @param target Transpiled from string?
+    * @param itemSourceUsername Transpiled from string
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    pocketPistolItemUsed(target: string, itemSourceUsername: string): Promise<void>;
 }
 

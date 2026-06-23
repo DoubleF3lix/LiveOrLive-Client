@@ -85,6 +85,8 @@ export type Settings = {
     /** Transpiled from bool */
     enableRicochetItem: boolean;
     /** Transpiled from bool */
+    enablePocketPistolItem: boolean;
+    /** Transpiled from bool */
     announceChamberCheckResults: boolean;
     /** Transpiled from bool */
     allowLifeDonation: boolean;
@@ -102,8 +104,6 @@ export type Settings = {
     showRicochetsCounter: boolean;
     /** Transpiled from bool */
     loseSkipAfterRound: boolean;
-    /** Transpiled from bool */
-    ricochetIgnoreSkippedPlayers: boolean;
     /** Transpiled from int */
     suddenDeathActivationPoint: number;
     /** Transpiled from bool */
