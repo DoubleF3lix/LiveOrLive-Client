@@ -13,6 +13,12 @@ type CondensedItemDetail = {
     displayString: string;
 };
 
+export enum PlaceSelfMode {
+    None,
+    Front,
+    Back
+}
+
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
@@ -115,5 +121,24 @@ export function showToast(toast: Omit<Toast, "id">) {
         ));
     } else if (toast.type === "default") {
         return sonnerToast(toast.title, { description: toast.description, action: { label: toast.button.label, onClick: toast.button.onClick } });
+    }
+}
+
+export function fetchPlayers(players: PlayerDto[], selfUsername: string, livingOnly: boolean = false, excludeSelf: boolean = false): PlayerDto[] {
+    if (excludeSelf) players = players.filter(player => player.username !== selfUsername);
+    if (livingOnly) players = players.filter(player => player.lives >= 1 && !player.eliminated);
+    return players;
+}
+
+export function fetchUsernames(players: PlayerDto[], selfUsername: string, livingOnly: boolean = false, excludeSelf: boolean = false, placeSelfMode: PlaceSelfMode = PlaceSelfMode.None): string[] {
+    players = fetchPlayers(players, selfUsername, livingOnly, excludeSelf);
+    const usernames = players.map(player => player.username);
+    switch (placeSelfMode) {
+        case PlaceSelfMode.Front:
+            return moveToFrontOfArray(usernames, selfUsername);
+        case PlaceSelfMode.Back:
+            return moveToBackOfArray(usernames, selfUsername);
+        default:
+            return usernames;
     }
 }
